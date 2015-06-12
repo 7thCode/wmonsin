@@ -77,3 +77,9 @@ account.min.js
 notification.html
 PatientsApplication.min.js
 patient.min.js
+
+public/partials/logo.html
+
+public/stylesheets/style.css
+
+views/unsupport.html
