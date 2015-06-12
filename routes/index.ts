@@ -126,6 +126,29 @@ function User(name, success, error) {
     });
 }
 
+function GetView(success, error) {
+    View.find({}, {}, {}, function (finderror, docs) {
+        if (!finderror) {
+            if (docs == null) {
+                if (docs.length == 0)
+                {
+                    success();
+                }
+                else
+                {
+                    error();
+                }
+            }
+            else {
+                error();
+            }
+        }
+        else {
+            error();
+        }
+    });
+}
+
 function BasicHeader(response, session) {
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Pragma", "no-cache");
@@ -811,44 +834,23 @@ router.post('/view', function (req, res) {
 });
 
 
-function GetView(success, error) {
-    View.find({}, {}, {}, function (finderror, docs) {
-        if (!finderror) {
-            if (docs == null) {
-                if (docs.length == 0)
-                {
-                    success();
-                }
-                else
-                {
-                    error();
-                }
-            }
-            else {
-                error();
-            }
-        }
-        else {
-            error();
-        }
-    });
-}
 
 /*! create view */
 router.get('/initview', function (req, res) {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            var view = new View();
-
-            var viewdata = initView.Data;
-            view.Data = viewdata;
-            view.save(function (saveerror) {
-                if (!saveerror) {
-                    res.send(JSON.stringify(new Result(0, "", [])));
-                } else {
-                    res.send(JSON.stringify(new Result(10, "view create", saveerror)));
-                }
+            GetView(function () {
+                var view = new View();
+                view.Data = initView.Data;
+                view.save(function (saveerror) {
+                    if (!saveerror) {
+                        res.send(JSON.stringify(new Result(0, "", [])));
+                    } else {
+                        res.send(JSON.stringify(new Result(10, "view create", saveerror)));
+                    }
+                });
+            }, function () {
             });
         }
         else {
