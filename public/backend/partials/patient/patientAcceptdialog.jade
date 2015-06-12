@@ -48,38 +48,5 @@ md-dialog(flex)
                 md-select(placeholder="診療科", ng-model="items.category", required)
                     md-option(ng-repeat="category in categories", value="{{category}}") {{category}}
 
-                    //md-option(value="精神科") 精神科
-                    //md-option(value="神経科") 神経科
-                    //md-option(value="神経内科") 神経内科
-                    //md-option(value="呼吸器科") 呼吸器科
-                    //md-option(value="消化器科") 消化器科
-                    //md-option(value="胃腸科") 胃腸科
-                    //md-option(value="循環器科") 循環器科
-                    //md-option(value="形成外科") 形成外科
-                    //md-option(value="美容外科") 美容外科
-                    //md-option(value="脳神経外科") 脳神経外科
-                    //md-option(value="呼吸器外科") 呼吸器外科
-                    //md-option(value="心臓血管外科") 心臓血管外科
-                    //md-option(value="小児外科") 小児外科
-                    //md-option(value="皮膚ひ尿器科") 皮膚ひ尿器科
-                    //md-option(value="皮膚科") 皮膚科
-                    //md-option(value="ひ尿器科") ひ尿器科
-                    //md-option(value="性病科") 性病科
-                    //md-option(value="こう門科") こう門科
-                    //md-option(value="産婦人科") 産婦人科
-                    //md-option(value="産科") 産科
-                    //md-option(value="婦人科") 婦人科
-                    //md-option(value="眼科") 眼科
-                    //md-option(value="気管食道科") 気管食道科
-                    //md-option(value="放射線科") 放射線科
-                    //md-option(value="麻酔科") 麻酔科
-                    //md-option(value="心療内科") 心療内科
-                    //md-option(value="アレルギー科") アレルギー科
-                    //md-option(value="リウマチ科") リウマチ科
-                    //md-option(value="リハビリテーション科") リハビリテーシ
-                    //md-option(value="病理診断科") 病理診断科
-                    //md-option(value="臨床検査科") 臨床検査科
-                    //md-option(value="救急科") 救急科
-
             div(layout="row" layout-align="space-around center")
                 md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="Save") {{'accept' | message}}
