@@ -5,7 +5,8 @@ web問診表
 
   1.mongodb
 
-    まず、mongodbを用意しますもしインストール済みなら、dbまでの接続文字列を用意してください。
+    まず、mongodbを用意します。
+    もしインストール済みなら、dbまでの接続文字列を用意してください。
 
       例
         mongodb://localhost/patient
