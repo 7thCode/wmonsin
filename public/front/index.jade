@@ -1,0 +1,50 @@
+//
+    index.jade
+    Copyright (c) 2015 7ThCode.
+    This software is released under the MIT License.
+    http://opensource.org/licenses/mit-license.php
+
+- var debug = true;
+doctype html
+html(lang="ja")
+    head
+        meta(charset="utf-8")
+        meta(name="format-detection", content="telephone=no")
+        meta(name="msapplication-tap-highlight", content="no")
+        meta(name="viewport", content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height")
+        title Inquiry
+        link(rel="stylesheet", type="text/css", href="/bower_components/angular-material/angular-material.min.css")
+        link(rel="stylesheet", type="text/css", href="stylesheets/style.css")
+    body(layout="column" ng-app="PatientsApplication",style="background-color: #A0A0FF;")
+        div(ui-view="")
+
+    script(type="text/javascript", src='/bower_components/jquery/dist/jquery.min.js')
+    script(type="text/javascript", src="/socket.io/socket.io.js")
+    script(type="text/javascript", src="/bower_components/hammerjs/hammer.min.js")
+    script(type="text/javascript", src="/bower_components/angular/angular.min.js")
+    script(type="text/javascript", src="/bower_components/angular-ui-router/release/angular-ui-router.min.js")
+    script(type="text/javascript", src="/bower_components/angular-animate/angular-animate.min.js")
+    script(type="text/javascript", src="/bower_components/angular-aria/angular-aria.min.js")
+    script(type="text/javascript", src="/bower_components/angular-material/angular-material.min.js")
+    script(type="text/javascript", src="/bower_components/angular-messages/angular-messages.min.js")
+    script(type="text/javascript", src="/bower_components/angular-resource/angular-resource.min.js")
+    script(type="text/javascript", src="/bower_components/angular-material-icons/angular-material-icons.min.js")
+
+    script(type="text/javascript", src="/bower_components/lodash/lodash.min.js")
+    script(type="text/javascript", src="/bower_components/fabric/dist/fabric.min.js")
+    //script(type="text/javascript", src="/bower_components/angular-fabric/assets/fabric.js")
+    //script(type="text/javascript", src="/bower_components/angular-fabric/assets/fabricCanvas.js")
+    //script(type="text/javascript", src="/bower_components/angular-fabric/assets/fabricConstants.js")
+    //script(type="text/javascript", src="/bower_components/angular-fabric/assets/fabricDirective.js")
+    //script(type="text/javascript", src="/bower_components/angular-fabric/assets/fabricDirtyStatus.js")
+    //script(type="text/javascript", src="/bower_components/angular-fabric/assets/fabricUtilities.js")
+    //script(type="text/javascript", src="/bower_components/angular-fabric/assets/fabricWindow.js")
+
+if debug
+    script(type="text/javascript", src="javascripts/PatientsApplication.js")
+    script(type="text/javascript", src="javascripts/PatientsControllers.js")
+    script(type="text/javascript", src="../javascripts/TopControllers.js")
+else
+    script(type="text/javascript", src="javascripts/PatientsApplication.min.js")
+    script(type="text/javascript", src="javascripts/PatientsControllers.min.js")
+    script(type="text/javascript", src="../javascripts/TopControllers.min.js")

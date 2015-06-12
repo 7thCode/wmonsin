@@ -1,0 +1,35 @@
+//
+    accounts.jade　
+    Copyright (c) 2015 7ThCode.
+    This software is released under the MIT License.
+    http://opensource.org/licenses/mit-license.php
+
+md-content(style="background-color: #A0A0FF;")
+    md-card
+        md-card-content
+            span スタッフ
+        md-card-content
+            md-button.md-fab.md-accent(ng-click="showRegisterDialog()", ng-if="type != 'Viewer'", aria-label="")
+                ng-md-icon(icon="person_add", aria-label="ユーザ", style="fill:#abcdef" size="46")
+                md-tooltip 追加...
+    md-list
+        md-list-item(ng-repeat="account in accounts", ng-show="account.type != 'Admin'")
+            md-card(layout="row", flex)
+                md-card-content(layout="row", layout-align="start center", flex)
+
+                    div(flex="80")
+                        div {{account.username}}
+
+                    div(flex="10", ng-if="type == 'Viewer'")
+                        div
+                            ng-md-icon(icon="person", style="{{account.type | rgb}}", size="42")
+
+                    div(flex="10", ng-if="type != 'Viewer'")
+                        md-button.md-fab.md-primary(ng-click="showAccountUpdateDialog(account._id)", aria-label="Update")
+                            ng-md-icon(icon="person", style="{{account.type | rgb}}", size="50")
+                            md-tooltip 更新...
+
+                    div(flex="10")
+                        md-button.md-fab.md-warn(ng-click="showAccountDeleteDialog(account._id)", aria-label="Delete", ng-if="type != 'Viewer'")
+                            ng-md-icon(layout-align="center center",icon="remove", style="fill:#ffffff", size="50")
+                            md-tooltip 削除

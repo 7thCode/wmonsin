@@ -1,0 +1,37 @@
+//
+    logindialog.jade　
+    Copyright (c) 2015 7ThCode.
+    This software is released under the MIT License.
+    http://opensource.org/licenses/mit-license.php
+
+md-dialog(flex)
+    md-toolbar
+        .md-toolbar-tools(layout="row", layout-align="end center")
+            h3(flex)
+                span(flex) ログイン
+            div
+                md-button.md-raised.md-primary(ng-click='cancel()', aria-label="Cancel")
+                    ng-md-icon(icon="cancel", style="fill:#ffffff" size="46")
+                    md-tooltip キャンセル
+    md-content
+        ng-form(name="validate")
+            div(layout="row", layout-align="start center")
+                ng-md-icon(icon="account_circle", style="fill:#abcdef" size="46")
+                md-input-container(flex)
+                    label User
+                    input(ng-model="items.username", data-ng-required="true", name="username", placeholder='Enter Username', md-maxlength="30", required)
+                    div(ng-messages="validate.username.$error")
+                        div(ng-message="required") {{'required' | message}}
+                        div(ng-message="md-maxlength") {{'maxlength' | message}}
+
+            div(layout="row", layout-align="start center")
+                ng-md-icon(icon="vpn_key", style="fill:#ffcdef" size="46")
+                md-input-container(flex)
+                    label Password
+                    input(ng-model="items.password",data-ng-required="true", name="password", placeholder='Password', type="password", md-maxlength="30", required)
+                    div(ng-messages="validate.password.$error")
+                        div(ng-message="required") {{'required' | message}}
+                        div(ng-message="md-maxlength") {{'maxlength' | message}}
+
+            div(layout="row" layout-align="space-around center")
+                md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") Login

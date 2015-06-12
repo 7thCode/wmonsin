@@ -1,0 +1,48 @@
+//
+    patients.jade　
+    Copyright (c) 2015 7ThCode.
+    This software is released under the MIT License.
+    http://opensource.org/licenses/mit-license.php
+
+md-content(style="background-color: #A0A0FF;")
+    md-card
+        md-card-content
+            span {{'patient' | message}}
+        md-card-content
+            md-button.md-fab.md-primary(ng-click="showPatientAcceptDialog()", aria-label="")
+                ng-md-icon(icon="person_add", aria-label="Patients", style="fill:#abcdef" size="46")
+                md-tooltip {{'add' | message}}
+
+        md-card-content
+            md-button.md-fab.md-warn(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'")
+                ng-md-icon(icon="{{icon}}", style="fill:#ffffff", size="46",options='{"rotation": "none"}')
+                md-tooltip {{'opentools' | message}}
+
+    md-list()
+        md-list-item(ng-repeat="patient in patients")
+            md-card(layout="row", flex)
+                md-card-content(layout="row", layout-align="start center", flex)
+
+                    div(flex="10",layout="row", layout-align="start center")
+                        md-button.md-fab.md-accent(ng-show="patient.Input != null", ng-click="showPatientDescription(patient._id)", aria-label="Description")
+                            ng-md-icon(icon="assignment_ind", style="fill:#abcdef", size="46")
+                            md-tooltip Description...
+
+                    div(layout="column", flex="10")
+                        div
+                            span() {{patient.Category}}
+
+                    div(layout="column", flex="30")
+                        div
+                            span(style="font-size:9px;") {{patient.Information.kana}}
+                        div
+                            span.md-subhead {{patient.Information.name}}
+
+                    div(layout="column", flex="30")
+                        div
+                            span.md-subhead(style="font-size:9px;") {{patient.Information.insurance}}
+                        div
+                            span.md-subhead {{patient.Date | date:'yyyy-MM-dd HH:mm:ss'}}
+
+                    div(flex="20",layout="row", layout-align="end center")
+                        div {{patient.Status | status}}

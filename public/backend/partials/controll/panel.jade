@@ -1,0 +1,42 @@
+//
+    panel.jade　
+    Copyright (c) 2015 7ThCode.
+    This software is released under the MIT License.
+    http://opensource.org/licenses/mit-license.php
+
+md-content
+
+    md-card
+        md-card-content
+            span Config
+
+        md-card-content
+            md-button.md-fab.md-warn(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'")
+                ng-md-icon(icon="{{icon}}", style="fill:#ffffff", size="46", options='{"rotation": "none"}')
+                md-tooltip Open Tools...
+
+        md-card-content
+            md-button.md-fab.md-accent(ng-click='showNotificationDialog()', aria-label="", ng-if="type == 'Admin' || type == 'Editor'")
+                ng-md-icon(icon="save", style="fill:#abcdef", size="46", id="icon")
+                md-tooltip Save
+
+    md-card
+        md-card-content
+            md-input-container
+                label Connection
+                input(ng-model="config.connection",data-ng-required="true", name="connection", placeholder='DB Connecton Uri', type="text", md-maxlength="100")
+
+        md-card-content
+            md-input-container
+                label Session Key
+                input(ng-model="config.key0",data-ng-required="true", name="key0", placeholder='Key', type="text", md-maxlength="50")
+
+        md-card-content
+            md-input-container
+                label Password Key
+                input(ng-model="config.key1",data-ng-required="true", name="key1", placeholder='Key', type="text", md-maxlength="50")
+
+        md-card-content
+            md-input-container
+                label Account Key
+                input(ng-model="config.key2",data-ng-required="true", name="key2", placeholder='Key', type="text", md-maxlength="50")
