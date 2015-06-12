@@ -79,10 +79,14 @@ User("root", function () {
     account.password = Cipher("root", config.key1);
     account.type = "Admin";
     account.key = Cipher("root", config.key2);
-    account.save(function (saveerror) {
-    });
-}, function () {
-});
+    account.save(function (saveerror) {});
+}, function () {});
+
+GetView(function () {
+    var view = new View();
+    view.Data = initView.Data;
+    view.save(function (saveerror) {});
+}, function () {});
 
 function Cipher(name, pass) {
     var cipher = crypto.createCipher('aes192', pass);
@@ -806,6 +810,29 @@ router.post('/view', function (req, res) {
     }
 });
 
+
+function GetView(success, error) {
+    View.find({}, {}, {}, function (finderror, docs) {
+        if (!finderror) {
+            if (docs == null) {
+                if (docs.length == 0)
+                {
+                    success();
+                }
+                else
+                {
+                    error();
+                }
+            }
+            else {
+                error();
+            }
+        }
+        else {
+            error();
+        }
+    });
+}
 
 /*! create view */
 router.get('/initview', function (req, res) {

@@ -23,22 +23,22 @@ md-content(style="background-color: #A0A0FF;")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="start center", flex)
 
-                    div(flex="10",layout="row", layout-align="start center")
+                    div(flex="20",layout="row", layout-align="start center")
                         md-button.md-fab.md-accent(ng-show="patient.Input != null", ng-click="showPatientDescription(patient._id)", aria-label="Description")
                             ng-md-icon(icon="assignment_ind", style="fill:#abcdef", size="46")
                             md-tooltip Description...
 
-                    div(layout="column", flex="10")
+                    div(layout="column", flex="20")
                         div
                             span() {{patient.Category}}
 
-                    div(layout="column", flex="30")
+                    div(layout="column", flex="20")
                         div
                             span(style="font-size:9px;") {{patient.Information.kana}}
                         div
                             span.md-subhead {{patient.Information.name}}
 
-                    div(layout="column", flex="30")
+                    div(layout="column", flex="20")
                         div
                             span.md-subhead(style="font-size:9px;") {{patient.Information.insurance}}
                         div
