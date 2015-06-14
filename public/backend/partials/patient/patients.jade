@@ -7,7 +7,7 @@
 md-content(style="background-color: #A0A0FF;")
     md-card
         md-card-content
-            span {{'patient' | message}}
+            h1.md-headline {{'patient' | message}}
         md-card-content(layout="row")
             md-button.md-fab.md-primary(ng-click="showPatientAcceptDialog()", aria-label="")
                 ng-md-icon(icon="person_add", aria-label="Patients", style="fill:#abcdef" size="46")
@@ -17,7 +17,7 @@ md-content(style="background-color: #A0A0FF;")
                 ng-md-icon(icon="{{icon}}", style="fill:#ffffff", size="46",options='{"rotation": "none"}')
                 md-tooltip {{'opentools' | message}}
 
-    md-list()
+    md-list
         md-list-item(ng-repeat="patient in patients")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="start center", flex)
@@ -27,21 +27,14 @@ md-content(style="background-color: #A0A0FF;")
                             ng-md-icon(icon="assignment_ind", style="fill:#abcdef", size="46")
                             md-tooltip Description...
 
-                    div(layout="column", flex="20")
-                        div
-                            span() {{patient.Category}}
+                    div(layout="column", flex="20") {{patient.Category}}
 
                     div(layout="column", flex="20")
-                        div
-                            span(style="font-size:9px;") {{patient.Information.kana}}
-                        div
-                            span.md-subhead {{patient.Information.name}}
+                        span(style="font-size:9px;") {{patient.Information.kana}}
+                        span.md-subhead {{patient.Information.name}}
 
                     div(layout="column", flex="20")
-                        div
-                            span.md-subhead(style="font-size:9px;") {{patient.Information.insurance}}
-                        div
-                            span.md-subhead {{patient.Date | date:'yyyy-MM-dd HH:mm:ss'}}
+                        span.md-subhead(style="font-size:9px;") {{patient.Information.insurance}}
+                        span.md-subhead {{patient.Date | date:'yyyy-MM-dd HH:mm:ss'}}
 
-                    div(flex="20",layout="row", layout-align="end center")
-                        div {{patient.Status | status}}
+                    div(layout="row", flex="20", layout-align="end center") {{patient.Status | status}}
