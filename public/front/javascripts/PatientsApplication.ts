@@ -16,7 +16,7 @@
 
 var app = angular.module('PatientsApplication', ["ngMaterial", 'ui.router', 'PatientsControllers', 'TopControllers']);
 
-app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider):any {
     $stateProvider
 
         .state('browseS', {
