@@ -31,7 +31,7 @@
  */
 'use strict';
 
-var controllers = angular.module('AccountControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons']);
+var controllers = angular.module('AccountControllers', ["ngMaterial", "ngResource",'ngMessages', 'ngMdIcons']);
 
 //,'common.fabric','common.fabric.canvas', 'common.fabric.window', 'common.fabric.directive','common.fabric.dirtyStatus','common.fabric.utilities', 'common.fabric.constants'
 

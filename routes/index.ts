@@ -129,7 +129,7 @@ function User(name, success, error) {
 function GetView(success, error) {
     View.find({}, {}, {}, function (finderror, docs) {
         if (!finderror) {
-            if (docs == null) {
+            if (docs != null) {
                 if (docs.length == 0)
                 {
                     success();
