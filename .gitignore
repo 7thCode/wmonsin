@@ -83,3 +83,5 @@ public/partials/logo.html
 public/stylesheets/style.css
 
 views/unsupport.html
+
+config/configsample.txt
