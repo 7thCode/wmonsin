@@ -195,8 +195,8 @@ function Init(CurrentAccount, $scope) {
 }
 
 /*! Controllers  */
-controllers.controller("StartController", ["$scope", "$location", 'CurrentAccount', 'ViewItem','Views',
-    function ($scope, $location, CurrentAccount, ViewItem, Views) {
+controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount', 'ViewItem','Views',
+    function ($scope, $state, CurrentAccount, ViewItem, Views) {
 
         if (localStorage.getItem("account") != null) {
             var account = JSON.parse(localStorage.getItem("account"));
@@ -209,7 +209,7 @@ controllers.controller("StartController", ["$scope", "$location", 'CurrentAccoun
         }
 
         if (CurrentAccount.type != "") {
-            $location.path('/patients');
+            $state.go('patients');
         }
 
         var resource = new ViewItem();
@@ -223,29 +223,29 @@ controllers.controller("StartController", ["$scope", "$location", 'CurrentAccoun
         });
     }]);
 
-controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDialog", '$mdToast', '$location', 'Login', 'Logout', 'CurrentAccount', 'Global',
-    function ($scope, $rootScope, $mdDialog, $mdToast, $location, Login, Logout, CurrentAccount, Global) {
+controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDialog", '$mdToast', '$state', 'Login', 'Logout', 'CurrentAccount', 'Global',
+    function ($scope, $rootScope, $mdDialog, $mdToast, $state, Login, Logout, CurrentAccount, Global) {
 
         $scope.mode = "Patient";
 
         Init(CurrentAccount, $scope);
 
         $scope.goTop = function () {
-            $location.path('/');
+            $state.go('start');
         };
 
         $scope.goConfig = function () {
-            $location.path('/controlles');
+            $state.go('controlles');
         };
 
         $scope.goPatient = function () {
             $scope.mode = "Patient";
-            $location.path('/patients');
+            $state.go('patients');
         };
 
         $scope.goAccount = function () {
             $scope.mode = "Account";
-            $location.path('/accounts');
+            $state.go('accounts');
         };
 
         $scope.showLoginDialog = function (id) { // Login Dialog
@@ -286,7 +286,7 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDia
                     $scope.type = "";
                     localStorage.removeItem("account");
                     $rootScope.$broadcast('Logout');
-                    $location.path('/start');
+                    $state.go('start');
                 }
                 $mdToast.show($mdToast.simple().content(account.message));
             });
@@ -298,8 +298,8 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDia
 
     }]);
 
-controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomSheet', '$mdToast', '$location', 'Patient', 'PatientAccept', 'PatientQuery', 'CurrentAccount', 'CurrentPatient', 'Global',
-    function ($scope, $mdDialog, $mdBottomSheet, $mdToast, $location, Patient, PatientAccept, PatientQuery, CurrentAccount, CurrentPatient, Global):void {
+controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomSheet', '$mdToast', '$state', 'Patient', 'PatientAccept', 'PatientQuery', 'CurrentAccount', 'CurrentPatient', 'Global',
+    function ($scope, $mdDialog, $mdBottomSheet, $mdToast, $state, Patient, PatientAccept, PatientQuery, CurrentAccount, CurrentPatient, Global):void {
 
         $scope.username = CurrentAccount.username;
         $scope.type = CurrentAccount.type;
@@ -309,7 +309,7 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
 
         $scope.showPatientDescription = function (id) {
             CurrentPatient.id = id;
-            $location.path('/description');
+            $state.go('description');
         };
 
         $scope.icon = "vertical_align_top";
@@ -398,8 +398,8 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
         });
     }]);
 
-controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$mdToast', '$location', 'Patient', 'PatientStatus', 'CurrentAccount', 'CurrentPatient', 'Global',
-    function ($scope, $mdBottomSheet, $mdToast, $location, Patient, PatientStatus, CurrentAccount, CurrentPatient, Global):void {
+controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$mdToast', 'Patient', 'PatientStatus', 'CurrentAccount', 'CurrentPatient', 'Global',
+    function ($scope, $mdBottomSheet, $mdToast, Patient, PatientStatus, CurrentAccount, CurrentPatient, Global):void {
 
         Init(CurrentAccount, $scope);
 
@@ -514,8 +514,8 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
         });
     }]);
 
-controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast', '$location', 'Account', 'AccountQuery', 'AccountCreate', 'AccountPassword', 'CurrentAccount',
-    function ($scope, $mdDialog, $mdToast, $location, Account, AccountQuery, AccountCreate, AccountPassword, CurrentAccount):void {
+controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast', 'Account', 'AccountQuery', 'AccountCreate', 'AccountPassword', 'CurrentAccount',
+    function ($scope, $mdDialog, $mdToast, Account, AccountQuery, AccountCreate, AccountPassword, CurrentAccount):void {
 
         $scope.username = CurrentAccount.username;
         $scope.type = CurrentAccount.type;
