@@ -261,11 +261,11 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
 
         $scope.next = function (path) {
 
-            _.map($scope.contents.items, function (value:any, key) {
+            _.map($scope.contents.items, function (value:any, key:any) {
                 $scope.Input[value.name] = {'name': value.name, 'value': value.model, 'type': value.type};
             });
 
-            _.map($scope.contents.picture, function (value:any, key) {
+            _.map($scope.contents.picture, function (value:any, key:any) {
                 $scope.Input[value.name] = {'name': value.name, 'value': canvas.toJSON(), 'type': value.type};
             });
 
@@ -276,8 +276,8 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
 
     }]);
 
-controllers.controller('ConfirmController', ["$scope", "$stateParams", "$location", "CurrentPatient", "Patient", 'Global',
-    function ($scope, $stateParams, $location, CurrentPatient, Patient, Global):any {
+controllers.controller('ConfirmController', ["$scope", "$stateParams", "CurrentPatient", "Patient", 'Global',
+    function ($scope, $stateParams, CurrentPatient, Patient, Global):any {
         $scope.Input = CurrentPatient.Input;
 
     }]);

@@ -907,6 +907,30 @@ var initView = {
                         items: ["昨日", "１週間前", "２週間前", "１か月前", "２か月前", "半年前", "１年前", "２年前", "これ以前"]
                     },
                     {
+                        label: "navi1",
+                        name: "navi1",
+                        model: "",
+                        type: "navigation",
+                        next:{
+                            label: "次へ",
+                            name: "次へ",
+                            path: "/browse/2",
+                            class: "md-accent"
+                        },
+                        back: {
+                            label: "戻る",
+                            name: "戻る",
+                            path: "/browse/0",
+                            class: "md-primary"
+                        },
+                        return: {
+                            label: "戻る",
+                            name: "戻る",
+                            path: "/write",
+                            class: "md-primary"
+                        }
+                    },
+                    {
                         label: "次へ",
                         name: "次へ",
                         model: "",
@@ -914,8 +938,6 @@ var initView = {
                         validate: true,
                         path: "/browse/2",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -946,8 +968,6 @@ var initView = {
                         validate: true,
                         path: "/browse/3",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -960,8 +980,6 @@ var initView = {
                     }
                 ]
             },
-
-
             {
                 headline: "この症状で他の医療機関（病院・診療所）を受診されましたか？",
                 items: [
@@ -981,7 +999,6 @@ var initView = {
                     },
 
                     {
-
                         label: "次へ",
                         name: "次へ",
                         model: "",
@@ -989,7 +1006,6 @@ var initView = {
                         validate: true,
                         path: "/browse/4",
                         class: "md-accent"
-
                     },
                     {
                         label: "戻る",
@@ -1076,8 +1092,6 @@ var initView = {
                         class: "md-accent"
                     },
                     {
-
-
                         label: "戻る",
                         name: "戻る",
                         model: "",
@@ -1088,7 +1102,6 @@ var initView = {
                     }
                 ]
             },
-
             {
                 headline: "タバコを吸いますか？",
                 items: [
@@ -1099,10 +1112,7 @@ var initView = {
                         type: "select",
                         items: ["吸う", "禁煙した", "吸わない"]
                     },
-
                     {label: "タバコを吸う場合、１日平均何本吸いますか？", name: "タバコ本数", model: "", type: "numeric"},
-
-
                     {
                         label: "禁煙した場合、いつから禁煙しましたか？",
                         name: "禁煙した場合",
@@ -1118,8 +1128,6 @@ var initView = {
                         validate: true,
                         path: "/browse/7",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1132,8 +1140,6 @@ var initView = {
                     }
                 ]
             },
-
-
             {
                 headline: "お酒を飲みますか？",
                 items: [
@@ -1168,7 +1174,6 @@ var initView = {
                         type: "select",
                         items: ["１週間前", "１か月前", "２か月前", "半年前", "１年前", "２年前", "これ以前"]
                     },
-
                     {
                         label: "次へ",
                         name: "次へ",
@@ -1177,8 +1182,6 @@ var initView = {
                         validate: true,
                         path: "/write",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "女性",
@@ -1200,7 +1203,6 @@ var initView = {
                     }
                 ]
             },
-
             {
                 headline: "女性の方のみごご回答ください",
                 items: [
@@ -1222,8 +1224,6 @@ var initView = {
                         class: "md-accent"
                     },
                     {
-
-
                         label: "戻る",
                         name: "戻る",
                         model: "",
@@ -1231,7 +1231,6 @@ var initView = {
                         validate: false,
                         path: "/browse/7",
                         class: "md-primary"
-
                     }
                 ]
             }
