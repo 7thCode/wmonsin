@@ -14,7 +14,7 @@
 
 'use strict';
 
-var app = angular.module('PatientsApplication', ["ngMaterial", 'ui.router', 'PatientsControllers', 'TopControllers']);
+var app = angular.module('PatientsApplication', ['ui.router', 'PatientsControllers', 'TopControllers']);
 
 app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider):any {
     $stateProvider
@@ -38,6 +38,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
         });
 
     $urlRouterProvider.otherwise('partials/browseS');
+
 }]);
 
 app.filter('status', function() {

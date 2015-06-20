@@ -36,3 +36,122 @@ h3,h4,h5{
     width: 100%;
     height: 100px;
 }
+
+
+
+
+.child {
+  background: rgba(98, 135, 167, .5);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+}
+
+.wrapper {
+  height: 100%;
+  width: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  //position: absolute;
+  background: linear-gradient(124deg, #fc7af6, #91fc89, #85c0fc, #9497fc, #f0fc8f, #fc7f77, #4dc0ff, #dd00f3, #dd00f3);
+  background-size: 1800% 1800%;
+
+  -webkit-animation: rainbow 18s ease infinite;
+  -z-animation: rainbow 18s ease infinite;
+  -o-animation: rainbow 18s ease infinite;
+  animation: rainbow 18s ease infinite;
+}
+
+@-webkit-keyframes rainbow {
+  0% {
+    background-position: 0% 82%
+  }
+  50% {
+    background-position: 100% 19%
+  }
+  100% {
+    background-position: 0% 82%
+  }
+}
+
+@-moz-keyframes rainbow {
+  0% {
+    background-position: 0% 82%
+  }
+  50% {
+    background-position: 100% 19%
+  }
+  100% {
+    background-position: 0% 82%
+  }
+}
+
+@-o-keyframes rainbow {
+  0% {
+    background-position: 0% 82%
+  }
+  50% {
+    background-position: 100% 19%
+  }
+  100% {
+    background-position: 0% 82%
+  }
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0% 82%
+  }
+  50% {
+    background-position: 100% 19%
+  }
+  100% {
+    background-position: 0% 82%
+  }
+}
+
+.progress .indicator:nth-child(1) {
+  animation: fade 3s ease 0s infinite;
+}
+
+.progress .indicator:nth-child(2) {
+  animation: fade 3s ease 250ms infinite;
+}
+
+.progress .indicator:nth-child(3) {
+  animation: fade 3s ease 500ms infinite;
+}
+
+.progress .indicator:nth-child(4) {
+  animation: fade 3s ease-in-out 1s infinite;
+}
+
+.indicator {
+  background-color: white;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  display: inline-block;
+  margin: 10px;
+  opacity: 0;
+}
+
+@keyframes fade {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+}

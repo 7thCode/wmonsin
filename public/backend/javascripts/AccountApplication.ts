@@ -13,7 +13,7 @@
 
 'use strict';
 
-var app = angular.module('AccountApplication', ["ngMaterial",'ngAnimate', 'ui.router','AccountControllers', 'TopControllers']);
+var app = angular.module('AccountApplication', [ 'ui.router','AccountControllers', 'TopControllers']);
 
 app.config(['$stateProvider', '$urlRouterProvider',function ($stateProvider, $urlRouterProvider) {
     $stateProvider

@@ -12,7 +12,7 @@
 ///<reference path="../../../DefinitelyTyped/angularjs/angular.d.ts"/>
 ///<reference path="../../lib/lib.d.ts"/>
 
-var app = angular.module('TopApplication', ["ngMaterial", 'ui.router', 'TopControllers']);
+var app = angular.module('TopApplication', ['ui.router', 'TopControllers']);
 
 app.config(['$stateProvider', '$urlRouterProvider',function ($stateProvider, $urlRouterProvider) {
 
