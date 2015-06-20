@@ -19,32 +19,38 @@
     </section>
 
     <section class="main-content">
-      <h3>
-<a id="wmonsin" class="anchor" href="#wmonsin" aria-hidden="true"><span class="octicon octicon-link"></span></a>wmonsin</h3>
+      <h1>
+<a id="w-monsin" class="anchor" href="#w-monsin" aria-hidden="true"><span class="octicon octicon-link"></span></a>W-monsin</h1>
 
-<p>web問診表</p>
+<h2>
+<a id="web問診表" class="anchor" href="#web%E5%95%8F%E8%A8%BA%E8%A1%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>Web問診表</h2>
 
 <p>医院等で使用するための問診票をMEANスタック/マテリアルデザインで実装しました。
-  現在、ORCAとの受付の連携および問診票エディタを開発中です。
+  現在、ORCAとの受付の連携、及び問診票エディタを開発中です。
   最終的には問診票だけではなく、Webでの汎用的なアンケート/入力フォーマットシステムになる予定です。</p>
 
-<p>インストール方法</p>
+<h3>
+<a id="インストール方法" class="anchor" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E6%96%B9%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>インストール方法</h3>
 
-<p>1.mongodb</p>
+<h4>
+<a id="1mongodb" class="anchor" href="#1mongodb" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.mongodb</h4>
 
 <pre><code>まず、mongodbを用意します。もしインストール済みなら、不要です。
 dbまでの接続文字列を用意してください。
-
-  例
-    mongodb://localhost/patient
 </code></pre>
 
-<p>2.node.js</p>
+<p><code>例
+        mongodb://localhost/patient
+</code></p>
+
+<h4>
+<a id="2nodejs" class="anchor" href="#2nodejs" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.node.js</h4>
 
 <pre><code>node.jsをインストールしてください。用意されていれば必要ありません。
 </code></pre>
 
-<p>3.bower,Typescript,Jade,less</p>
+<h4>
+<a id="3bowertypescriptjadeless" class="anchor" href="#3bowertypescriptjadeless" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.bower,Typescript,Jade,less</h4>
 
 <pre><code>node.js付属のnpmを使用してbower,Typescript,Jade,lessをインストールします。
 
@@ -54,7 +60,8 @@ dbまでの接続文字列を用意してください。
   npm install -g less
 </code></pre>
 
-<p>4.<a href="https://github.com/7thCode/wmonsin.git%E3%82%92%E3%83%97%E3%83%AB">https://github.com/7thCode/wmonsin.gitをプル</a></p>
+<h4>
+<a id="4ソースをプル" class="anchor" href="#4%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E3%83%97%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.ソースをプル</h4>
 
 <pre><code>任意のディレクトリにhttps://github.com/7thCode/wmonsin.gitをプルしたら、そのディレクトリで
 
@@ -73,7 +80,8 @@ dbまでの接続文字列を用意してください。
 プロセスを継続的に起動しておくにはforeverなどをお使いください。
 </code></pre>
 
-<p>5.コンフィグ</p>
+<h4>
+<a id="5コンフィグ" class="anchor" href="#5%E3%82%B3%E3%83%B3%E3%83%95%E3%82%A3%E3%82%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.コンフィグ</h4>
 
 <pre><code>起動後、ユーザ名root、パスワードrootでログイン後、スタッフ画面のコンフィグから、Connectionに先ほど用意した接続文字列を入力してください。
 同時にSession KeyやPassword Key、Account Keyも任意のものに変更してください。
