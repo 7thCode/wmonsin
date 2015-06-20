@@ -895,7 +895,6 @@ var initView = {
                     }
                 ]
             },
-
             {
                 headline: "いつごろ？",
                 items: [
@@ -997,7 +996,6 @@ var initView = {
                         type: "select",
                         items: ["無し", "有り"]
                     },
-
                     {
                         label: "次へ",
                         name: "次へ",
@@ -1018,7 +1016,6 @@ var initView = {
                     }
                 ]
             },
-
             {
                 headline: "薬・注射などでアレルギー症状が出たことがありますか？",
                 items: [
@@ -1052,7 +1049,6 @@ var initView = {
                         validate: true,
                         path: "/browse/5",
                         class: "md-accent"
-
                     },
                     {
                         label: "戻る",
@@ -1065,8 +1061,6 @@ var initView = {
                     }
                 ]
             },
-
-
             {
                 headline: "大きな病気・手術をされたことがある場合、どのような病気・手術をされましたか？",
                 items: [
@@ -1080,7 +1074,6 @@ var initView = {
                     {label: "脳梗塞", name: "大きな病気-脳梗塞", model: "", type: "check"},
                     {label: "胃潰瘍", name: "大きな病気-胃潰瘍", model: "", type: "check"},
                     {label: "緑内障", name: "大きな病気-緑内障", model: "", type: "check"},
-
                     {label: "その他", name: "大きな病気-その他", model: "", type: "check"},
                     {
                         label: "次へ",
@@ -1150,7 +1143,6 @@ var initView = {
                         type: "select",
                         items: ["飲む", "禁酒した", "飲まない"]
                     },
-
                     {
                         label: "お酒を飲む場合、週に何回飲みますか？",
                         name: "お酒を飲む場合",
@@ -1158,7 +1150,6 @@ var initView = {
                         type: "select",
                         items: ["１回", "２回", "３回", "４回", "５回", "６回", "毎日"]
                     },
-
                     {
                         label: "お酒を飲む場合、１日にどのくらい飲みますか？",
                         name: "１日にどのくらい飲む",
@@ -1166,7 +1157,6 @@ var initView = {
                         type: "select",
                         items: ["缶ビール 350ml 1本", "缶ビール 350ml 2本", "缶ビール 500ml 1本", "缶ビール 500ml 2本", "瓶ビール 大瓶633ml 1本", "日本酒 １合180ml", "日本酒　２合360ml", "これ以上"]
                     },
-
                     {
                         label: "禁酒した場合、いつから禁酒しましたか？",
                         name: "禁酒した場合",
@@ -1213,7 +1203,6 @@ var initView = {
                         type: "select",
                         items: ["妊娠している", "妊娠していない", "妊娠の可能性がある"]
                     },
-
                     {
                         label: "次へ",
                         name: "次へ",
@@ -1272,8 +1261,6 @@ var initView = {
                         validate: true,
                         path: "/browse/2",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1297,8 +1284,6 @@ var initView = {
                         validate: true,
                         path: "/browse/3",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1340,8 +1325,6 @@ var initView = {
                         validate: true,
                         path: "/browse/5",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1375,8 +1358,6 @@ var initView = {
                         type: "button",
                         path: "/browse/6",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1398,7 +1379,6 @@ var initView = {
                         "血をかたまりにくくする薬",
                         "その他"]
                     },
-
                     {label: "その他", name: "その他", model: "", type: "text", items: []},
                     {label: "今までに大きな病気にかかったり手術を受けたことがありますか", name: "大きな病気あり", model: "", type: "check"},
                     {label: "薬・注射　などでアレルギー症状が出たことがありますか", name: "アレルギ症状あり", model: "", type: "check"},
@@ -1411,8 +1391,6 @@ var initView = {
                         validate: true,
                         path: "/browse/8",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "女性",
@@ -1447,8 +1425,6 @@ var initView = {
                         validate: true,
                         path: "/browse/9",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1472,7 +1448,6 @@ var initView = {
                         validate: true,
                         path: "/write",
                         class: "md-accent"
-
                     },
                     {
                         label: "戻る",
@@ -1496,8 +1471,6 @@ var initView = {
                         validate: true,
                         path: "/write",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1539,8 +1512,6 @@ var initView = {
                         validate: true,
                         path: "/browse/2",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1571,8 +1542,6 @@ var initView = {
                         validate: true,
                         path: "/browse/3",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1585,7 +1554,6 @@ var initView = {
                     }
                 ]
             },
-
             {
                 headline: "診て欲しいところをタッチして下さい",
                 items: [
@@ -1597,8 +1565,6 @@ var initView = {
                         validate: true,
                         path: "/browse/4",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1640,8 +1606,6 @@ var initView = {
                         validate: true,
                         path: "/browse/5",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1672,8 +1636,6 @@ var initView = {
                         validate: true,
                         path: "/browse/6",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1684,7 +1646,6 @@ var initView = {
                         path: "/browse/4",
                         class: "md-primary"
                     }
-
                 ]
             },
             {
@@ -1698,7 +1659,6 @@ var initView = {
                         items: ["会社員", "自営業", "公務員", "芸術家", "その他", "無職"]
                     },
                     {
-
                         label: "次へ",
                         name: "次へ",
                         model: "",
@@ -1706,8 +1666,6 @@ var initView = {
                         validate: true,
                         path: "/browse/7",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1736,8 +1694,6 @@ var initView = {
                         validate: true,
                         path: "/browse/8",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1771,8 +1727,6 @@ var initView = {
                         validate: true,
                         path: "/browse/9",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1800,8 +1754,6 @@ var initView = {
                         validate: true,
                         path: "/browse/10",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1832,8 +1784,6 @@ var initView = {
                         validate: true,
                         path: "/browse/11",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1864,8 +1814,6 @@ var initView = {
                         validate: true,
                         path: "/browse/12",
                         class: "md-accent"
-
-
                     },
                     {
                         label: "戻る",
@@ -1889,8 +1837,6 @@ var initView = {
                         items: ["ない", "ある"]
                     },
                     {
-
-
                         label: "次へ",
                         name: "次へ",
                         model: "",
@@ -1927,8 +1873,6 @@ var initView = {
                     {label: "授乳中", name: "授乳中", model: "", type: "check"},
                     {label: "授乳中でない", name: "授乳中でない", model: "", type: "check"},
                     {
-
-
                         label: "次へ",
                         name: "次へ",
                         model: "",

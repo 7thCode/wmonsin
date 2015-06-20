@@ -1,28 +1,29 @@
 # W-monsin
-web問診表
+
+##Web問診表
 
   医院等で使用するための問診票をMEANスタック/マテリアルデザインで実装しました。
   現在、ORCAとの受付の連携、及び問診票エディタを開発中です。
   最終的には問診票だけではなく、Webでの汎用的なアンケート/入力フォーマットシステムになる予定です。
 
 
-インストール方法
+###インストール方法
 
-  1.mongodb
+####1.mongodb
 
     まず、mongodbを用意します。もしインストール済みなら、不要です。
     dbまでの接続文字列を用意してください。
 
-      例
+`      例
         mongodb://localhost/patient
+`
 
-
-  2.node.js
+####2.node.js
 
     node.jsをインストールしてください。用意されていれば必要ありません。
 
 
-  3.bower,Typescript,Jade,less
+####3.bower,Typescript,Jade,less
 
     node.js付属のnpmを使用してbower,Typescript,Jade,lessをインストールします。
 
@@ -32,7 +33,7 @@ web問診表
       npm install -g less
 
 
-  4.https://github.com/7thCode/wmonsin.gitをプル
+####4.ソースをプル
 
     任意のディレクトリにhttps://github.com/7thCode/wmonsin.gitをプルしたら、そのディレクトリで
 
@@ -50,7 +51,7 @@ web問診表
 
     プロセスを継続的に起動しておくにはforeverなどをお使いください。
 
-  5.コンフィグ
+####5.コンフィグ
 
     起動後、ユーザ名root、パスワードrootでログイン後、スタッフ画面のコンフィグから、Connectionに先ほど用意した接続文字列を入力してください。
     同時にSession KeyやPassword Key、Account Keyも任意のものに変更してください。
