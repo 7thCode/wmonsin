@@ -84,6 +84,10 @@ app.filter('message', function() {
        case "hare":
         result = "腫れ";
         break;
+
+       case "clear":
+        result = "消す";
+        break;
       }
 
       return result;

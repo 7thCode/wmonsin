@@ -194,16 +194,23 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
 
             _.map($scope.contents.picture, function (value:any, key) {
 
+                canvas.setBackgroundImage(value.path, canvas.renderAll.bind(canvas), {
+                    backgroundImageOpacity: 1.0,
+                    backgroundImageStretch: false
+                });
+
                 if ($scope.Input[value.name] == null) {
                     fabric.Image.fromURL(value.path, function (image) {
-                        var schema = image.scale(1).set({left: 5, top: 5});
-                        canvas.add(schema);
+
+                     /*   var schema = image.scale(1).set({left: 5, top: 5});
+                        //canvas.add(schema);
+
                         schema.lockMovementX = true;
                         schema.lockMovementY = true;
                         schema.lockRotation = true;
                         schema.lockScaling = true;
                         schema.hasControls = false;
-                        schema.hasBorders = false;
+                        schema.hasBorders = false; */
                     });
                 }
 
@@ -254,6 +261,10 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
                 }
             });
         }
+
+        $scope.clearPicture = function () {
+            canvas.clear().renderAll();
+        };
 
         $scope.setColor = function (val) {
             color = val;

@@ -303,7 +303,9 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
 
         $scope.username = CurrentAccount.username;
         $scope.type = CurrentAccount.type;
+        $scope.progress = true;
         List(PatientQuery, {}, function (data, headers) {
+            $scope.progress = false;
             $scope.patients = data;
         });
 
@@ -358,9 +360,11 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
 
                     resource.Information.insurance = answer.items.insurance;
                     resource.Category = answer.items.category;
+                    $scope.progress = true;
                     resource.$save({}, function (result, header) {
                         if (result.code == 0) {
                             List(PatientQuery, {}, function (data, headers) {
+                                $scope.progress = false;
                                 Global.socket.emit('server', {value: "1"});
                                 $scope.patients = data;
                             });
@@ -374,8 +378,10 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
         };
 
         $scope.$on('Login', function () {
+            $scope.progress = true;
             List(PatientQuery, {}, function (data, headers) {
                 $scope.patients = data;
+                $scope.progress = false;
             });
         });
 
@@ -384,15 +390,19 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
         });
 
         $scope.$on('Update', function () {
+            $scope.progress = true;
             List(PatientQuery, {}, function (data, headers) {
                 $scope.patients = data;
+                $scope.progress = false;
             });
         });
 
         Global.socket.on('client', function (data):void {
             if (data.value === "1") {
+                $scope.progress = true;
                 List(PatientQuery, {}, function (data, headers) {
                     $scope.patients = data;
+                    $scope.progress = false;
                 });
             }
         });
@@ -407,21 +417,14 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
         resource.$get({id: CurrentPatient.id}, function (data, headers) {
                 if (data != null) {
                     if (data.code == 0) {
-
                         $scope.Input = [];
                         _.each(data.value.Input, function (value: any, index, array) {
 
                             if (value.type == "picture") {
                                 var canvas = new fabric.Canvas('cc');
+
                                 var hoge = JSON.stringify(value.value);
                                 canvas.loadFromJSON(hoge, canvas.renderAll.bind(canvas), function (o, object) {
-
-                                    object.lockMovementX = true;
-                                    object.lockMovementY = true;
-                                    object.lockRotation = true;
-                                    object.lockScaling = true;
-                                    object.hasControls = false;
-                                    object.hasBorders = false;
 
                                 });
                             }
@@ -519,7 +522,9 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
 
         $scope.username = CurrentAccount.username;
         $scope.type = CurrentAccount.type;
+        $scope.progress = true;
         AccountsList(AccountQuery, {}, function (data) {
+            $scope.progress = false;
             $scope.accounts = data;
         });
 
@@ -535,15 +540,18 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
                     resource.username = answer.items.username;
                     resource.password = answer.items.password;
                     resource.type = answer.items.type;
+                    $scope.progress = true;
                     resource.$save({}, function (result, header) {
                         if (result.code == 0) {
                          AccountsList(AccountQuery, {}, function (data) {
                                 $scope.accounts = data;
+                                $scope.progress = false;
                                 $mdToast.show($mdToast.simple().content('Regist.'));
                             });
                         }
                         $mdToast.show($mdToast.simple().content(result.message));
                     });
+
                 }, function () { // Cancel
 
                 });
@@ -558,10 +566,12 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
             })
                 .then(function (answer) {  // Answer
                     var resource = new Account();
+                    $scope.progress = true;
                     resource.$remove({id: id}, function (result, _headers) {
                         if (result.code == 0) {
                          AccountsList(AccountQuery, {}, function (data) {
                                 $scope.accounts = data;
+                                $scope.progress = false;
                                 $mdToast.show($mdToast.simple().content('Deleted.'));
                             });
                         } else {
@@ -608,10 +618,12 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
                                             var post = new Account();
                                             post.username = answer.items.username;
                                             post.type = answer.items.type;
+                                            $scope.progress = true;
                                             post.$update({id: id}, function (result, headers) {
                                                 if (result.code == 0) {
                                                  AccountsList(AccountQuery, {}, function (data) {
                                                         $scope.accounts = data;
+                                                        $scope.progress = false;
                                                         //     Global.socket.emit('server', {value: "1"});
                                                         $mdToast.show($mdToast.simple().content('Updated.'));
                                                     });
@@ -635,8 +647,10 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
         };
 
         $scope.$on('Login', function () {
+         $scope.progress = true;
          AccountsList(AccountQuery, {}, function (data) {
                 $scope.accounts = data;
+                $scope.progress = false;
             });
         });
 
@@ -645,8 +659,10 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
         });
 
         $scope.$on('Update', function () {
+         $scope.progress = true;
          AccountsList(AccountQuery, {}, function (data) {
                 $scope.accounts = data;
+                $scope.progress = false;
             });
         });
     }]);
