@@ -9,6 +9,7 @@
 
  */
 
+///<reference path="../../../../DefinitelyTyped/lib.d.ts"/>
 ///<reference path="../../../../DefinitelyTyped/angularjs/angular.d.ts"/>
 ///<reference path="../../../../DefinitelyTyped/socket.io/socket.io.d.ts" />
 ///<reference path="../../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
