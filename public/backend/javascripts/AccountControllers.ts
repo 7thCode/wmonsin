@@ -216,8 +216,8 @@ controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
         resource.$get({}, function (data, headers) {
             if (data != null) {
                 if (data.code == 0) {
-                    var hoge = data.value[0].Data;
-                    Views.Data = hoge;
+
+                    Views.Data = data.value[0].Data;
                 }
             }
         });
@@ -252,7 +252,7 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDia
 
             $mdDialog.show({
                 controller: 'LoginDialogController',
-                templateUrl: 'partials/account/logindialog.html',
+                templateUrl: '/backend/partials/account/logindialog',
                 targetEvent: id
             })
                 .then(function (answer) { // Answer
@@ -320,7 +320,7 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
             $scope.icon = "vertical_align_bottom";
 
             $mdBottomSheet.show({
-                templateUrl: 'partials/patient/sheet.html',
+                templateUrl: '/backend/partials/patient/sheet',
                 controller: 'PatientSheetControl',
                 targetEvent: $event
             }).then(function (clickedItem) {
@@ -334,7 +334,7 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
 
             $mdDialog.show({
                 controller: 'PatientAcceptDialogController',
-                templateUrl: 'partials/patient/patientacceptdialog.html',
+                templateUrl:'/backend/partials/patient/patientacceptdialog',
                 targetEvent: id
             })
                 .then(function (answer) { // Answer
@@ -446,7 +446,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
         $scope.showSheet = function ($event) {
             $scope.icon = "vertical_align_bottom";
             $mdBottomSheet.show({
-                templateUrl: 'partials/patient/sheet.html',
+                templateUrl: '/backend/partials/patient/sheet',
                 controller: 'PatientSheetControl',
                 targetEvent: $event
             }).then(function (clickedItem) {
@@ -532,7 +532,7 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
 
             $mdDialog.show({
                 controller: 'RegisterDialogController',
-                templateUrl: 'partials/account/registerdialog.html',
+                templateUrl: '/backend/partials/account/registerdialog',
                 targetEvent: id
             })
                 .then(function (answer) { // Answer
@@ -561,7 +561,7 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
 
             $mdDialog.show({
                 controller: 'AccountDeleteDialogController',
-                templateUrl: 'partials/account/deletedialog.html',
+                templateUrl: '/backend/partials/account/deletedialog',
                 targetEvent: id
             })
                 .then(function (answer) {  // Answer
@@ -593,7 +593,7 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
                             $scope.items.password = "";
                             $mdDialog.show({
                                 controller: 'AccountUpdateDialogController',
-                                templateUrl: 'partials/account/accountdialog.html',
+                                templateUrl: '/backend/partials/account/accountdialog',
                                 targetEvent: id,
                                 locals: {
                                     items: $scope.items
@@ -681,7 +681,7 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
     $scope.showNotificationDialog = function () {  // Delete Dialog
         $mdDialog.show({
             controller: 'NotificationDialogController',
-            templateUrl: 'partials/controll/notification.html',
+            templateUrl: '/backend/partials/controll/notification',
             targetEvent: ""
         })
             .then(function (answer) {  // Answer
@@ -704,7 +704,7 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
     $scope.showSheet = function ($event) {
         $scope.icon = "vertical_align_bottom";
         $mdBottomSheet.show({
-            templateUrl: 'partials/patient/sheet.html',
+            templateUrl: '/backend/partials/patient/sheet',
             controller: 'PatientSheetControl',
             targetEvent: $event
         }).then(function (clickedItem) {

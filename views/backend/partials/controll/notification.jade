@@ -1,0 +1,23 @@
+//
+    deletedialog.jade　
+    Copyright (c) 2015 7ThCode.
+    This software is released under the MIT License.
+    http://opensource.org/licenses/mit-license.php
+
+md-dialog(flex="percentage")
+    md-content
+        md-toolbar.md-warn
+            div.md-toolbar-tools(layout="row", layout-align="end center")
+                h3(flex)
+                    span(flex) NOTICE!!!
+                div
+                    md-button.md-raised.md-warn(ng-click='cancel()', aria-label="Cancel")
+                        ng-md-icon(icon="cancel", style="fill:#ffffff", size="46")
+                        md-tooltip Cancel
+        md-card
+            md-card-content
+                div Server Restert & Database drop Required. (Data All Lost.)
+
+            md-card-content(layout="row", layout-align="space-around center")
+                md-button.md-raised.md-warn(ng-click='answer()', aria-label="Update") Update
+                md-tooltip Update

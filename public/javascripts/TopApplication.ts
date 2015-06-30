@@ -14,34 +14,33 @@
 
 var app = angular.module('TopApplication', ['ui.router', 'TopControllers']);
 
-app.config(['$stateProvider', '$urlRouterProvider',function ($stateProvider, $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
     $stateProvider
 
-     .state('start', {
-      url: '/',
-      templateUrl: 'partials/logo.html',
-      controller: 'TopController'
-     });
+        .state('start', {
+            url: '/',
+            templateUrl: 'partials/logo',
+            controller: 'TopController'
+        });
 
- $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise('/');
 }]);
 
-app.filter('message', function() {
-     return function(input):string {
-      var result = "?????";
+app.filter('message', function () {
+        return function (input):string {
+            var result = "?????";
 
-      switch (input) {
-       case "front":
-        result = "問診票";
-        break;
-       case "stuff":
-        result = "スタッフ";
-        break;
-      }
+            switch (input) {
+                case "front":
+                    result = "問診票";
+                    break;
+                case "stuff":
+                    result = "スタッフ";
+                    break;
+            }
 
-      return result;
-     }
+            return result;
+        }
     }
-
 );

@@ -39,24 +39,6 @@ var config = JSON.parse(text);
 
 //csrf
 
-router.get('/', function (req, res) {
-    // req.session.regenerate(function (err) {
-    //     req.session.save(function (err) {
-    res.render('/');
-    //  res.render('index', {sessionID: req.sessionID});
-    //     });
-    // });
-});
-
-
-/* GET home page. */
-router.get('/front', function (req, res, next) {
-    res.render('/front/');
-});
-
-router.get('/backend', function (req, res, next) {
-    res.render('/backend/');
-});
 
 module.exports = router;
 
@@ -157,6 +139,101 @@ function BasicHeader(response, session) {
     response.contentType('application/json');
     return response;
 }
+
+router.get('/', function (req, res) {
+    res.render('index');
+});
+
+
+
+router.get('/partials/logo', function (req, res) {
+    res.render('partials/logo');
+});
+
+
+
+router.get('/backend/', function (req, res) {
+    res.render('backend/index');
+});
+
+router.get('/backend/partials/patient/start', function (req, res) {
+    res.render('backend/partials/patient/start');
+});
+
+router.get('/backend/partials/patient/patients', function (req, res) {
+    res.render('backend/partials/patient/patients');
+});
+
+router.get('/backend/partials/patient/description', function (req, res) {
+    res.render('backend/partials/patient/description');
+});
+
+router.get('/backend/partials/patient/patientacceptdialog', function (req, res) {
+    res.render('backend/partials/patient/patientacceptdialog');
+});
+
+router.get('/backend/partials/patient/sheet', function (req, res) {
+    res.render('backend/partials/patient/sheet');
+});
+
+
+
+router.get('/backend/partials/account/accounts', function (req, res) {
+    res.render('backend/partials/account/accounts');
+});
+
+router.get('/backend/partials/account/logindialog', function (req, res) {
+    res.render('backend/partials/account/logindialog');
+});
+
+router.get('/backend/partials/account/registerdialog', function (req, res) {
+    res.render('backend/partials/account/registerdialog');
+});
+
+router.get('/backend/partials/account/deletedialog', function (req, res) {
+    res.render('backend/partials/account/deletedialog');
+});
+
+router.get('/backend/partials/account/accountdialog', function (req, res) {
+    res.render('backend/partials/account/accountdialog');
+});
+
+
+
+router.get('/backend/partials/controll/notification', function (req, res) {
+    res.render('backend/partials/controll/notification');
+});
+
+router.get('/backend/partials/controll/panel', function (req, res) {
+    res.render('backend/partials/controll/panel');
+});
+
+
+
+router.get('/backend/partials/error', function (req, res) {
+    res.render('backend/partials/error');
+});
+
+
+
+
+
+
+router.get('/front/', function (req, res) {
+    res.render('front/index');
+});
+
+router.get('/front/partials/browseS', function (req, res) {
+    res.render('front/partials/browseS');
+});
+
+router.get('/front/partials/browse', function (req, res) {
+    res.render('front/partials/browse');
+});
+
+router.get('/front/partials/write', function (req, res) {
+    res.render('front/partials/write');
+});
 
 
 /*! patient */
@@ -260,7 +337,8 @@ router.put('/patient/:id', function (req, res) {
         res = BasicHeader(res, "");
         if (req.session != null) {
             Authenticate(req.session.key, function (type) {
-                if (type != "Viewer") {
+               // if (type != "Viewer")
+                {
                     var id = req.params.id;
                     Patient.findById(id, function (finderror, patient) {
                         if (!finderror) {
@@ -284,9 +362,9 @@ router.put('/patient/:id', function (req, res) {
                         }
                     });
                 }
-                else {
-                    res.send(JSON.stringify(new Result(1, "patient put", "no rights")));
-                }
+          //      else {
+            //        res.send(JSON.stringify(new Result(1, "patient put", "no rights")));
+          //      }
             }, function () {
                 res.send(JSON.stringify(new Result(2, "patient put", "auth error")));
             });

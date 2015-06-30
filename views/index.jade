@@ -1,5 +1,64 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+//
+    index.jade
+    Copyright (c) 2015 7ThCode.
+    This software is released under the MIT License.
+    http://opensource.org/licenses/mit-license.php
+- var debug = false;
+doctype html
+html(lang="ja")
+    head
+        meta(charset="utf-8")
+        meta(name="format-detection", content="telephone=no")
+        meta(name="msapplication-tap-highlight", content="no")
+        meta(name="viewport", content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height")
+        title wmonsin
+        link(rel="apple-touch-icon", sizes="57x57", href="/favicons/apple-touch-icon-57x57.png")
+        link(rel="apple-touch-icon", sizes="60x60", href="/favicons/apple-touch-icon-60x60.png")
+        link(rel="apple-touch-icon", sizes="72x72", href="/favicons/apple-touch-icon-72x72.png")
+        link(rel="apple-touch-icon", sizes="76x76", href="/favicons/apple-touch-icon-76x76.png")
+        link(rel="apple-touch-icon", sizes="114x114", href="/favicons/apple-touch-icon-114x114.png")
+        link(rel="apple-touch-icon", sizes="120x120", href="/favicons/apple-touch-icon-120x120.png")
+        link(rel="apple-touch-icon", sizes="144x144", href="/favicons/apple-touch-icon-144x144.png")
+        link(rel="apple-touch-icon", sizes="152x152", href="/favicons/apple-touch-icon-152x152.png")
+        link(rel="apple-touch-icon", sizes="180x180", href="/favicons/apple-touch-icon-180x180.png")
+        link(rel="icon", type="image/png", href="/favicons/favicon-32x32.png", sizes="32x32")
+        link(rel="icon", type="image/png", href="/favicons/android-chrome-192x192.png", sizes="192x192")
+        link(rel="icon", type="image/png", href="/favicons/favicon-96x96.png", sizes="96x96")
+        link(rel="icon", type="image/png", href="/favicons/favicon-16x16.png", sizes="16x16")
+        link(rel="manifest", href="/favicons/manifest.json")
+        meta(name="msapplication-TileColor", content="#da532c")
+        meta(name="msapplication-TileImage", content="/favicons/mstile-144x144.png")
+        meta(name="theme-color", content="#ffffff")
+        link(rel="stylesheet", type="text/css", href="bower_components/angular-material/angular-material.min.css")
+        link(rel="stylesheet", type="text/css", href="stylesheets/style.css")
+!= '\n<!--[if lte IE 9]>'
+p(class="browserupgrade") お使いのブラウザはHTML5未対応です。
+p 機能が足りません。アップデートしてください。
+p
+a(href="http://browsehappy.com/") update
+!= '\n<![endif]-->\n'
+body(ng-app="TopApplication", ng-controller="TopController",layout-fill,style="background-color: #A0A0FF;")
+    md-toolbar(md-scroll-shrink)
+        .md-toolbar-tools(layout="row" layout-align="end center")
+            h3(flex)
+                span TOP
+            div(layout="row")
+                md-button.md-raised.md-primary(ng-href='/front/#/browseS', aria-label="") {{'front' | message}}
+                md-button.md-raised.md-primary(ng-href='/backend/#/start', aria-label="") {{'stuff' | message}}
+    div(ui-view="")
+script(type="text/javascript", src="/bower_components/hammerjs/hammer.min.js")
+script(type="text/javascript", src="/bower_components/angular/angular.min.js")
+script(type="text/javascript", src="/bower_components/angular-ui-router/release/angular-ui-router.min.js")
+script(type="text/javascript", src="/bower_components/angular-animate/angular-animate.min.js")
+script(type="text/javascript", src="/bower_components/angular-aria/angular-aria.min.js")
+script(type="text/javascript", src="/bower_components/angular-material/angular-material.min.js")
+script(type="text/javascript", src="/bower_components/angular-material-icons/angular-material-icons.min.js")
+script(type="text/javascript", src="/bower_components/angular-resource/angular-resource.min.js")
+script(type="text/javascript", src="/bower_components/lodash/lodash.min.js")
+script(type="text/javascript", src="/bower_components/fabric/dist/fabric.min.js")
+if debug
+    script(type="text/javascript", src="javascripts/TopApplication.js")
+    script(type="text/javascript", src="javascripts/TopControllers.js")
+else
+    script(type="text/javascript", src="javascripts/TopApplication.min.js")
+    script(type="text/javascript", src="javascripts/TopControllers.min.js")

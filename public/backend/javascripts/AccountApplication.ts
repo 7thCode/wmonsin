@@ -20,39 +20,40 @@ app.config(['$stateProvider', '$urlRouterProvider',function ($stateProvider, $ur
 
         .state('start', {
             url: '/start',
-            templateUrl: 'partials/patient/start.html',
+            templateUrl: '/backend/partials/patient/start',
             controller: 'StartController'
         })
 
         .state('patients', {
             url: '/patients',
-            templateUrl: 'partials/patient/patients.html',
+            templateUrl: '/backend/partials/patient/patients',
             controller: 'PatientsController'
         })
 
         .state('description', {
             url: '/description',
-            templateUrl: 'partials/patient/description.html',
+            templateUrl: '/backend/partials/patient/description',
             controller: 'DescriptionController'
         })
 
         .state('accounts', {
             url: '/accounts',
-            templateUrl: 'partials/account/accounts.html',
+            templateUrl: '/backend/partials/account/accounts',
             controller: 'AccountsController'
         })
 
         .state('controlles', {
             url: '/controlles',
-            templateUrl: 'partials/controll/panel.html',
+            templateUrl: '/backend/partials/controll/panel',
             controller: 'ControllpanelController'
         })
 
         .state('error', {
             url: '/error',
-            templateUrl: 'partials/error.html',
+            templateUrl: '/backend/partials/error',
             controller: 'ErrorController'
         });
+
     $urlRouterProvider.otherwise('/start');
 }]);
 

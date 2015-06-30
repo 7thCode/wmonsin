@@ -21,19 +21,19 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
 
         .state('browseS', {
             url: "/browseS",
-            templateUrl: "partials/browseS.html",
+            templateUrl: "/front/partials/browseS",
             controller: 'BrowseSController'
         })
 
         .state('browse', {
             url: "/browse/:page",
-            templateUrl: "partials/browse.html",
+            templateUrl: "/front/partials/browse",
             controller: 'BrowseController'
         }).
 
         state('write', {
             url: "/write",
-            templateUrl: "partials/write.html",
+            templateUrl: "/front/partials/write",
             controller: 'WriteController'
         });
 
