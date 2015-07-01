@@ -58,23 +58,23 @@ mongoose.connect(config.connection, options);
 
 app.use(session(
     {
-    secret: config.key0,
-    store: new MongoStore(
-        {
-            url: config.connection,
-            ttl: 365 * 24 * 60 * 60
+        secret: config.key0,
+        store: new MongoStore(
+            {
+                url: config.connection,
+                ttl: 365 * 24 * 60 * 60
+            }
+        ),
+        cookie: {
+            httpOnly: false,
+            maxAge: new Date(Date.now() + (365 * 24 * 60 * 60 * 1000))
         }
-    ),
-    cookie: {
-        httpOnly: false,
-        maxAge: new Date(Date.now() + (365 * 24 * 60 * 60 * 1000))
-    }
-}));
+    }));
 
 app.use('/', routes);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function (req:any, res:any, next:any):void {
     var error = new Error('Not Found');
     error.status = 404;
     res.header("Access-Control-Allow-Origin", "*");
@@ -87,7 +87,7 @@ app.use(function (req, res, next) {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function (err, req, res, next) {
+app.use(function (err:any, req:any, res:any, next:any):void {
     //   res.send(JSON.stringify(new Result(2, "create", "auth error")));
 });
 

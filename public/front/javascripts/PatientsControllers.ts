@@ -89,26 +89,26 @@ controllers.value("CurrentPatient", {
 });
 
 // Patient resource
-controllers.factory('PatientQuery', ['$resource', function ($resource):any {
+controllers.factory('PatientQuery', ['$resource', function ($resource:any):any {
     return $resource('/patient/query/:query', {query: '@query'}, {
         query: {method: 'GET'}
     });
 }]);
 
-controllers.factory('Patient', ['$resource', function ($resource):any {
+controllers.factory('Patient', ['$resource', function ($resource:any):any {
     return $resource('/patient/:id', {}, {
-        get: {method: 'GET'},
+    //    get: {method: 'GET'},
         update: {method: 'PUT'}
     });
 }]);
 
-controllers.factory('ViewItem', ['$resource', function ($resource):any {
+controllers.factory('ViewItem', ['$resource', function ($resource:any):any {
     return $resource('/view', {}, {
-        get: {method: 'GET'}
+   //     get: {method: 'GET'}
     });
 }]);
 
-function List(resource, query, success):any {
+function List(resource:any, query:any, success:any):void {
     var result:any = [];
 
     var today:Date = new Date();
@@ -127,16 +127,14 @@ function List(resource, query, success):any {
 }
 
 controllers.controller('BrowseSController', ["$scope", "$stateParams", "$location", 'Patient', 'PatientQuery', "CurrentPatient", "Global", 'ViewItem', 'Views',
-    function ($scope, $stateParams, $location, Patient, PatientQuery, CurrentPatient, Global, ViewItem, Views):any {
+    function ($scope:any, $stateParams:any, $location:any, Patient:any, PatientQuery:any, CurrentPatient:any, Global:any, ViewItem:any, Views:any):void {
 
         var resource = new ViewItem();
         resource.$get({}, function (data, headers) {
             if (data != null) {
                 if (data.code == 0) {
-                    var hoge = data.value[0].Data;
-                    Views.Data = hoge;
+                    Views.Data = data.value[0].Data;
                 }
-
             }
         });
 
@@ -181,7 +179,7 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
     }]);
 
 controllers.controller('BrowseController', ["$scope", "$stateParams", "$location", "CurrentPatient", 'Views',
-    function ($scope, $stateParams, $location, CurrentPatient, Views):any {
+    function ($scope:any, $stateParams:any, $location:any, CurrentPatient:any, Views:any):void {
         $scope.Input = CurrentPatient.Input;
 
         var page = $stateParams.page;
@@ -203,15 +201,6 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
                 if ($scope.Input[value.name] == null) {
                     fabric.Image.fromURL(value.path, function (image) {
 
-                     /*   var schema = image.scale(1).set({left: 5, top: 5});
-                        //canvas.add(schema);
-
-                        schema.lockMovementX = true;
-                        schema.lockMovementY = true;
-                        schema.lockRotation = true;
-                        schema.lockScaling = true;
-                        schema.hasControls = false;
-                        schema.hasBorders = false; */
                     });
                 }
 
@@ -256,28 +245,27 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
                             left: options.e.layerX - (radius / 2),
                             top: options.e.layerY - (radius / 2)
                         });
-
                     }
                     canvas.add(circle);
                 }
             });
         }
 
-        $scope.clearPicture = function () {
+        $scope.clearPicture = function ():any {
             canvas.clear().renderAll();
         };
 
-        $scope.setColor = function (val) {
+        $scope.setColor = function (val:any):any {
             color = val;
         };
 
-        $scope.next = function (path) {
+        $scope.next = function (path:any):any {
 
-            _.map($scope.contents.items, function (value:any, key:any) {
+            _.map($scope.contents.items, function (value:any, key:any):any {
                 $scope.Input[value.name] = {'name': value.name, 'value': value.model, 'type': value.type};
             });
 
-            _.map($scope.contents.picture, function (value:any, key:any) {
+            _.map($scope.contents.picture, function (value:any, key:any):any {
                 $scope.Input[value.name] = {'name': value.name, 'value': canvas.toJSON(), 'type': value.type};
             });
 
@@ -289,13 +277,12 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
     }]);
 
 controllers.controller('ConfirmController', ["$scope", "$stateParams", "CurrentPatient", "Patient", 'Global',
-    function ($scope, $stateParams, CurrentPatient, Patient, Global):any {
+    function ($scope:any, $stateParams:any, CurrentPatient:any, Patient:any, Global:any):void {
         $scope.Input = CurrentPatient.Input;
-
     }]);
 
 controllers.controller('WriteController', ["$scope", "$stateParams", "$location", "CurrentPatient", "Patient", 'Global',
-    function ($scope, $stateParams, $location, CurrentPatient, Patient, Global):any {
+    function ($scope, $stateParams:any, $location:any, CurrentPatient:any, Patient:any, Global:any):void {
         $scope.Input = CurrentPatient.Input;
 
         $scope.send = true;

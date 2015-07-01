@@ -17,6 +17,6 @@
 
 var controllers = angular.module('TopControllers', ["ngMaterial", "ngResource"]);
 
-controllers.controller('TopController', ["$scope", function ($scope) {
+controllers.controller('TopController', ["$scope", function ($scope:any):void {
 
 }]);

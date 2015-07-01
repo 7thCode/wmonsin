@@ -6,7 +6,7 @@
  This software is released under the MIT License.
 
  http://opensource.org/licenses/mit-license.php
-*/
+ */
 
 ///<reference path="../../../../DefinitelyTyped/lib.d.ts"/>
 ///<reference path="../../../../DefinitelyTyped/angularjs/angular.d.ts"/>
@@ -16,9 +16,9 @@
 
 'use strict';
 
-var app = angular.module('AccountApplication', [ 'ui.router','AccountControllers', 'TopControllers']);
+var app = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers']);
 
-app.config(['$stateProvider', '$urlRouterProvider',function ($stateProvider, $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider:any, $urlRouterProvider:any):void {
     $stateProvider
 
         .state('start', {
@@ -60,36 +60,35 @@ app.config(['$stateProvider', '$urlRouterProvider',function ($stateProvider, $ur
     $urlRouterProvider.otherwise('/start');
 }]);
 
-app.config(['$mdThemingProvider',function($mdThemingProvider) {
-        $mdThemingProvider.theme('default')
-            .primaryPalette('indigo')
-            .accentPalette('orange')
-            .warnPalette('red');
-    }]);
+app.config(['$mdThemingProvider', function ($mdThemingProvider:any):void {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('indigo')
+        .accentPalette('orange')
+        .warnPalette('red');
+}]);
 
-app.filter('rgb', function() {
-    return function(input):string {
-        var result = "fill:#000000";
+app.filter('rgb', function ():any {
+        return function (input):string {
+            var result = "fill:#000000";
 
-        switch (input) {
-            case "Admin":
-                result = "fill:#abcdff";
-                break;
-            case "Editor":
-                result = "fill:#abfdef";
-                break;
-            case "Viewer":
-                result = "fill:#fbcdef";
-                break;
-        }
-
-        return result;
+            switch (input) {
+                case "Admin":
+                    result = "fill:#abcdff";
+                    break;
+                case "Editor":
+                    result = "fill:#abfdef";
+                    break;
+                case "Viewer":
+                    result = "fill:#fbcdef";
+                    break;
+            }
+            return result;
         }
     }
 );
 
-app.filter('status', function() {
-        return function(input):string {
+app.filter('status', function ():any {
+        return function (input):string {
             var result = "";
 
             switch (input) {
@@ -108,8 +107,8 @@ app.filter('status', function() {
     }
 );
 
-app.filter('message', function() {
-        return function(input):string {
+app.filter('message', function ():any {
+        return function (input):string {
             var result = "?????";
 
             switch (input) {
@@ -154,7 +153,6 @@ app.filter('message', function() {
                 case "changepass":
                     result = "パスワード変更";
                     break;
-
 
                 case "stuff":
                     result = "スタッフ";

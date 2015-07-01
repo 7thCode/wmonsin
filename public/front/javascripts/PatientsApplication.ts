@@ -19,7 +19,7 @@
 
 var app = angular.module('PatientsApplication', ['ui.router', 'PatientsControllers', 'TopControllers']);
 
-app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider):any {
+app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider:any, $urlRouterProvider:any):void {
     $stateProvider
 
         .state('browseS', {
@@ -44,57 +44,56 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
 
 }]);
 
-app.filter('status', function() {
-     return function(input):string {
-      var result = "";
+app.filter('status', function ():any {
+        return function (input):string {
+            var result = "";
 
-      switch (input) {
-       case "Init":
-        result = "受付済み";
-        break;
-       case "Accepted":
-        result = "問診済み";
-        break;
-       case "Done":
-        result = "診療済み";
-        break;
-      }
-      return result;
-     }
+            switch (input) {
+                case "Init":
+                    result = "受付済み";
+                    break;
+                case "Accepted":
+                    result = "問診済み";
+                    break;
+                case "Done":
+                    result = "診療済み";
+                    break;
+            }
+            return result;
+        }
     }
 );
 
-app.filter('message', function() {
-     return function(input):string {
-      var result = "";
+app.filter('message', function ():any {
+        return function (input):string {
+            var result = "";
 
-      switch (input) {
-       case "required":
-        result = "必ず入力してください.";
-        break;
-       case "maxlength":
-        result = "もう少し短くしてください.";
-        break;
+            switch (input) {
+                case "required":
+                    result = "必ず入力してください.";
+                    break;
+                case "maxlength":
+                    result = "もう少し短くしてください.";
+                    break;
 
-       case "itai":
-        result = "痛い";
-        break;
+                case "itai":
+                    result = "痛い";
+                    break;
 
-       case "shibire":
-        result = "痺れ";
-        break;
+                case "shibire":
+                    result = "痺れ";
+                    break;
 
-       case "hare":
-        result = "腫れ";
-        break;
+                case "hare":
+                    result = "腫れ";
+                    break;
 
-       case "clear":
-        result = "消す";
-        break;
-      }
+                case "clear":
+                    result = "消す";
+                    break;
+            }
 
-      return result;
-     }
+            return result;
+        }
     }
-
 );

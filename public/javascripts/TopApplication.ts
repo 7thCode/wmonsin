@@ -17,7 +17,7 @@
 
 var app = angular.module('TopApplication', ['ui.router', 'TopControllers']);
 
-app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider:any, $urlRouterProvider:any):void {
 
     $stateProvider
 
@@ -30,7 +30,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
     $urlRouterProvider.otherwise('/');
 }]);
 
-app.filter('message', function () {
+app.filter('message', function ():any {
         return function (input):string {
             var result = "?????";
 
