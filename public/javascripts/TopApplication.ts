@@ -15,9 +15,9 @@
 ///<reference path="../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
 ///<reference path="../../../DefinitelyTyped/lodash/lodash.d.ts" />
 
-var app = angular.module('TopApplication', ['ui.router', 'TopControllers']);
+var app:any = angular.module('TopApplication', ['ui.router', 'TopControllers']);
 
-app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider:any, $urlRouterProvider:any):void {
+app.config(['$stateProvider', '$urlRouterProvider',  ($stateProvider:any, $urlRouterProvider:any):void => {
 
     $stateProvider
 
@@ -30,8 +30,8 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider:any
     $urlRouterProvider.otherwise('/');
 }]);
 
-app.filter('message', function ():any {
-        return function (input):string {
+app.filter('message', ():Function => {
+        return  (input:string):string => {
             var result = "?????";
 
             switch (input) {

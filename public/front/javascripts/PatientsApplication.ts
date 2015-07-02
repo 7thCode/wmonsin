@@ -17,9 +17,9 @@
 
 'use strict';
 
-var app = angular.module('PatientsApplication', ['ui.router', 'PatientsControllers', 'TopControllers']);
+var app:angular.IModule = angular.module('PatientsApplication', ['ui.router', 'PatientsControllers', 'TopControllers']);
 
-app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider:any, $urlRouterProvider:any):void {
+app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRouterProvider:any):void => {
     $stateProvider
 
         .state('browseS', {
@@ -44,9 +44,9 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider:any
 
 }]);
 
-app.filter('status', function ():any {
-        return function (input):string {
-            var result = "";
+app.filter('status', ():(input:string) => string => {
+        return (input:string):string => {
+            var result:string = "";
 
             switch (input) {
                 case "Init":
@@ -64,9 +64,9 @@ app.filter('status', function ():any {
     }
 );
 
-app.filter('message', function ():any {
-        return function (input):string {
-            var result = "";
+app.filter('message', ():(input:string) => string => {
+        return (input:string):string => {
+            var result:string = "";
 
             switch (input) {
                 case "required":

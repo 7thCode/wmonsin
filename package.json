@@ -1,6 +1,6 @@
 {
-  "name": "inquiry",
-  "version": "0.0.0",
+  "name": "wmonsin",
+  "version": "0.1.8",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"

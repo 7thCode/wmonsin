@@ -16,9 +16,9 @@
 
 'use strict';
 
-var app = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers']);
+var app:angular.IModule = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers']);
 
-app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider:any, $urlRouterProvider:any):void {
+app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRouterProvider:any):void => {
     $stateProvider
 
         .state('start', {
@@ -60,15 +60,15 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider:any
     $urlRouterProvider.otherwise('/start');
 }]);
 
-app.config(['$mdThemingProvider', function ($mdThemingProvider:any):void {
+app.config(['$mdThemingProvider', ($mdThemingProvider:any):void => {
     $mdThemingProvider.theme('default')
         .primaryPalette('indigo')
         .accentPalette('orange')
         .warnPalette('red');
 }]);
 
-app.filter('rgb', function ():any {
-        return function (input):string {
+app.filter('rgb', ():Function => {
+        return (input:string):(input:string) => string  => {
             var result = "fill:#000000";
 
             switch (input) {
@@ -87,9 +87,9 @@ app.filter('rgb', function ():any {
     }
 );
 
-app.filter('status', function ():any {
-        return function (input):string {
-            var result = "";
+app.filter('status', ():(input:string) => string  => {
+        return (input:string):string => {
+            var result:string = "";
 
             switch (input) {
                 case "Init":
@@ -107,9 +107,9 @@ app.filter('status', function ():any {
     }
 );
 
-app.filter('message', function ():any {
-        return function (input):string {
-            var result = "?????";
+app.filter('message', ():(input:string) => string =>  {
+        return (input:string):string => {
+            var result:string = "?????";
 
             switch (input) {
                 case "required":

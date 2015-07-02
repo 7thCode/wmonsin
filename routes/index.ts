@@ -46,7 +46,6 @@ class Result {
     private code:number;
     private message:string;
     private value:any;
-    private token:any;
 
     constructor(code:number, message:string, value:any) {
         this.code = code;
@@ -55,20 +54,24 @@ class Result {
     }
 }
 
-User("root", function ():void {
+User("root", ():void => {
     var account = new Account();
     account.username = "root";
     account.password = Cipher("root", config.key1);
     account.type = "Admin";
     account.key = Cipher("root", config.key2);
-    account.save(function (saveerror:any):void {});
-}, function ():void {});
+    account.save((saveerror:any):void => {
+    });
+}, (message:string, error:any):void => {
+});
 
-GetView(function ():void {
+GetView(():void => {
     var view = new View();
     view.Data = initView.Data;
-    view.save(function (saveerror:any):void {});
-}, function ():void {});
+    view.save((saveerror:any):void => {
+    });
+}, (message:string, error:any):void => {
+});
 
 function Cipher(name:any, pass:any):any {
     var cipher:any = crypto.createCipher('aes192', pass);
@@ -77,56 +80,54 @@ function Cipher(name:any, pass:any):any {
 }
 
 function Authenticate(key, success:any, error:any):void {
-    Account.findOne({key: key}, function (finderror:any, doc:any):void {
+    Account.findOne({key: key}, (finderror:any, doc:any):void => {
         if (!finderror) {
             if (doc != null) {
                 success(doc.type);
             }
             else {
-                error();
+                error("No Docs", []);
             }
         }
         else {
-            error();
+            error("Find Error", finderror);
         }
     });
 }
 
 function User(name:any, success:any, error:any):void {
-    Account.findOne({username: name}, function (finderror:any, doc:any):void {
+    Account.findOne({username: name}, (finderror:any, doc:any):void => {
         if (!finderror) {
             if (doc == null) {
                 success();
             }
-            else {
-                error();
+            else { //already
+                error("Already Found",[]);
             }
         }
         else {
-            error();
+            error("Find Error", finderror);
         }
     });
 }
 
 function GetView(success:any, error:any):void {
-    View.find({}, {}, {}, function (finderror:any, docs:any):void {
+    View.find({}, {}, {}, (finderror:any, docs:any):void => {
         if (!finderror) {
             if (docs != null) {
-                if (docs.length == 0)
-                {
+                if (docs.length == 0) {
                     success();
                 }
-                else
-                {
-                    error();
+                else { //already
+                    error("Already Found", []);
                 }
             }
             else {
-                error();
+                error("No Docs",[]);
             }
         }
         else {
-            error();
+            error("Find Error", finderror);
         }
     });
 }
@@ -140,98 +141,89 @@ function BasicHeader(response:any, session:any):any {
     return response;
 }
 
-router.get('/', function (req:any, res:any):void {
+router.get('/', (req:any, res:any):void => {
     res.render('index');
 });
 
 
-
-router.get('/partials/logo', function (req:any, res:any, next:Function):void {
+router.get('/partials/logo', (req:any, res:any, next:Function):void => {
     res.render('partials/logo');
 });
 
 
-
-router.get('/backend/', function (req:any, res:any):void {
+router.get('/backend/', (req:any, res:any):void => {
     res.render('backend/index');
 });
 
-router.get('/backend/partials/patient/start', function (req:any, res:any):void {
+router.get('/backend/partials/patient/start', (req:any, res:any):void => {
     res.render('backend/partials/patient/start');
 });
 
-router.get('/backend/partials/patient/patients', function (req:any, res:any):void {
+router.get('/backend/partials/patient/patients', (req:any, res:any):void => {
     res.render('backend/partials/patient/patients');
 });
 
-router.get('/backend/partials/patient/description', function (req:any, res:any):void {
+router.get('/backend/partials/patient/description', (req:any, res:any):void => {
     res.render('backend/partials/patient/description');
 });
 
-router.get('/backend/partials/patient/patientacceptdialog', function (req:any, res:any):void {
+router.get('/backend/partials/patient/patientacceptdialog', (req:any, res:any):void => {
     res.render('backend/partials/patient/patientacceptdialog');
 });
 
-router.get('/backend/partials/patient/sheet', function (req:any, res:any):void {
+router.get('/backend/partials/patient/sheet', (req:any, res:any):void => {
     res.render('backend/partials/patient/sheet');
 });
 
 
-
-router.get('/backend/partials/account/accounts', function (req:any, res:any):void {
+router.get('/backend/partials/account/accounts', (req:any, res:any):void => {
     res.render('backend/partials/account/accounts');
 });
 
-router.get('/backend/partials/account/logindialog', function (req:any, res:any):void {
+router.get('/backend/partials/account/logindialog', (req:any, res:any):void => {
     res.render('backend/partials/account/logindialog');
 });
 
-router.get('/backend/partials/account/registerdialog', function (req:any, res:any):void {
+router.get('/backend/partials/account/registerdialog', (req:any, res:any):void => {
     res.render('backend/partials/account/registerdialog');
 });
 
-router.get('/backend/partials/account/deletedialog', function (req:any, res:any):void {
+router.get('/backend/partials/account/deletedialog', (req:any, res:any):void => {
     res.render('backend/partials/account/deletedialog');
 });
 
-router.get('/backend/partials/account/accountdialog', function (req:any, res:any):void {
+router.get('/backend/partials/account/accountdialog', (req:any, res:any):void => {
     res.render('backend/partials/account/accountdialog');
 });
 
 
-
-router.get('/backend/partials/controll/notification', function (req:any, res:any):void {
+router.get('/backend/partials/controll/notification', (req:any, res:any):void => {
     res.render('backend/partials/controll/notification');
 });
 
-router.get('/backend/partials/controll/panel', function (req:any, res:any):void {
+router.get('/backend/partials/controll/panel', (req:any, res:any):void => {
     res.render('backend/partials/controll/panel');
 });
 
 
-
-router.get('/backend/partials/error', function (req:any, res:any):void {
+router.get('/backend/partials/error', (req:any, res:any):void => {
     res.render('backend/partials/error');
 });
 
 
-
-
-
-
-router.get('/front/', function (req:any, res :any):void {
+router.get('/front/', (req:any, res:any):void => {
     res.render('front/index');
 });
 
-router.get('/front/partials/browseS', function (req :any, res:any):void {
+router.get('/front/partials/browseS', (req:any, res:any):void => {
     res.render('front/partials/browseS');
 });
 
-router.get('/front/partials/browse', function (req:any, res:any):void {
+router.get('/front/partials/browse', (req:any, res:any):void => {
     res.render('front/partials/browse');
 });
 
-router.get('/front/partials/write', function (req:any, res:any):void {
+router.get('/front/partials/write', (req:any, res:any):void => {
     res.render('front/partials/write');
 });
 
@@ -239,7 +231,7 @@ router.get('/front/partials/write', function (req:any, res:any):void {
 /*! patient */
 /*! create */
 
-router.post('/patient/accept', function (req:any, res:any):void {
+router.post('/patient/accept', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         var patient:any = new Patient();
@@ -247,13 +239,13 @@ router.post('/patient/accept', function (req:any, res:any):void {
         patient.Date = new Date();
         patient.Category = req.body.Category;
 
-    //    var now =  patient.Date;
+        //    var now =  patient.Date;
 
-    //    var hour =  ("0"+ now.getHours()).slice(-2); // 時
-    //    var min = ("0"+ now.getMinutes()).slice(-2); // 時 ;
-    //    var sec = ("0"+ now.getSeconds()).slice(-2); // 時 ;
+        //    var hour =  ("0"+ now.getHours()).slice(-2); // 時
+        //    var min = ("0"+ now.getMinutes()).slice(-2); // 時 ;
+        //    var sec = ("0"+ now.getSeconds()).slice(-2); // 時 ;
 
-    //    patient.Information.time = hour + ":" + min + ":" + sec;
+        //    patient.Information.time = hour + ":" + min + ":" + sec;
 
         //t0S　ーーhoke
         //t01 --なまえ
@@ -261,23 +253,23 @@ router.post('/patient/accept', function (req:any, res:any):void {
         Patient.find({"$and": [{'Information.name': patient.Information.name}, {'Information.time': patient.Information.time}]}, function (finderror, docs) {
             if (!finderror) {
                 if (docs.length == 0) {
-                    patient.save(function (saveerror:any):void {
+                    patient.save((saveerror:any):void => {
                         if (!saveerror) {
-                            res.send(JSON.stringify(new Result(0, "", patient.Status)));
+                            res.send(JSON.stringify(new Result(0, "patient accepted.", patient.Status)));
                         } else {
                             res.send(JSON.stringify(new Result(10, "patient status put", saveerror)));
                         }
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(10, "patient query", "null")));
+                    res.send(JSON.stringify(new Result(10, "patient query no item", [])));
                 }
             } else {
                 res.send(JSON.stringify(new Result(10, "patient query", finderror)));
             }
         });
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient accept", e.message)));
+        res.send(JSON.stringify(new Result(100, "patient accept " + e.message, e)));
     }
 });
 /*
@@ -300,61 +292,61 @@ router.post('/patient/accept', function (req:any, res:any):void {
  });
  */
 /*! get */
-router.get('/patient/:id', function (req:any, res:any):void {
+router.get('/patient/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
-                var id = req.params.id;
-                Patient.findById(id, function (finderror:any, doc:any):void {
+            Authenticate(req.session.key, (type:any):void => {
+                var id:string = req.params.id;
+                Patient.findById(id, (finderror:any, doc:any):void => {
                     if (!finderror) {
                         if (doc != null) {
-                            res.send(JSON.stringify(new Result(0, "", doc)));
+                            res.send(JSON.stringify(new Result(0, "OK", doc)));
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "patient get", "null")));
+                            res.send(JSON.stringify(new Result(10, "patient get", [])));
                         }
                     }
                     else {
                         res.send(JSON.stringify(new Result(10, "patient get", finderror)));
                     }
                 });
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "patient get", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "patient get auth error", [])));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient get", "no session")));
+            res.send(JSON.stringify(new Result(20, "patient get no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient get", e.message)));
+        res.send(JSON.stringify(new Result(100, "patient get e.message", e)));
     }
 });
 
 /*! update */
-router.put('/patient/:id', function (req:any, res:any):void {
+router.put('/patient/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
-               // if (type != "Viewer")
+            Authenticate(req.session.key, (type:any):void => {
+                // if (type != "Viewer")
                 {
-                    var id = req.params.id;
-                    Patient.findById(id, function (finderror:any, patient:any):void {
+                    var id:string = req.params.id;
+                    Patient.findById(id, (finderror:any, patient:any):void => {
                         if (!finderror) {
                             if (patient != null) {
                                 patient.Status = req.body.Status;
                                 patient.Input = req.body.Input;
-                                patient.save(function (saveerror:any):void {
+                                patient.save((saveerror:any):void => {
                                     if (!saveerror) {
-                                        res.send(JSON.stringify(new Result(0, "", 0)));
+                                        res.send(JSON.stringify(new Result(0, "OK", [])));
                                     } else {
                                         res.send(JSON.stringify(new Result(10, "patient put", saveerror)));
                                     }
                                 });
                             }
                             else {
-                                res.send(JSON.stringify(new Result(10, "patient put", "null")));
+                                res.send(JSON.stringify(new Result(10, "patient put", [])));
                             }
                         }
                         else {
@@ -362,58 +354,58 @@ router.put('/patient/:id', function (req:any, res:any):void {
                         }
                     });
                 }
-          //      else {
-            //        res.send(JSON.stringify(new Result(1, "patient put", "no rights")));
-          //      }
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "patient put", "auth error")));
+                //      else {
+                //        res.send(JSON.stringify(new Result(1, "patient put", "no rights")));
+                //      }
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "patient put " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient put", "no session")));
+            res.send(JSON.stringify(new Result(20, "patient put no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient put", e.message)));
+        res.send(JSON.stringify(new Result(100, "patient put " + e.message, e)));
     }
 });
 
 /*! delete */
-router.delete('/patient/:id', function (req:any, res:any):void {
+router.delete('/patient/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
+            Authenticate(req.session.key, (type:any):void => {
                 if (type != "Viewer") {
-                    var id = req.params.id;
-                    Patient.remove({_id: id}, function (finderror:any):void {
+                    var id:string = req.params.id;
+                    Patient.remove({_id: id}, (finderror:any):void => {
                         if (!finderror) {
-                            res.send(JSON.stringify(new Result(0, "", {})));
+                            res.send(JSON.stringify(new Result(0, "OK", [])));
                         } else {
                             res.send(JSON.stringify(new Result(10, "patient delete", finderror)));
                         }
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "patient delete", "no rights")));
+                    res.send(JSON.stringify(new Result(1, "patient delete no rights", [])));
                 }
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "patient delete", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "patient delete " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient delete", "no session")));
+            res.send(JSON.stringify(new Result(20, "patient delete no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient delete", e.message)));
+        res.send(JSON.stringify(new Result(100, "patient delete " + e.message, e)));
     }
 });
 
 /*! query */
-router.get('/patient/query/:query', function (req:any, res:any):void {
+router.get('/patient/query/:query', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
+            Authenticate(req.session.key, (type:any):void => {
 
                 /*       var params:any = JSON.parse(decodeURIComponent(req.params.query));
                  var today:Date = new Date();
@@ -441,45 +433,45 @@ router.get('/patient/query/:query', function (req:any, res:any):void {
                 //     var query:any = {$and: [{Date: {$lte: today}}, {Date: {$gt: yesterday}}]};
 
 
-                Patient.find(query, {}, {sort: {Date: -1}}, function (finderror:any, docs:any):void {
+                Patient.find(query, {}, {sort: {Date: -1}}, (finderror:any, docs:any):void => {
                     if (!finderror) {
                         if (docs != null) {
-                            res.send(JSON.stringify(new Result(0, "", docs)));
+                            res.send(JSON.stringify(new Result(0, "OK", docs)));
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "patient query", "null")));
+                            res.send(JSON.stringify(new Result(10, "patient query", [])));
                         }
                     } else {
                         res.send(JSON.stringify(new Result(10, "patient query", finderror)));
                     }
                 });
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "patient query", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "patient query " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient query", "no session")));
+            res.send(JSON.stringify(new Result(20, "patient query no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient query", e.message)));
+        res.send(JSON.stringify(new Result(100, "patient query " + e.message, e)));
     }
 });
 
 /*! status */
-router.get('/patient/status/:id', function (req:any, res:any):void {
+router.get('/patient/status/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
+            Authenticate(req.session.key, (type:any):void => {
 
-                var id = req.params.id;
-                Patient.findById(id, function (finderror :any, patient:any):void {
+                var id:string = req.params.id;
+                Patient.findById(id, (finderror:any, patient:any):void => {
                     if (!finderror) {
                         if (patient != null) {
-                            res.send(JSON.stringify(new Result(0, "", patient.Status)));
+                            res.send(JSON.stringify(new Result(0, "OK", patient.Status)));
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "patient status get", "id error")));
+                            res.send(JSON.stringify(new Result(10, "patient status get id error", [])));
                         }
                     }
                     else {
@@ -487,39 +479,39 @@ router.get('/patient/status/:id', function (req:any, res:any):void {
                     }
                 });
 
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "patient status get", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "patient status " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient status get", "no session")));
+            res.send(JSON.stringify(new Result(20, "patient status get no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient status get", e.message)));
+        res.send(JSON.stringify(new Result(100, "patient status get " + e.message, e)));
     }
 });
 
-router.put('/patient/status/:id', function (req:any, res:any):void {
+router.put('/patient/status/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
+            Authenticate(req.session.key, (type:any):void => {
                 if (type != "Viewer") {
-                    var id = req.params.id;
-                    Patient.findById(id, function (finderror:any, patient:any):void {
+                    var id:string = req.params.id;
+                    Patient.findById(id, (finderror:any, patient:any):void => {
                         if (!finderror) {
                             if (patient != null) {
                                 patient.Status = req.body.Status;
-                                patient.save(function (saveerror:any):void {
+                                patient.save((saveerror:any):void => {
                                     if (!saveerror) {
-                                        res.send(JSON.stringify(new Result(0, "", patient.Status)));
+                                        res.send(JSON.stringify(new Result(0, "OK", patient.Status)));
                                     } else {
                                         res.send(JSON.stringify(new Result(10, "patient status put", saveerror)));
                                     }
                                 });
                             }
                             else {
-                                res.send(JSON.stringify(new Result(10, "patient status put", "null")));
+                                res.send(JSON.stringify(new Result(10, "patient status put", [])));
                             }
                         }
                         else {
@@ -528,85 +520,85 @@ router.put('/patient/status/:id', function (req:any, res:any):void {
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "patient status put", "no rights")));
+                    res.send(JSON.stringify(new Result(1, "patient status put no rights", [])));
                 }
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "patient status put", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "patient status " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient status put", "no session")));
+            res.send(JSON.stringify(new Result(20, "patient status put no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient status put", e.message)));
+        res.send(JSON.stringify(new Result(100, "patient status put " + e.message, e)));
     }
 });
 
 /*! account */
 /*! create */
-router.post('/account/create', function (req:any, res:any):void {
+router.post('/account/create', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
+            Authenticate(req.session.key, (type:any):void => {
                 if (type != "Viewer") {
-                    User(req.body.username.toLowerCase(), function ():void {
-                        var account = new Account();
+                    User(req.body.username.toLowerCase(), ():void => {
+                        var account:any = new Account();
                         account.username = req.body.username.toLowerCase();
                         account.password = Cipher(req.body.password, config.key1);
                         account.type = req.body.type;
                         account.key = Cipher(req.body.username, config.key2);
-                        account.save(function (saveerror:any):void {
+                        account.save((saveerror:any):void => {
                             if (!saveerror) {
-                                res.send(JSON.stringify(new Result(0, "", [])));
+                                res.send(JSON.stringify(new Result(0, "OK", [])));
                             } else {
                                 res.send(JSON.stringify(new Result(10, "account create", saveerror)));
                             }
                         });
-                    }, function ():void {
-                        res.send(JSON.stringify(new Result(3, "account create", "already found")));
+                    }, (message:string, error:any):void => {
+                        res.send(JSON.stringify(new Result(3, "account create " + message, error)));
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "account create", "no rights")));
+                    res.send(JSON.stringify(new Result(1, "account create no rights", [])));
                 }
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "account create", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "account create " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account create", "no session")));
+            res.send(JSON.stringify(new Result(20, "account create no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account create", e.message)));
+        res.send(JSON.stringify(new Result(100, "account create " + e.message, e)));
     }
 });
 
 /*! logout */
-router.post('/account/logout', function (req:any, res:any):void {
+router.post('/account/logout', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         req.session.destroy();
         res.send(JSON.stringify(new Result(0, "", {})));
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account logout", e.message)));
+        res.send(JSON.stringify(new Result(100, "account logout " + e.message, e)));
     }
 });
 
 /*! login */
-router.post('/account/login', function (req:any, res:any):void {
+router.post('/account/login', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-        var username = req.body.username;
-        var password = Cipher(req.body.password, config.key1);
-        var auth = {$and: [{username: username}, {password: password}]};
-        Account.findOne(auth, function (finderror:any, doc:any):void {
+        var username:any = req.body.username;
+        var password:any = Cipher(req.body.password, config.key1);
+        var auth:any = {$and: [{username: username}, {password: password}]};
+        Account.findOne(auth, (finderror:any, doc:any):void => {
             if (!finderror) {
                 if (doc != null) {
                     if (req.session == null) {
-                        req.session.regenerate(function (err:any):void {
+                        req.session.regenerate((err:any):void => {
                             req.session.key = doc.key;
-                            req.session.save(function (err:any):void {
+                            req.session.save((err:any):void => {
                                 res.send(JSON.stringify(new Result(0, "logged in success.", doc)));
                             });
                         });
@@ -619,106 +611,106 @@ router.post('/account/login', function (req:any, res:any):void {
                     }
                 }
                 else {
-                    res.send(JSON.stringify(new Result(10, "unknown user or wrong password.", {})));
+                    res.send(JSON.stringify(new Result(10, "unknown user or wrong password.", [])));
                 }
             } else {
                 res.send(JSON.stringify(new Result(10, "unknown user or wrong password.", finderror)));
             }
         });
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account login fail.", e.message)));
+        res.send(JSON.stringify(new Result(100, "account login fail." + e.message, e)));
     }
 });
 
 /*! get */
-router.get('/account/:id', function (req:any, res:any):void {
+router.get('/account/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
-                var id = req.params.id;
-                Account.findById(id, function (geterror:any, doc:any):void {
+            Authenticate(req.session.key, (type:any):void => {
+                var id:string = req.params.id;
+                Account.findById(id, (geterror:any, doc:any):void => {
                     if (!geterror) {
                         if (doc != null) {
-                            res.send(JSON.stringify(new Result(0, "", doc)));
+                            res.send(JSON.stringify(new Result(0, "OK", doc)));
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "account get", "null")));
+                            res.send(JSON.stringify(new Result(10, "account get", [])));
                         }
                     }
                     else {
                         res.send(JSON.stringify(new Result(10, "account get", geterror)));
                     }
                 });
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "account get", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "account get " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account get", "no session")));
+            res.send(JSON.stringify(new Result(20, "account get no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account get", e.message)));
+        res.send(JSON.stringify(new Result(100, "account get " + e.message, e)));
     }
 });
 
 /*! update */
-router.put('/account/:id', function (req:any, res:any):void {
+router.put('/account/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
+            Authenticate(req.session.key, (type:any):void => {
                 if (type != "Viewer") {
-                    var id = req.params.id;
-                    Account.findById(id, function (finderror:any, account:any):void {
+                    var id:string = req.params.id;
+                    Account.findById(id, (finderror:any, account:any):void => {
                         if (!finderror) {
                             if (account != null) {
                                 var account2 = account;
                                 account2.username = req.body.username;
                                 account2.type = req.body.type;
-                                account2.save(function (saveerror:any):void {
+                                account2.save((saveerror:any):void => {
                                     if (!saveerror) {
-                                        res.send(JSON.stringify(new Result(0, "", 0)));
+                                        res.send(JSON.stringify(new Result(0, "OK", [])));
                                     } else {
                                         res.send(JSON.stringify(new Result(10, "account put", saveerror)));
                                     }
                                 });
                             }
                             else {
-                                res.send(JSON.stringify(new Result(3, "account put", "find error")));
+                                res.send(JSON.stringify(new Result(3, "account put find error", [])));
                             }
                         }
                         else {
-                            res.send(JSON.stringify(new Result(3, "account put", "find error")));
+                            res.send(JSON.stringify(new Result(3, "account put find error", finderror)));
                         }
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "account put", "no rights")));
+                    res.send(JSON.stringify(new Result(1, "account put no rights", [])));
                 }
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "account put", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "account put " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account put", "no session")));
+            res.send(JSON.stringify(new Result(20, "account put no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account put", e.message)));
+        res.send(JSON.stringify(new Result(100, "account put " + e.message, e)));
     }
 });
 
 /*! delete */
-router.delete('/account/:id', function (req:any, res:any):void {
+router.delete('/account/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
+            Authenticate(req.session.key, (type:any):void => {
                 if (type != "Viewer") {
-                    var id = req.params.id;
-                    Account.remove({_id: id}, function (removeerror:any):void {
+                    var id:string = req.params.id;
+                    Account.remove({_id: id}, (removeerror:any):void => {
                         if (!removeerror) {
-                            res.send(JSON.stringify(new Result(0, "", {})));
+                            res.send(JSON.stringify(new Result(0, "OK", [])));
                         }
                         else {
                             res.send(JSON.stringify(new Result(10, "account delete", removeerror)));
@@ -726,155 +718,155 @@ router.delete('/account/:id', function (req:any, res:any):void {
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "account delete", "no rights")));
+                    res.send(JSON.stringify(new Result(1, "account delete no rights", [])));
                 }
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "account delete", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "account delete " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account delete", "no session")));
+            res.send(JSON.stringify(new Result(20, "account delete no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account delete", e.message)));
+        res.send(JSON.stringify(new Result(100, "account delete " + e.message, e)));
     }
 });
 
 /*! query */
-router.get('/account/query/:query', function (req:any, res:any):void {
+router.get('/account/query/:query', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
-                var query = JSON.parse(decodeURIComponent(req.params.query));
-                Account.find({}, function (finderror:any, docs:any):void {
+            Authenticate(req.session.key, (type:any):void => {
+                var query:any = JSON.parse(decodeURIComponent(req.params.query));
+                Account.find({}, (finderror:any, docs:any):void => {
                     if (!finderror) {
                         if (docs != null) {
-                            res.send(JSON.stringify(new Result(0, "", docs)));
+                            res.send(JSON.stringify(new Result(0, "OK", docs)));
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "account query", "null")));
+                            res.send(JSON.stringify(new Result(10, "account query", [])));
                         }
                     } else {
                         res.send(JSON.stringify(new Result(10, "account query", finderror)));
                     }
                 });
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "account query", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "account query " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account query", "no session")));
+            res.send(JSON.stringify(new Result(20, "account query no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account query", e.message)));
+        res.send(JSON.stringify(new Result(100, "account query " + e.message, e)));
     }
 });
 
 /*! update */
-router.put('/account/password/:id', function (req:any, res:any):void {
+router.put('/account/password/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
+            Authenticate(req.session.key, (type:any):void => {
                 if (type != "Viewer") {
-                    var id = req.params.id;
-                    Account.findById(id, function (finderror:any, account:any):void {
+                    var id:string = req.params.id;
+                    Account.findById(id, (finderror:any, account:any):void => {
                         if (!finderror) {
                             if (account != null) {
-                                var account2 = account;
+                                var account2:any = account;
                                 account2.password = Cipher(req.body.password, config.key1);
-                                account2.save(function (saveerror:any):void {
+                                account2.save((saveerror:any):void => {
                                     if (!saveerror) {
-                                        res.send(JSON.stringify(new Result(0, "", 0)));
+                                        res.send(JSON.stringify(new Result(0, "OK", [])));
                                     } else {
                                         res.send(JSON.stringify(new Result(10, "account password", saveerror)));
                                     }
                                 });
                             }
                             else {
-                                res.send(JSON.stringify(new Result(3, "account password", "find error")));
+                                res.send(JSON.stringify(new Result(3, "account password find error", [])));
                             }
                         }
                         else {
-                            res.send(JSON.stringify(new Result(3, "account password", "find error")));
+                            res.send(JSON.stringify(new Result(3, "account password find error", finderror)));
                         }
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "account password", "no rights")));
+                    res.send(JSON.stringify(new Result(1, "account password no rights", [])));
                 }
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "account password", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "account password " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account password", "no session")));
+            res.send(JSON.stringify(new Result(20, "account password no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account password", e.message)));
+        res.send(JSON.stringify(new Result(100, "account password " + e.message, e)));
     }
 });
 
 
 /*! config */
 /*! get */
-router.get('/config', function (req:any, res:any):void {
+router.get('/config', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            Authenticate(req.session.key, function (type:any):void {
+            Authenticate(req.session.key, (type:any):void => {
                 res.send(JSON.stringify(new Result(0, "config get", config)));
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "config get", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "config get auth error", [])));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "config get", "no session")));
+            res.send(JSON.stringify(new Result(20, "config get no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "config get", e.message)));
+        res.send(JSON.stringify(new Result(100, "config get " + e.message, e)));
     }
 });
 
 /*! update */
-router.put('/config', function (req:any, res:any):void {
+router.put('/config', (req:any, res:any):void => {
     try {
         if (req.session != null) {
             res = BasicHeader(res, "");
-            Authenticate(req.session.key, function (type:any):void {
+            Authenticate(req.session.key, (type:any):void => {
                 if (type != "Viewer") {
                     config = req.body.body;
-                    fs.writeFile('config/config.json', JSON.stringify(config), function (err:any):void {
+                    fs.writeFile('config/config.json', JSON.stringify(config), (err:any):void => {
                         res.send(JSON.stringify(new Result(0, "config put", config)));
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "config put", "no rights")));
+                    res.send(JSON.stringify(new Result(1, "config put no rights", [])));
                 }
-            }, function ():void {
-                res.send(JSON.stringify(new Result(2, "config put", "auth error")));
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(2, "config put " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "config put", "no session")));
+            res.send(JSON.stringify(new Result(20, "config put no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "config put", e.message)));
+        res.send(JSON.stringify(new Result(100, "config put " + e.message, e)));
     }
 });
 
 /*! get view */
-router.get('/view', function (req:any, res:any):void {
+router.get('/view', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-        View.find({}, function (finderror:any, doc:any):void {
+        View.find({}, (finderror:any, doc:any):void => {
             if (!finderror) {
                 if (doc != null) {
-                    res.send(JSON.stringify(new Result(0, "", doc)));
+                    res.send(JSON.stringify(new Result(0, "OK", doc)));
                 }
                 else {
-                    res.send(JSON.stringify(new Result(10, "view get", "null")));
+                    res.send(JSON.stringify(new Result(10, "view get", [])));
                 }
             }
             else {
@@ -882,12 +874,12 @@ router.get('/view', function (req:any, res:any):void {
             }
         });
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "view get", e.message)));
+        res.send(JSON.stringify(new Result(100, "view get " + e.message, e)));
     }
 });
 
 /*! create view */
-router.post('/view', function (req:any, res:any):void {
+router.post('/view', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
@@ -895,51 +887,51 @@ router.post('/view', function (req:any, res:any):void {
             var data:any = req.body.data;
             var viewdata:any = JSON.parse(data);
             view.Data = viewdata;
-            view.save(function (saveerror:any):void {
+            view.save((saveerror:any):void => {
                 if (!saveerror) {
-                    res.send(JSON.stringify(new Result(0, "", [])));
+                    res.send(JSON.stringify(new Result(0, "OK", [])));
                 } else {
                     res.send(JSON.stringify(new Result(10, "view create", saveerror)));
                 }
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "view create", "no session")));
+            res.send(JSON.stringify(new Result(20, "view create no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "view create", e.message)));
+        res.send(JSON.stringify(new Result(100, "view create" + e.message, e)));
     }
 });
 
 
-
 /*! create view */
-router.get('/initview', function (req:any, res:any):void {
+router.get('/initview', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            GetView(function ():void {
-                var view = new View();
+            GetView(():void => {
+                var view:any = new View();
                 view.Data = initView.Data;
-                view.save(function (saveerror:any):void {
+                view.save((saveerror:any):void => {
                     if (!saveerror) {
-                        res.send(JSON.stringify(new Result(0, "", [])));
+                        res.send(JSON.stringify(new Result(0, "OK", [])));
                     } else {
                         res.send(JSON.stringify(new Result(10, "view create", saveerror)));
                     }
                 });
-            }, function ():void {
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new Result(10, "view create" + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "view create", "no session")));
+            res.send(JSON.stringify(new Result(20, "view create no session", [])));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "view create", e.message)));
+        res.send(JSON.stringify(new Result(100, "view create" + e.message, e)));
     }
 });
 
-var initView = {
+var initView:any = {
     Data: {
         内科: [
             {
@@ -988,7 +980,7 @@ var initView = {
                         name: "navi1",
                         model: "",
                         type: "navigation",
-                        next:{
+                        next: {
                             label: "次へ",
                             name: "次へ",
                             path: "/browse/2",

@@ -11,13 +11,14 @@
 
 ///<reference path="../../../../DefinitelyTyped/lib.d.ts"/>
 ///<reference path="../../../../DefinitelyTyped/angularjs/angular.d.ts"/>
+///<reference path="../../../../DefinitelyTyped/angularjs/angular-resource.d.ts"/>
 ///<reference path="../../../../DefinitelyTyped/socket.io/socket.io.d.ts" />
 ///<reference path="../../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
 ///<reference path="../../../../DefinitelyTyped/lodash/lodash.d.ts" />
 
 'use strict';
 
-var controllers = angular.module('PatientsControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons']);
+var controllers:angular.IModule = angular.module('PatientsControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons']);
 
 class Browser {
     public name:string;
@@ -89,27 +90,27 @@ controllers.value("CurrentPatient", {
 });
 
 // Patient resource
-controllers.factory('PatientQuery', ['$resource', function ($resource:any):any {
+controllers.factory('PatientQuery', ['$resource', ($resource:any):angular.resource.IResource<any> => {
     return $resource('/patient/query/:query', {query: '@query'}, {
         query: {method: 'GET'}
     });
 }]);
 
-controllers.factory('Patient', ['$resource', function ($resource:any):any {
+controllers.factory('Patient', ['$resource', ($resource:any):angular.resource.IResource<any> => {
     return $resource('/patient/:id', {}, {
-    //    get: {method: 'GET'},
+        //    get: {method: 'GET'},
         update: {method: 'PUT'}
     });
 }]);
 
-controllers.factory('ViewItem', ['$resource', function ($resource:any):any {
+controllers.factory('ViewItem', ['$resource', ($resource:any):angular.resource.IResource<any> => {
     return $resource('/view', {}, {
-   //     get: {method: 'GET'}
+        //     get: {method: 'GET'}
     });
 }]);
 
-function List(resource:any, query:any, success:any):void {
-    var result:any = [];
+function List(resource:any, query:any, success:(value:any, headers:any) => void):void {
+    var result:any[] = [];
 
     var today:Date = new Date();
     today.setHours(23, 59, 59, 99);
@@ -117,7 +118,7 @@ function List(resource:any, query:any, success:any):void {
     yesterday.setHours(0, 0, 0, 1);
     var query:any = {$and: [{Date: {$lte: today}}, {Date: {$gt: yesterday}}]};
 
-    resource.query({query: encodeURIComponent(JSON.stringify(query))}, function (data, headers) {
+    resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any, headers:any):void => {
         if (data != null) {
             if (data.code == 0) {
                 success(data.value, headers);
@@ -127,10 +128,10 @@ function List(resource:any, query:any, success:any):void {
 }
 
 controllers.controller('BrowseSController', ["$scope", "$stateParams", "$location", 'Patient', 'PatientQuery', "CurrentPatient", "Global", 'ViewItem', 'Views',
-    function ($scope:any, $stateParams:any, $location:any, Patient:any, PatientQuery:any, CurrentPatient:any, Global:any, ViewItem:any, Views:any):void {
+    ($scope:any, $stateParams:any, $location:any, Patient:any, PatientQuery:any, CurrentPatient:any, Global:any, ViewItem:any, Views:any):void => {
 
-        var resource = new ViewItem();
-        resource.$get({}, function (data, headers) {
+        var resource:any = new ViewItem();
+        resource.$get({}, (data:any):void => {
             if (data != null) {
                 if (data.code == 0) {
                     Views.Data = data.value[0].Data;
@@ -138,15 +139,14 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
             }
         });
 
-        List(PatientQuery, {}, function (data, headers) {
+        List(PatientQuery, {}, (data:any):void => {
             $scope.patients = data;
         });
 
-        $scope.next = function (id) {
+        $scope.next = (id:any):void => {
 
-            var resource = new Patient();
-            resource.$get({id: id}, function (data, headers) {
-
+            var resource:any = new Patient();
+            resource.$get({id: id}, (data:any):void => {
                 if (data != null) {
                     if (data.code == 0) {
                         CurrentPatient.id = id;
@@ -168,9 +168,9 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
             Global.socket = io.connect();
         }
 
-        Global.socket.on('client', function (data):void {
+        Global.socket.on('client', (data:any):void => {
             if (data.value === "1") {
-                List(PatientQuery, {}, function (data, headers) {
+                List(PatientQuery, {}, (data:any):void => {
                     $scope.patients = data;
                 });
             }
@@ -179,19 +179,18 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
     }]);
 
 controllers.controller('BrowseController', ["$scope", "$stateParams", "$location", "CurrentPatient", 'Views',
-    function ($scope:any, $stateParams:any, $location:any, CurrentPatient:any, Views:any):void {
+    ($scope:any, $stateParams:any, $location:any, CurrentPatient:any, Views:any):void => {
         $scope.Input = CurrentPatient.Input;
 
-        var page = $stateParams.page;
-
-        var color = "rgba(200, 20, 30, 0.4)";
+        var page:any = $stateParams.page;
+        var color:string = "rgba(200, 20, 30, 0.4)";
 
         $scope.contents = Views.Data[CurrentPatient.Category][page];
 
         if ($scope.contents.picture != null) {
-            var canvas : fabric.ICanvas = new fabric.Canvas('c');
+            var canvas:fabric.ICanvas = new fabric.Canvas('c');
 
-            _.map($scope.contents.picture, function (value:any, key) {
+            _.map<any,any>($scope.contents.picture, (value:any, key:any):void => {
 
                 canvas.setBackgroundImage(value.path, canvas.renderAll.bind(canvas), {
                     backgroundImageOpacity: 1.0,
@@ -199,39 +198,38 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
                 });
 
                 if ($scope.Input[value.name] == null) {
-                    fabric.Image.fromURL(value.path, function (image) {
-
+                    fabric.Image.fromURL(value.path, (image:any):void => {
                     });
                 }
 
-                var hoge = JSON.stringify($scope.Input[value.name]);
-                canvas.loadFromJSON(hoge, canvas.renderAll.bind(canvas), function (o, object) {
+                var hoge:string = JSON.stringify($scope.Input[value.name]);
+                canvas.loadFromJSON(hoge, canvas.renderAll.bind(canvas), (o:any, object:any):void => {
                 });
             });
 
             canvas.on({
 
-                'touch:gesture': function (options) {
-                    var a = 1;
+                'touch:gesture': (options:any):void => {
+                    var a:number = 1;
                 },
-                'touch:drag': function (options) {
-                    var a = 1;
+                'touch:drag': (options:any):void => {
+                    var a:number = 1;
                 },
-                'touch:orientation': function (options) {
-                    var a = 1;
+                'touch:orientation': (options:any):void => {
+                    var a:number = 1;
                 },
-                'touch:shake': function (options) {
-                    var a = 1;
+                'touch:shake': (options:any):void => {
+                    var a:number = 1;
                 },
-                'touch:longpress': function (options) {
-                    var a = 1;
+                'touch:longpress': (options:any):void => {
+                    var a:number = 1;
                 },
-                'mouse:up': function (options) {
-                    var radius = 20;
+                'mouse:up': (options:any):void => {
+                    var radius:number = 20;
 
-                    var browser = new Browser();// browser_is();
+                    var browser:any = new Browser();// browser_is();
                     if (browser.isTablet) {
-                        var circle = new fabric.Circle({
+                        var circle:any = new fabric.Circle({
                             radius: radius,
                             fill: color,
                             left: options.e.changedTouches[0].clientX - (radius / 2) - canvas._offset.left,
@@ -239,7 +237,7 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
                         });
                     }
                     else {
-                        var circle = new fabric.Circle({
+                        var circle:any = new fabric.Circle({
                             radius: radius,
                             fill: color,
                             left: options.e.layerX - (radius / 2),
@@ -251,50 +249,45 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
             });
         }
 
-        $scope.clearPicture = function ():any {
+        $scope.clearPicture = ():any => {
             canvas.clear().renderAll();
         };
 
-        $scope.setColor = function (val:any):any {
+        $scope.setColor = (val:any):any => {
             color = val;
         };
 
-        $scope.next = function (path:any):any {
+        $scope.next = (path:any):any => {
 
-            _.map($scope.contents.items, function (value:any, key:any):any {
+            _.map<any,any>($scope.contents.items, (value:any, key:any):void => {
                 $scope.Input[value.name] = {'name': value.name, 'value': value.model, 'type': value.type};
             });
 
-            _.map($scope.contents.picture, function (value:any, key:any):any {
+            _.map<any,any>($scope.contents.picture, (value:any, key:any):void => {
                 $scope.Input[value.name] = {'name': value.name, 'value': canvas.toJSON(), 'type': value.type};
             });
 
             CurrentPatient.Input = $scope.Input;
-
             $location.path(path);
         };
 
     }]);
 
 controllers.controller('ConfirmController', ["$scope", "$stateParams", "CurrentPatient", "Patient", 'Global',
-    function ($scope:any, $stateParams:any, CurrentPatient:any, Patient:any, Global:any):void {
+    ($scope:any, $stateParams:any, CurrentPatient:any, Patient:any, Global:any):void => {
         $scope.Input = CurrentPatient.Input;
     }]);
 
 controllers.controller('WriteController', ["$scope", "$stateParams", "$location", "CurrentPatient", "Patient", 'Global',
-    function ($scope, $stateParams:any, $location:any, CurrentPatient:any, Patient:any, Global:any):void {
+    ($scope, $stateParams:any, $location:any, CurrentPatient:any, Patient:any, Global:any):void => {
         $scope.Input = CurrentPatient.Input;
-
         $scope.send = true;
-
-        var post = new Patient();
+        var post:any = new Patient();
         post.Input = CurrentPatient.Input;
         post.Status = "Accepted";
-        post.$update({id: CurrentPatient.id}, function (result, headers) {
+        post.$update({id: CurrentPatient.id}, (result:any, headers:any):void => {
             CurrentPatient.Input = {};
-
             $location.path('/browseS');
-
             Global.socket.emit('server', {value: "1"});
             $scope.send = false;
         });
