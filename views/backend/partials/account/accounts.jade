@@ -5,13 +5,13 @@
     http://opensource.org/licenses/mit-license.php
 
 md-content(style="background-color: #A0A0FF;")
-    md-progress-circular(ng-if="progress",class="md-accent", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
+    md-progress-circular(ng-if="progress", class="md-accent", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
     md-card
         md-card-content
             h1.md-headline スタッフ
         md-card-content
             md-button.md-fab.md-accent(ng-click="showRegisterDialog()", ng-if="type != 'Viewer'", aria-label="")
-                ng-md-icon(icon="person_add", aria-label="スタッフ", style="fill:#abcdef" size="46")
+                ng-md-icon(icon="person_add", aria-label="スタッフ", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
                 md-tooltip 追加...
     md-list
         md-list-item(ng-repeat="account in accounts", ng-show="account.type != 'Admin'")
@@ -24,11 +24,11 @@ md-content(style="background-color: #A0A0FF;")
                         ng-md-icon(icon="person", style="{{account.type | rgb}}", size="50")
 
                     div(flex="10", ng-if="type != 'Viewer'")
-                        md-button.md-fab.md-primary(ng-click="showAccountUpdateDialog(account._id)", aria-label="Update",layout-align="center center")
-                            ng-md-icon(icon="person", style="{{account.type | rgb}}", size="50")
+                        md-button.md-fab.md-primary(ng-click="showAccountUpdateDialog(account._id)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                            ng-md-icon(icon="person", style="position:relative;top:4px;left:1px;{{account.type | rgb}}", size="42")
                             md-tooltip 更新...
 
                     div(flex="10")
-                        md-button.md-fab.md-warn(ng-click="showAccountDeleteDialog(account._id)", aria-label="Delete", ng-if="type != 'Viewer'",layout-align="center center")
-                            ng-md-icon(layout-align="center center",icon="remove", style="fill:#ffffff", size="50")
+                        md-button.md-fab.md-warn(ng-click="showAccountDeleteDialog(account._id)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
+                            ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
                             md-tooltip 削除

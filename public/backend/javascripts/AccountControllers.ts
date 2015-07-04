@@ -144,7 +144,7 @@ controllers.factory('Config', ['$resource',
         });
     }]);
 
-function List(resource:any, query:any, success:(value: any, headers:any) => void):void {
+function List(resource:any, query:any, success:(value:any, headers:any) => void):void {
 
     var today:Date = new Date();
     today.setHours(23, 59, 59, 99);
@@ -161,7 +161,7 @@ function List(resource:any, query:any, success:(value: any, headers:any) => void
     });
 }
 
-function AccountsList(resource:any, query:any, success:(value: any) => void):void {
+function AccountsList(resource:any, query:any, success:(value:any) => void):void {
     var result:any[] = [];
     var query:any = {};
 
@@ -715,7 +715,7 @@ controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet',
             {name: 'Message', icon: 'message'},
             {name: 'Copy', icon: 'content_copy'},
             {name: 'Create', icon: 'create'},
-            {name: 'Inbox', icon: 'inbox'},
+            {name: 'Inbox', icon: 'inbox'}
         ];
 
         $scope.ItemClick = ($index:any):void  => {

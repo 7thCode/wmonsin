@@ -34,38 +34,38 @@ html(lang="ja")
         link(rel="stylesheet", type="text/css", href="stylesheets/style.css")
     body(ng-app="AccountApplication", ng-controller="ApplicationController",layout="column", layout-fill,style="background-color: #A0A0FF;")
 
-        md-toolbar(md-scroll-shrink)
+        md-toolbar(md-scroll-shrink, style="z-index:10;")
             .md-toolbar-tools(layout-align="center center")
                 h3.md-display-1(flex="60") {{username}} - {{type}}
 
                 div(flex="10")
-                    md-button.md-fab.menu-button(ng-click="goTop()", aria-label="", style="background-color:#c0c0ff;")
-                        ng-md-icon(icon="home", aria-label="Top", style="fill:#ffffff", size="46")
+                    md-button.md-fab.menu-button(ng-click="goTop()", aria-label="", style="background-color:#c0c0ff;z-index:10;")
+                        ng-md-icon(icon="home", aria-label="Top", style="position:relative;top:5px;fill:#a0ffff", size="42")
                         md-tooltip {{'top' | message }}
 
                 div(flex="10", ng-if="type == 'Admin'")
-                    md-button.md-fab.menu-button(ng-click="goConfig()", aria-label="", style="background-color:#fc7af6;")
-                        ng-md-icon(icon="settings", aria-label="Config", style="fill:#ffffff", size="46")
+                    md-button.md-fab.menu-button(ng-click="goConfig()", aria-label="", style="background-color:#fc7af6;z-index:10;")
+                        ng-md-icon(icon="settings", aria-label="Config", style="position:relative;top:5px;fill:#ff40f0", size="42")
                         md-tooltip {{'config' | message }}
 
                 div(flex="10", ng-show="mode == 'Patient'")
-                    md-button.md-fab.menu-button(ng-click="goAccount()", aria-label="", style="background-color:#4dc0ff;")
-                        ng-md-icon(icon="face", aria-label="Account", style="fill:#ffffff", size="40")
+                    md-button.md-fab.menu-button(ng-click="goAccount()", aria-label="", style="background-color:#85c0fc;z-index:10;")
+                        ng-md-icon(icon="face", aria-label="Account", style="position:relative;top:6px;fill:#70ffff", size="42")
                         md-tooltip {{'stuff' | message}}
 
                 div(flex="10", ng-show="mode == 'Account'")
-                    md-button.md-fab.menu-button(ng-click="goPatient()", aria-label="", style="background-color:#85c0fc;")
-                        ng-md-icon(icon="perm_identity", aria-label="Patients", style="fill:#ffffff", size="46")
+                    md-button.md-fab.menu-button(ng-click="goPatient()", aria-label="", style="background-color:#85c0fc;z-index:10;")
+                        ng-md-icon(icon="perm_identity", aria-label="Patients", style="position:relative;top:6px;fill:#70ffff", size="42")
                         md-tooltip {{'patient' | message }}
 
                 div(flex, ng-if="type == ''")
-                    md-button.md-fab.md-warn.menu-button(ng-click="showLoginDialog()", aria-label="")
-                        ng-md-icon(icon="check_box_outline_blank", aria-label="Account", style="fill:#ffffff", size="46")
+                    md-button.md-fab.menu-button(ng-click="showLoginDialog()", aria-label="", style="background-color:#ff7050;z-index:10;")
+                        ng-md-icon(icon="check_box_outline_blank", aria-label="Account", style="position:relative;top:5px;fill:#ffd0d0", size="42")
                         md-tooltip {{'login' | message }}
 
                 div(flex, ng-if="type != ''")
-                    md-button.md-fab.md-warn.menu-button(ng-click="Logout()", aria-label="")
-                        ng-md-icon(icon="check_box", aria-label="Account", style="fill:#ffffff", size="46")
+                    md-button.md-fab.menu-button(ng-click="Logout()", aria-label="", style="background-color:#ff5070;z-index:10;")
+                        ng-md-icon(icon="check_box", aria-label="Account", style="position:relative;top:5px;fill:#ffd0d0", size="42")
                         md-tooltip {{'logout' | message }}
 
         div(layout="row")
