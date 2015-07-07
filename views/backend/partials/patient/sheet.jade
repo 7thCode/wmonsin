@@ -1,4 +1,4 @@
-md-bottom-sheet(class="md-grid")
+md-bottom-sheet.md-grid
     //md-card-content
         md-input-container
             label Query
@@ -7,4 +7,4 @@ md-bottom-sheet(class="md-grid")
         md-item(ng-repeat="item in items")
             md-button(ng-click="ItemClick($index)", class="md-grid-item-content")
                 ng-md-icon(icon="{{item.icon}}", style="fill:#abcdef", size="46")
-                div(class="md-grid-text") {{ item.name }}
+                .md-grid-text {{ item.name }}

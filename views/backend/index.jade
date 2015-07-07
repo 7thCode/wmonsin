@@ -34,7 +34,7 @@ html(lang="ja")
         link(rel="stylesheet", type="text/css", href="stylesheets/style.css")
     body(ng-app="AccountApplication", ng-controller="ApplicationController",layout="column", layout-fill,style="background-color: #A0A0FF;")
 
-        md-toolbar(md-scroll-shrink, style="z-index:10;")
+        md-toolbar( style="z-index:10;")
             .md-toolbar-tools(layout-align="center center")
                 h3.md-display-1(flex="60") {{username}} - {{type}}
 
@@ -69,7 +69,7 @@ html(lang="ja")
                         md-tooltip {{'logout' | message }}
 
         div(layout="row")
-            div(ui-view="")
+            div(flex, ui-view="")
 
     script(type="text/javascript", src="/socket.io/socket.io.js")
     script(type="text/javascript", src="/bower_components/hammerjs/hammer.min.js")
