@@ -13,6 +13,7 @@
 /// <reference path="../../DefinitelyTyped/node/node.d.ts" />
 /// <reference path="../../DefinitelyTyped/express/express.d.ts" />
 /// <reference path="../../DefinitelyTyped/mongoose/mongoose.d.ts" />
+/// <reference path="result.d.ts" />
 
 'use strict';
 
@@ -31,6 +32,8 @@ var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
 
 
+var Result = require('./result');
+
 //var emitter = require('socket.io-emitter')({ host: '127.0.0.1', port: 6379 });
 //non csrf
 //router.get('/', function (req, res, next) {
@@ -42,6 +45,7 @@ var config = JSON.parse(text);
 
 module.exports = router;
 
+/*
 class Result {
     private code:number;
     private message:string;
@@ -53,6 +57,7 @@ class Result {
         this.value = value;
     }
 }
+*/
 
 User("root", ():void => {
     var account = new Account();
@@ -102,7 +107,7 @@ function User(name:any, success:any, error:any):void {
                 success();
             }
             else { //already
-                error("Already Found",[]);
+                error("Already Found", []);
             }
         }
         else {
@@ -123,7 +128,7 @@ function GetView(success:any, error:any):void {
                 }
             }
             else {
-                error("No Docs",[]);
+                error("No Docs", []);
             }
         }
         else {
@@ -257,40 +262,22 @@ router.post('/patient/accept', (req:any, res:any):void => {
                         if (!saveerror) {
                             res.send(JSON.stringify(new Result(0, "patient accepted.", patient.Status)));
                         } else {
-                            res.send(JSON.stringify(new Result(10, "patient status put", saveerror)));
+                            res.send(JSON.stringify(new Result(100, "patient status put", saveerror)));
                         }
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(10, "patient query no item", [])));
+                    res.send(JSON.stringify(new Result(10, "patient query no item", {})));
                 }
             } else {
-                res.send(JSON.stringify(new Result(10, "patient query", finderror)));
+                res.send(JSON.stringify(new Result(100, "patient query", finderror)));
             }
         });
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient accept " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "patient accept " + e.message, e)));
     }
 });
-/*
- router.post('/patient/create', function (req, res) {
- try {
- res = BasicHeader(res, "");
- var patient = new Patient();
- patient.Input = req.body.body;
- patient.save(function (saveerror) {
- if (!saveerror) {
- res.send(JSON.stringify(new Result(0, "", [])));
- //emitter.emit('client', {value: "1"});
- } else {
- res.send(JSON.stringify(new Result(10, "patient create", saveerror)));
- }
- });
- } catch (e) {
- res.send(JSON.stringify(new Result(100, "patient create", e.message)));
- }
- });
- */
+
 /*! get */
 router.get('/patient/:id', (req:any, res:any):void => {
     try {
@@ -304,22 +291,22 @@ router.get('/patient/:id', (req:any, res:any):void => {
                             res.send(JSON.stringify(new Result(0, "OK", doc)));
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "patient get", [])));
+                            res.send(JSON.stringify(new Result(10, "patient get", {})));
                         }
                     }
                     else {
-                        res.send(JSON.stringify(new Result(10, "patient get", finderror)));
+                        res.send(JSON.stringify(new Result(100, "patient get", finderror)));
                     }
                 });
             }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new Result(2, "patient get auth error", [])));
+                res.send(JSON.stringify(new Result(2, "patient get auth error", {})));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient get no session", [])));
+            res.send(JSON.stringify(new Result(2000, "patient get no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient get e.message", e)));
+        res.send(JSON.stringify(new Result(10000, "patient get e.message", e)));
     }
 });
 
@@ -339,18 +326,18 @@ router.put('/patient/:id', (req:any, res:any):void => {
                                 patient.Input = req.body.Input;
                                 patient.save((saveerror:any):void => {
                                     if (!saveerror) {
-                                        res.send(JSON.stringify(new Result(0, "OK", [])));
+                                        res.send(JSON.stringify(new Result(0, "OK", {})));
                                     } else {
-                                        res.send(JSON.stringify(new Result(10, "patient put", saveerror)));
+                                        res.send(JSON.stringify(new Result(100, "patient put", saveerror)));
                                     }
                                 });
                             }
                             else {
-                                res.send(JSON.stringify(new Result(10, "patient put", [])));
+                                res.send(JSON.stringify(new Result(10, "patient put", {})));
                             }
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "patient put", finderror)));
+                            res.send(JSON.stringify(new Result(100, "patient put", finderror)));
                         }
                     });
                 }
@@ -362,10 +349,10 @@ router.put('/patient/:id', (req:any, res:any):void => {
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient put no session", [])));
+            res.send(JSON.stringify(new Result(2000, "patient put no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient put " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "patient put " + e.message, e)));
     }
 });
 
@@ -379,24 +366,24 @@ router.delete('/patient/:id', (req:any, res:any):void => {
                     var id:string = req.params.id;
                     Patient.remove({_id: id}, (finderror:any):void => {
                         if (!finderror) {
-                            res.send(JSON.stringify(new Result(0, "OK", [])));
+                            res.send(JSON.stringify(new Result(0, "OK", {})));
                         } else {
-                            res.send(JSON.stringify(new Result(10, "patient delete", finderror)));
+                            res.send(JSON.stringify(new Result(100, "patient delete", finderror)));
                         }
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "patient delete no rights", [])));
+                    res.send(JSON.stringify(new Result(1, "patient delete no rights", {})));
                 }
             }, (message:string, error:any):void => {
                 res.send(JSON.stringify(new Result(2, "patient delete " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient delete no session", [])));
+            res.send(JSON.stringify(new Result(2000, "patient delete no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient delete " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "patient delete " + e.message, e)));
     }
 });
 
@@ -407,31 +394,7 @@ router.get('/patient/query/:query', (req:any, res:any):void => {
         if (req.session != null) {
             Authenticate(req.session.key, (type:any):void => {
 
-                /*       var params:any = JSON.parse(decodeURIComponent(req.params.query));
-                 var today:Date = new Date();
-                 today.setHours(23, 59, 59, 99);
-                 var yesterday:Date = new Date();
-                 yesterday.setHours(0, 0, 0, 1);
-                 var query:any = {$and: [{Date: {$lte: today}}, {Date: {$gt: yesterday}}]};
-                 */
-
                 var query = JSON.parse(decodeURIComponent(req.params.query));
-                /*       var now = new Date();
-                 var past = new Date();
-                 var baseSec = past.getTime();
-                 var pastSec = 86400000;//日数 * 1日のミリ秒数
-                 var targetSec = baseSec - pastSec;
-                 past.setTime(targetSec);
-                 var query:any = {$and: [{Date: {$lte: now}}, {Date: {$gt: past}}]};
-                 */
-
-                //      var params:any = JSON.parse(decodeURIComponent(req.params.query));
-                //      var today:Date = new Date(params.date);
-                //      today.setHours(23, 59, 59, 99);
-                //      var yesterday:Date = new Date(params.date);
-                //      yesterday.setHours(00, 00, 00, 01);
-                //     var query:any = {$and: [{Date: {$lte: today}}, {Date: {$gt: yesterday}}]};
-
 
                 Patient.find(query, {}, {sort: {Date: -1}}, (finderror:any, docs:any):void => {
                     if (!finderror) {
@@ -439,10 +402,10 @@ router.get('/patient/query/:query', (req:any, res:any):void => {
                             res.send(JSON.stringify(new Result(0, "OK", docs)));
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "patient query", [])));
+                            res.send(JSON.stringify(new Result(10, "patient query", {})));
                         }
                     } else {
-                        res.send(JSON.stringify(new Result(10, "patient query", finderror)));
+                        res.send(JSON.stringify(new Result(100, "patient query", finderror)));
                     }
                 });
             }, (message:string, error:any):void => {
@@ -450,10 +413,10 @@ router.get('/patient/query/:query', (req:any, res:any):void => {
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient query no session", [])));
+            res.send(JSON.stringify(new Result(2000, "patient query no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient query " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "patient query " + e.message, e)));
     }
 });
 
@@ -471,11 +434,11 @@ router.get('/patient/status/:id', (req:any, res:any):void => {
                             res.send(JSON.stringify(new Result(0, "OK", patient.Status)));
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "patient status get id error", [])));
+                            res.send(JSON.stringify(new Result(10, "patient status get id error", {})));
                         }
                     }
                     else {
-                        res.send(JSON.stringify(new Result(10, "patient status get", finderror)));
+                        res.send(JSON.stringify(new Result(100, "patient status get", finderror)));
                     }
                 });
 
@@ -484,10 +447,10 @@ router.get('/patient/status/:id', (req:any, res:any):void => {
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient status get no session", [])));
+            res.send(JSON.stringify(new Result(2000, "patient status get no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient status get " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "patient status get " + e.message, e)));
     }
 });
 
@@ -506,31 +469,31 @@ router.put('/patient/status/:id', (req:any, res:any):void => {
                                     if (!saveerror) {
                                         res.send(JSON.stringify(new Result(0, "OK", patient.Status)));
                                     } else {
-                                        res.send(JSON.stringify(new Result(10, "patient status put", saveerror)));
+                                        res.send(JSON.stringify(new Result(100, "patient status put", saveerror)));
                                     }
                                 });
                             }
                             else {
-                                res.send(JSON.stringify(new Result(10, "patient status put", [])));
+                                res.send(JSON.stringify(new Result(10, "patient status put", {})));
                             }
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "patient status put", finderror)));
+                            res.send(JSON.stringify(new Result(100, "patient status put", finderror)));
                         }
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "patient status put no rights", [])));
+                    res.send(JSON.stringify(new Result(1, "patient status put no rights", {})));
                 }
             }, (message:string, error:any):void => {
                 res.send(JSON.stringify(new Result(2, "patient status " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "patient status put no session", [])));
+            res.send(JSON.stringify(new Result(2000, "patient status put no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "patient status put " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "patient status put " + e.message, e)));
     }
 });
 
@@ -550,9 +513,9 @@ router.post('/account/create', (req:any, res:any):void => {
                         account.key = Cipher(req.body.username, config.key2);
                         account.save((saveerror:any):void => {
                             if (!saveerror) {
-                                res.send(JSON.stringify(new Result(0, "OK", [])));
+                                res.send(JSON.stringify(new Result(0, "OK", {})));
                             } else {
-                                res.send(JSON.stringify(new Result(10, "account create", saveerror)));
+                                res.send(JSON.stringify(new Result(100, "account create", saveerror)));
                             }
                         });
                     }, (message:string, error:any):void => {
@@ -560,17 +523,17 @@ router.post('/account/create', (req:any, res:any):void => {
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "account create no rights", [])));
+                    res.send(JSON.stringify(new Result(1, "account create no rights", {})));
                 }
             }, (message:string, error:any):void => {
                 res.send(JSON.stringify(new Result(2, "account create " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account create no session", [])));
+            res.send(JSON.stringify(new Result(2000, "account create no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account create " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "account create " + e.message, e)));
     }
 });
 
@@ -581,7 +544,7 @@ router.post('/account/logout', (req:any, res:any):void => {
         req.session.destroy();
         res.send(JSON.stringify(new Result(0, "", {})));
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account logout " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "account logout " + e.message, e)));
     }
 });
 
@@ -611,14 +574,14 @@ router.post('/account/login', (req:any, res:any):void => {
                     }
                 }
                 else {
-                    res.send(JSON.stringify(new Result(10, "unknown user or wrong password.", [])));
+                    res.send(JSON.stringify(new Result(10, "unknown user or wrong password.", {})));
                 }
             } else {
-                res.send(JSON.stringify(new Result(10, "unknown user or wrong password.", finderror)));
+                res.send(JSON.stringify(new Result(100, "unknown user or wrong password.", finderror)));
             }
         });
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account login fail." + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "account login fail." + e.message, e)));
     }
 });
 
@@ -635,11 +598,11 @@ router.get('/account/:id', (req:any, res:any):void => {
                             res.send(JSON.stringify(new Result(0, "OK", doc)));
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "account get", [])));
+                            res.send(JSON.stringify(new Result(10, "account get", {})));
                         }
                     }
                     else {
-                        res.send(JSON.stringify(new Result(10, "account get", geterror)));
+                        res.send(JSON.stringify(new Result(100, "account get", geterror)));
                     }
                 });
             }, (message:string, error:any):void => {
@@ -647,10 +610,10 @@ router.get('/account/:id', (req:any, res:any):void => {
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account get no session", [])));
+            res.send(JSON.stringify(new Result(2000, "account get no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account get " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "account get " + e.message, e)));
     }
 });
 
@@ -670,33 +633,33 @@ router.put('/account/:id', (req:any, res:any):void => {
                                 account2.type = req.body.type;
                                 account2.save((saveerror:any):void => {
                                     if (!saveerror) {
-                                        res.send(JSON.stringify(new Result(0, "OK", [])));
+                                        res.send(JSON.stringify(new Result(0, "OK", {})));
                                     } else {
-                                        res.send(JSON.stringify(new Result(10, "account put", saveerror)));
+                                        res.send(JSON.stringify(new Result(100, "account put", saveerror)));
                                     }
                                 });
                             }
                             else {
-                                res.send(JSON.stringify(new Result(3, "account put find error", [])));
+                                res.send(JSON.stringify(new Result(3, "account put find error", {})));
                             }
                         }
                         else {
-                            res.send(JSON.stringify(new Result(3, "account put find error", finderror)));
+                            res.send(JSON.stringify(new Result(100, "account put find error", finderror)));
                         }
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "account put no rights", [])));
+                    res.send(JSON.stringify(new Result(1, "account put no rights", {})));
                 }
             }, (message:string, error:any):void => {
                 res.send(JSON.stringify(new Result(2, "account put " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account put no session", [])));
+            res.send(JSON.stringify(new Result(2000, "account put no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account put " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "account put " + e.message, e)));
     }
 });
 
@@ -710,25 +673,25 @@ router.delete('/account/:id', (req:any, res:any):void => {
                     var id:string = req.params.id;
                     Account.remove({_id: id}, (removeerror:any):void => {
                         if (!removeerror) {
-                            res.send(JSON.stringify(new Result(0, "OK", [])));
+                            res.send(JSON.stringify(new Result(0, "OK", {})));
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "account delete", removeerror)));
+                            res.send(JSON.stringify(new Result(100, "account delete", removeerror)));
                         }
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "account delete no rights", [])));
+                    res.send(JSON.stringify(new Result(1, "account delete no rights", {})));
                 }
             }, (message:string, error:any):void => {
                 res.send(JSON.stringify(new Result(2, "account delete " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account delete no session", [])));
+            res.send(JSON.stringify(new Result(2000, "account delete no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account delete " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "account delete " + e.message, e)));
     }
 });
 
@@ -745,10 +708,10 @@ router.get('/account/query/:query', (req:any, res:any):void => {
                             res.send(JSON.stringify(new Result(0, "OK", docs)));
                         }
                         else {
-                            res.send(JSON.stringify(new Result(10, "account query", [])));
+                            res.send(JSON.stringify(new Result(10, "account query", {})));
                         }
                     } else {
-                        res.send(JSON.stringify(new Result(10, "account query", finderror)));
+                        res.send(JSON.stringify(new Result(100, "account query", finderror)));
                     }
                 });
             }, (message:string, error:any):void => {
@@ -756,10 +719,10 @@ router.get('/account/query/:query', (req:any, res:any):void => {
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account query no session", [])));
+            res.send(JSON.stringify(new Result(2000, "account query no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account query " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "account query " + e.message, e)));
     }
 });
 
@@ -778,33 +741,33 @@ router.put('/account/password/:id', (req:any, res:any):void => {
                                 account2.password = Cipher(req.body.password, config.key1);
                                 account2.save((saveerror:any):void => {
                                     if (!saveerror) {
-                                        res.send(JSON.stringify(new Result(0, "OK", [])));
+                                        res.send(JSON.stringify(new Result(0, "OK", {})));
                                     } else {
-                                        res.send(JSON.stringify(new Result(10, "account password", saveerror)));
+                                        res.send(JSON.stringify(new Result(100, "account password", saveerror)));
                                     }
                                 });
                             }
                             else {
-                                res.send(JSON.stringify(new Result(3, "account password find error", [])));
+                                res.send(JSON.stringify(new Result(3, "account password find error", {})));
                             }
                         }
                         else {
-                            res.send(JSON.stringify(new Result(3, "account password find error", finderror)));
+                            res.send(JSON.stringify(new Result(100, "account password find error", finderror)));
                         }
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "account password no rights", [])));
+                    res.send(JSON.stringify(new Result(1, "account password no rights", {})));
                 }
             }, (message:string, error:any):void => {
                 res.send(JSON.stringify(new Result(2, "account password " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "account password no session", [])));
+            res.send(JSON.stringify(new Result(2000, "account password no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "account password " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "account password " + e.message, e)));
     }
 });
 
@@ -818,14 +781,14 @@ router.get('/config', (req:any, res:any):void => {
             Authenticate(req.session.key, (type:any):void => {
                 res.send(JSON.stringify(new Result(0, "config get", config)));
             }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new Result(2, "config get auth error", [])));
+                res.send(JSON.stringify(new Result(2, "config get auth error", {})));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "config get no session", [])));
+            res.send(JSON.stringify(new Result(2000, "config get no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "config get " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "config get " + e.message, e)));
     }
 });
 
@@ -837,22 +800,27 @@ router.put('/config', (req:any, res:any):void => {
             Authenticate(req.session.key, (type:any):void => {
                 if (type != "Viewer") {
                     config = req.body.body;
-                    fs.writeFile('config/config.json', JSON.stringify(config), (err:any):void => {
-                        res.send(JSON.stringify(new Result(0, "config put", config)));
+                    fs.writeFile('config/config.json', JSON.stringify(config), (error:any):void => {
+                        if (!error) {
+                            res.send(JSON.stringify(new Result(0, "config put", config)));
+                        }
+                        else {
+                            res.send(JSON.stringify(new Result(1, "config put write error.", error)));
+                        }
                     });
                 }
                 else {
-                    res.send(JSON.stringify(new Result(1, "config put no rights", [])));
+                    res.send(JSON.stringify(new Result(1, "config put no rights", {})));
                 }
             }, (message:string, error:any):void => {
                 res.send(JSON.stringify(new Result(2, "config put " + message, error)));
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "config put no session", [])));
+            res.send(JSON.stringify(new Result(2000, "config put no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "config put " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "config put " + e.message, e)));
     }
 });
 
@@ -866,15 +834,15 @@ router.get('/view', (req:any, res:any):void => {
                     res.send(JSON.stringify(new Result(0, "OK", doc)));
                 }
                 else {
-                    res.send(JSON.stringify(new Result(10, "view get", [])));
+                    res.send(JSON.stringify(new Result(10, "view get", {})));
                 }
             }
             else {
-                res.send(JSON.stringify(new Result(10, "view get", finderror)));
+                res.send(JSON.stringify(new Result(100, "view get", finderror)));
             }
         });
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "view get " + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "view get " + e.message, e)));
     }
 });
 
@@ -889,17 +857,17 @@ router.post('/view', (req:any, res:any):void => {
             view.Data = viewdata;
             view.save((saveerror:any):void => {
                 if (!saveerror) {
-                    res.send(JSON.stringify(new Result(0, "OK", [])));
+                    res.send(JSON.stringify(new Result(0, "OK", {})));
                 } else {
-                    res.send(JSON.stringify(new Result(10, "view create", saveerror)));
+                    res.send(JSON.stringify(new Result(100, "view create", saveerror)));
                 }
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "view create no session", [])));
+            res.send(JSON.stringify(new Result(2000, "view create no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "view create" + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "view create" + e.message, e)));
     }
 });
 
@@ -914,9 +882,9 @@ router.get('/initview', (req:any, res:any):void => {
                 view.Data = initView.Data;
                 view.save((saveerror:any):void => {
                     if (!saveerror) {
-                        res.send(JSON.stringify(new Result(0, "OK", [])));
+                        res.send(JSON.stringify(new Result(0, "OK", {})));
                     } else {
-                        res.send(JSON.stringify(new Result(10, "view create", saveerror)));
+                        res.send(JSON.stringify(new Result(100, "view create", saveerror)));
                     }
                 });
             }, (message:string, error:any):void => {
@@ -924,10 +892,10 @@ router.get('/initview', (req:any, res:any):void => {
             });
         }
         else {
-            res.send(JSON.stringify(new Result(20, "view create no session", [])));
+            res.send(JSON.stringify(new Result(2000, "view create no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new Result(100, "view create" + e.message, e)));
+        res.send(JSON.stringify(new Result(10000, "view create" + e.message, e)));
     }
 });
 

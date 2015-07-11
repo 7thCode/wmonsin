@@ -44,10 +44,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 var mongoose = require('mongoose');
 
-//'mongodb://localhost/patient'
-//mongoose.connect('mongodb://useraccount:zz0101@128.199.196.240/patient', options);
-//mongoose.connect('mongodb://localhost/patient', options);
-
 var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
@@ -87,8 +83,8 @@ app.use(function (req:any, res:any, next:any):void {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function (err:any, req:any, res:any, next:any):void {
+//app.use(function (err:any, req:any, res:any, next:any):void {
     //   res.send(JSON.stringify(new Result(2, "create", "auth error")));
-});
+//});
 
 module.exports = app;
