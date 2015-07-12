@@ -85,3 +85,13 @@ public/stylesheets/style.css
 views/unsupport.html
 
 config/configsample.txt
+
+routes/tohtml.js
+
+routes/tohtml.min.js
+
+views/backend/index.html
+
+views/front/index.html
+
+views/front/partials/browse.html
