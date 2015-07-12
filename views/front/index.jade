@@ -4,7 +4,7 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
-- var debug = false;
+- var debug = true;
 doctype html
 html(lang="ja")
     head
@@ -35,21 +35,21 @@ html(lang="ja")
     body(layout="column" ng-app="PatientsApplication",style="background-color: #A0A0FF;")
         div(ui-view="")
 
-    script(type="text/javascript", src='/bower_components/jquery/dist/jquery.min.js')
-    script(type="text/javascript", src="/socket.io/socket.io.js")
-    script(type="text/javascript", src="/bower_components/hammerjs/hammer.min.js")
-    script(type="text/javascript", src="/bower_components/angular/angular.min.js")
-    script(type="text/javascript", src="/bower_components/angular-ui-router/release/angular-ui-router.min.js")
-    script(type="text/javascript", src="/bower_components/angular-animate/angular-animate.min.js")
-    script(type="text/javascript", src="/bower_components/angular-aria/angular-aria.min.js")
-    script(type="text/javascript", src="/bower_components/angular-material/angular-material.min.js")
-    script(type="text/javascript", src="/bower_components/angular-messages/angular-messages.min.js")
-    script(type="text/javascript", src="/bower_components/angular-resource/angular-resource.min.js")
-    script(type="text/javascript", src="/bower_components/angular-material-icons/angular-material-icons.min.js")
+script(type="text/javascript", src='/bower_components/jquery/dist/jquery.min.js')
+script(type="text/javascript", src="/socket.io/socket.io.js")
+script(type="text/javascript", src="/bower_components/hammerjs/hammer.min.js")
+script(type="text/javascript", src="/bower_components/angular/angular.min.js")
+script(type="text/javascript", src="/bower_components/angular-ui-router/release/angular-ui-router.min.js")
+script(type="text/javascript", src="/bower_components/angular-animate/angular-animate.min.js")
+script(type="text/javascript", src="/bower_components/angular-aria/angular-aria.min.js")
+script(type="text/javascript", src="/bower_components/angular-material/angular-material.min.js")
+script(type="text/javascript", src="/bower_components/angular-messages/angular-messages.min.js")
+script(type="text/javascript", src="/bower_components/angular-resource/angular-resource.min.js")
+script(type="text/javascript", src="/bower_components/angular-material-icons/angular-material-icons.min.js")
 
-    script(type="text/javascript", src="/bower_components/lodash/lodash.min.js")
-    script(type="text/javascript", src="/bower_components/fabric/dist/fabric.min.js")
-        
+script(type="text/javascript", src="/bower_components/lodash/lodash.min.js")
+script(type="text/javascript", src="/bower_components/fabric/dist/fabric.min.js")
+
 if debug
     script(type="text/javascript", src="javascripts/PatientsApplication.js")
     script(type="text/javascript", src="javascripts/PatientsControllers.js")

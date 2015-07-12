@@ -22,6 +22,8 @@ var Patient = require('./patient');
 var Account = require('./account');
 var View = require('./view');
 
+var ToHtml = require('./tohtml');
+
 var csurf = require('csurf');
 var crypto = require("crypto");
 
@@ -897,6 +899,158 @@ router.get('/initview', (req:any, res:any):void => {
     } catch (e) {
         res.send(JSON.stringify(new Result(10000, "view create" + e.message, e)));
     }
+});
+
+router.get('/json', function (req, res, next) {
+    var tohtml = new ToHtml();
+
+    var data = {
+        tag: "mdcontent",
+        'style': 'page.style',
+        'childelements': [
+            {
+                tag: "ng-form",
+                'name': 'validate',
+                'childelements': [
+                    {
+                        tag: "div",
+                        'childelements': [
+                            {
+                                tag: "md-card",
+                                'childelements': [
+                                    {
+                                        tag: "md-card-content",
+                                        'childelements': [
+                                            {
+                                                tag: "md-button",
+                                                class: "md-raised md-primary",
+                                                style: 'height:30px;width:10px;top:130px;left:200px;z-index:1;position: absolute',
+                                                childelements: [{ value: "aaaaaaa" }]
+                                            },
+                                            {
+                                                tag: "md-checkbox",
+                                                "ng-model": "checkbox",
+                                                childelements: [{ value: "zz" }]
+                                            },
+                                            {
+                                                tag: "md-input-container",
+                                                class: "md-raised md-warn",
+                                                'childelements': [
+                                                    {
+                                                        tag: "label",
+                                                        childelements: [{ value: "AAA" }]
+                                                    },
+                                                    {
+                                                        tag: "input",
+                                                        name: "input",
+                                                        "ng-model": "input",
+                                                        "md-maxlength": "30",
+                                                        required: "true"
+                                                    },
+                                                    {
+                                                        tag: "div",
+                                                        "ng-messages": "validate.input.$error",
+                                                        'childelements': [
+                                                            {
+                                                                tag: "div",
+                                                                "ng-message": "md-maxlength",
+                                                                childelements: [{ value: "max" }]
+                                                            },
+                                                            {
+                                                                tag: "div",
+                                                                "ng-message": "required",
+                                                                childelements: [{ value: "req" }]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                tag: "md-switch",
+                                                class: "md-fab md-accent",
+                                                "ng-model": "switch",
+                                                childelements: [{ value: "zz" }]
+                                            },
+                                            {
+                                                tag: "md-radio-group",
+                                                class: "md-raised md-primary",
+                                                "ng-model": "radio",
+                                                'childelements': [
+                                                    {
+                                                        tag: "md-radio-button",
+                                                        value: "true",
+                                                        childelements: [{ value: "AAA" }]
+                                                    },
+                                                    {
+                                                        tag: "md-radio-button",
+                                                        value: "false",
+                                                        childelements: [{ value: "a" }]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    };
+    //var a = tohtml.render(data);
+
+    var head = '<!DOCTYPE html>' +
+        '<html lang="ja">' +
+        '<head>' +
+        '<meta charset="utf-8">' +
+        '<meta name="format-detection" content="telephone=no">' +
+        '<meta name="msapplication-tap-highlight" content="no">' +
+        '<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height">' +
+        '<title>wmonsin</title>' +
+        '<link rel="apple-touch-icon" sizes="57x57" href="/favicons/apple-touch-icon-57x57.png">' +
+        '<link rel="apple-touch-icon" sizes="60x60" href="/favicons/apple-touch-icon-60x60.png">' +
+        '<link rel="apple-touch-icon" sizes="72x72" href="/favicons/apple-touch-icon-72x72.png">' +
+        '<link rel="apple-touch-icon" sizes="76x76" href="/favicons/apple-touch-icon-76x76.png">' +
+        '<link rel="apple-touch-icon" sizes="114x114" href="/favicons/apple-touch-icon-114x114.png">' +
+        '<link rel="apple-touch-icon" sizes="120x120" href="/favicons/apple-touch-icon-120x120.png">' +
+        '<link rel="apple-touch-icon" sizes="144x144" href="/favicons/apple-touch-icon-144x144.png">' +
+        '<link rel="apple-touch-icon" sizes="152x152" href="/favicons/apple-touch-icon-152x152.png">' +
+        '<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon-180x180.png">' +
+        '<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">' +
+        '<link rel="icon" type="image/png" href="/favicons/android-chrome-192x192.png" sizes="192x192">' +
+        '<link rel="icon" type="image/png" href="/favicons/favicon-96x96.png" sizes="96x96">' +
+        '<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">' +
+        '<link rel="manifest" href="/favicons/manifest.json">' +
+        '<meta name="msapplication-TileColor" content="#da532c">' +
+        '<meta name="msapplication-TileImage" content="/favicons/mstile-144x144.png">' +
+        '<meta name="theme-color" content="#ffffff">' +
+        '<link rel="stylesheet" type="text/css" href="/bower_components/angular-material/angular-material.min.css">' +
+        '<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">' +
+        '</head>' +
+        '<body layout="column" ng-app="PatientsApplication" style="background-color: #A0A0FF;">';
+
+    var tail = '</body>' +
+        '</html>' +
+        '<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>' +
+        '<script type="text/javascript" src="/socket.io/socket.io.js"></script>' +
+        '<script type="text/javascript" src="/bower_components/hammerjs/hammer.min.js"></script>' +
+        '<script type="text/javascript" src="/bower_components/angular/angular.min.js"></script>' +
+        '<script type="text/javascript" src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>' +
+        '<script type="text/javascript" src="/bower_components/angular-animate/angular-animate.min.js"></script>' +
+        '<script type="text/javascript" src="/bower_components/angular-aria/angular-aria.min.js"></script>' +
+        '<script type="text/javascript" src="/bower_components/angular-material/angular-material.min.js"></script>' +
+        '<script type="text/javascript" src="/bower_components/angular-messages/angular-messages.min.js"></script>' +
+        '<script type="text/javascript" src="/bower_components/angular-resource/angular-resource.min.js"></script>' +
+        '<script type="text/javascript" src="/bower_components/angular-material-icons/angular-material-icons.min.js"></script>' +
+        '<script type="text/javascript" src="/bower_components/lodash/lodash.min.js"></script>' +
+        '<script type="text/javascript" src="/bower_components/fabric/dist/fabric.min.js"></script>' +
+        '<script type="text/javascript" src="/front/javascripts/PatientsApplication.min.js"></script>' +
+        '<script type="text/javascript" src="/front/javascripts/PatientsControllers.min.js"></script>' +
+        '<script type="text/javascript" src="/javascripts/TopControllers.min.js"></script>';
+
+
+    res.send(head + tohtml.render(data) + tail);
 });
 
 var initView:any = {

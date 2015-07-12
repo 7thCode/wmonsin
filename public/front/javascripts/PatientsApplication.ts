@@ -30,7 +30,11 @@ app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRou
 
         .state('browse', {
             url: "/browse/:page",
-            templateUrl: "/front/partials/browse",
+            templateUrl: function ($stateParams) {
+                var page = $stateParams.page;
+
+                return "/front/partials/browse";
+            } ,
             controller: 'BrowseController'
         }).
 
