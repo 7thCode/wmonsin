@@ -86,14 +86,14 @@ function Cipher(name:any, pass:any):any {
     return cipher.final('hex');
 }
 
-function Authenticate(key, success:any, error:any):void {
+function Authenticate(key:any, success:any, error:any):void {
     Account.findOne({key: key}, (finderror:any, doc:any):void => {
         if (!finderror) {
             if (doc != null) {
                 success(doc.type);
             }
             else {
-                error("No Docs", []);
+                error("No Account", {});
             }
         }
         else {
@@ -109,7 +109,7 @@ function User(name:any, success:any, error:any):void {
                 success();
             }
             else { //already
-                error("Already Found", []);
+                error("Already Found", {});
             }
         }
         else {
@@ -126,11 +126,11 @@ function GetView(success:any, error:any):void {
                     success();
                 }
                 else { //already
-                    error("Already Found", []);
+                    error("Already Found", docs);
                 }
             }
             else {
-                error("No Docs", []);
+                error("No View", {});
             }
         }
         else {
@@ -301,7 +301,7 @@ router.get('/patient/:id', (req:any, res:any):void => {
                     }
                 });
             }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new Result(2, "patient get auth error", {})));
+                res.send(JSON.stringify(new Result(2, "patient get auth " + message, error)));
             });
         }
         else {
@@ -395,9 +395,7 @@ router.get('/patient/query/:query', (req:any, res:any):void => {
         res = BasicHeader(res, "");
         if (req.session != null) {
             Authenticate(req.session.key, (type:any):void => {
-
                 var query = JSON.parse(decodeURIComponent(req.params.query));
-
                 Patient.find(query, {}, {sort: {Date: -1}}, (finderror:any, docs:any):void => {
                     if (!finderror) {
                         if (docs != null) {
@@ -1053,8 +1051,8 @@ router.get('/json', function (req, res, next) {
     res.send(head + tohtml.render(data) + tail);
 });
 
-
 router.get('/front/partials/browse2', function (req, res, next) {
+
     var tohtml = new ToHtml();
 
     var data = {
@@ -1431,16 +1429,12 @@ router.get('/front/partials/browse2', function (req, res, next) {
                 ]
             }
         ]
-    }
-
+    };
 
     var a = tohtml.render(data);
 
-
     res.send(tohtml.render(data));
-})
-;
-
+});
 
 var initView:any = {
     Data: {

@@ -46,7 +46,6 @@ app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRou
         });
 
     $urlRouterProvider.otherwise('partials/browseS');
-
 }]);
 
 app.filter('status', ():(input:string) => string => {
