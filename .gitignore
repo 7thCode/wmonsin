@@ -95,3 +95,9 @@ views/backend/index.html
 views/front/index.html
 
 views/front/partials/browse.html
+routes/result.min.js
+routes/result.min.min.js
+views/backend/partials/patient/patients.html
+views/backend/partials/account/accounts.html
+views/backend/partials/patient/sheet.html
+
