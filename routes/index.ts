@@ -73,16 +73,16 @@ User("root", ():void => {
 });
 
 /*
-GetView("page1",():void => {
-    var view = new View();
-    view.Data = initView.Data;
-    view.save((saveerror:any):void => {
-    });
-},
-    () => {},
-    (message:string, error:any):void => {
-});
-*/
+ GetView("page1",():void => {
+ var view = new View();
+ view.Data = initView.Data;
+ view.save((saveerror:any):void => {
+ });
+ },
+ () => {},
+ (message:string, error:any):void => {
+ });
+ */
 
 function Cipher(name:any, pass:any):any {
     var cipher:any = crypto.createCipher('aes192', pass);
@@ -123,7 +123,7 @@ function User(name:any, success:any, error:any):void {
 }
 
 function GetView(name:string, success:any, found:any, error:any):void {
-    View.find({name: name}, {}, {}, (finderror:any, docs:any):void => {
+    View.find({"Data.name": name}, {}, {}, (finderror:any, docs:any):void => {
         if (!finderror) {
             if (docs != null) {
                 if (docs.length == 0) {
@@ -881,7 +881,7 @@ router.get('/initview', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            GetView("page1", ():void => {
+            GetView("page2", ():void => {
                     var view:any = new View();
                     view.Data = initView.Data;
                     view.save((saveerror:any):void => {
@@ -908,17 +908,17 @@ router.get('/initview', (req:any, res:any):void => {
 });
 
 /*! create view */
-router.post('/createview/:name', (req:any, res:any):void => {
+router.post('/createview/:key/:name', (req:any, res:any):void => {
     try {
-        Authenticate(req.body.key, (type:any):void => {
-
+        Authenticate(req.params.key, (type:any):void => {
             res = BasicHeader(res, "");
             GetView(req.params.name, ():void => {
                     var view:any = new View();
-                    view.Data = req.body.data;
+                    var viewdocument = {name: req.params.name,content:JSON.parse(req.body.data)};
+                    view.Data = viewdocument;
                     view.save((saveerror:any):void => {
                         if (!saveerror) {
-                            res.send(JSON.stringify(new Result(0, "OK", view.Data)));
+                            res.send(JSON.stringify(new Result(0, "OK", view.Data.content)));
                         } else {
                             res.send(JSON.stringify(new Result(100, "view create", saveerror)));
                         }
@@ -938,22 +938,20 @@ router.post('/createview/:name', (req:any, res:any):void => {
     }
 });
 
-
-router.post('/updateview/:name', (req:any, res:any):void => {
+router.post('/updateview/:key/:name', (req:any, res:any):void => {
     try {
-        Authenticate(req.body.key, (type:any):void => {
-
+        Authenticate(req.params.key, (type:any):void => {
             res = BasicHeader(res, "");
-
             GetView(req.params.name, ():void => {
                     res.send(JSON.stringify(new Result(1, "not found", {})));
                 },
                 ():void => {
                     var view:any = new View();
-                    view.Data = req.body.data;
+                    var viewdocument = {name: req.params.name,content:JSON.parse(req.body.data)};
+                    view.Data = viewdocument;
                     view.save((saveerror:any):void => {
                         if (!saveerror) {
-                            res.send(JSON.stringify(new Result(0, "OK", view.Data)));
+                            res.send(JSON.stringify(new Result(0, "OK", view.Data.content)));
                         } else {
                             res.send(JSON.stringify(new Result(100, "view create", saveerror)));
                         }
@@ -978,7 +976,7 @@ router.get('/getview/:key/:name', (req:any, res:any):void => {
             View.find({name: req.params.name}, (finderror:any, doc:any):void => {
                 if (!finderror) {
                     if (doc != null) {
-                        res.send(JSON.stringify(new Result(0, "OK", doc)));
+                        res.send(JSON.stringify(new Result(0, "OK", doc.content)));
                     }
                     else {
                         res.send(JSON.stringify(new Result(10, "view get", {})));
@@ -1000,102 +998,103 @@ router.get('/getview/:key/:name', (req:any, res:any):void => {
 router.get('/json', function (req, res, next) {
     var tohtml = new ToHtml();
 
-    var data = {
-        name: "page1", content: {
-            tag: "md-content",
+    var data = {name: "page1",content:{}};
+
+    data.content = {
+        tag: "md-content",
             style: 'page.style',
             childelements: [
-                {
-                    tag: "ng-form",
-                    name: 'validate',
-                    childelements: [
-                        {
-                            tag: "div",
-                            childelements: [
-                                {
-                                    tag: "md-card",
-                                    childelements: [
-                                        {
-                                            tag: "md-card-content",
-                                            childelements: [
-                                                {
-                                                    tag: "md-button",
-                                                    class: "md-raised md-primary",
-                                                    style: 'height:30px;width:10px;top:130px;left:200px;z-index:1;position: absolute',
-                                                    childelements: [{value: "aaaaaaa"}]
-                                                },
-                                                {
-                                                    tag: "md-checkbox",
-                                                    "ng-model": "checkbox",
-                                                    childelements: [{value: "zz"}]
-                                                },
-                                                {
-                                                    tag: "md-input-container",
-                                                    class: "md-raised md-warn",
-                                                    childelements: [
-                                                        {
-                                                            tag: "label",
-                                                            childelements: [{value: "AAA"}]
-                                                        },
-                                                        {
-                                                            tag: "input",
-                                                            name: "input",
-                                                            "ng-model": "input",
-                                                            "md-maxlength": "30",
-                                                            required: "true"
-                                                        },
-                                                        {
-                                                            tag: "div",
-                                                            "ng-messages": "validate.input.$error",
-                                                            childelements: [
-                                                                {
-                                                                    tag: "div",
-                                                                    "ng-message": "md-maxlength",
-                                                                    childelements: [{value: "max"}]
-                                                                },
-                                                                {
-                                                                    tag: "div",
-                                                                    "ng-message": "required",
-                                                                    childelements: [{value: "req"}]
-                                                                }
-                                                            ]
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    tag: "md-switch",
-                                                    class: "md-fab md-accent",
-                                                    "ng-model": "switch",
-                                                    childelements: [{value: "zz"}]
-                                                },
-                                                {
-                                                    tag: "md-radio-group",
-                                                    class: "md-raised md-primary",
-                                                    "ng-model": "radio",
-                                                    childelements: [
-                                                        {
-                                                            tag: "md-radio-button",
-                                                            value: "true",
-                                                            childelements: [{value: "AAA"}]
-                                                        },
-                                                        {
-                                                            tag: "md-radio-button",
-                                                            value: "false",
-                                                            childelements: [{value: "a"}]
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
+            {
+                tag: "ng-form",
+                name: 'validate',
+                childelements: [
+                    {
+                        tag: "div",
+                        childelements: [
+                            {
+                                tag: "md-card",
+                                childelements: [
+                                    {
+                                        tag: "md-card-content",
+                                        childelements: [
+                                            {
+                                                tag: "md-button",
+                                                class: "md-raised md-primary",
+                                                style: 'height:30px;width:10px;top:130px;left:200px;z-index:1;position: absolute',
+                                                childelements: [{value: "aaaaaaa"}]
+                                            },
+                                            {
+                                                tag: "md-checkbox",
+                                                "ng-model": "checkbox",
+                                                childelements: [{value: "zz"}]
+                                            },
+                                            {
+                                                tag: "md-input-container",
+                                                class: "md-raised md-warn",
+                                                childelements: [
+                                                    {
+                                                        tag: "label",
+                                                        childelements: [{value: "AAA"}]
+                                                    },
+                                                    {
+                                                        tag: "input",
+                                                        name: "input",
+                                                        "ng-model": "input",
+                                                        "md-maxlength": "30",
+                                                        required: "true"
+                                                    },
+                                                    {
+                                                        tag: "div",
+                                                        "ng-messages": "validate.input.$error",
+                                                        childelements: [
+                                                            {
+                                                                tag: "div",
+                                                                "ng-message": "md-maxlength",
+                                                                childelements: [{value: "max"}]
+                                                            },
+                                                            {
+                                                                tag: "div",
+                                                                "ng-message": "required",
+                                                                childelements: [{value: "req"}]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                tag: "md-switch",
+                                                class: "md-fab md-accent",
+                                                "ng-model": "switch",
+                                                childelements: [{value: "zz"}]
+                                            },
+                                            {
+                                                tag: "md-radio-group",
+                                                class: "md-raised md-primary",
+                                                "ng-model": "radio",
+                                                childelements: [
+                                                    {
+                                                        tag: "md-radio-button",
+                                                        value: "true",
+                                                        childelements: [{value: "AAA"}]
+                                                    },
+                                                    {
+                                                        tag: "md-radio-button",
+                                                        value: "false",
+                                                        childelements: [{value: "a"}]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     };
+
     //var a = tohtml.render(data);
 
     var head = '<!DOCTYPE html>' +
@@ -1154,388 +1153,401 @@ router.get('/json', function (req, res, next) {
 router.get('/front/partials/browse2', function (req, res, next) {
 
     var tohtml = new ToHtml();
-
+/*
     var data = {
         name: "page1", content: {
-        tag: "md-content", style: 'background-color: #A0A0FF;',
-        childelements: [
-            {
-                tag: "md-card",
-                childelements: [
-                    {
-                        tag: "ng-form", name: "validate",
-                        childelements: [
-                            {
-                                tag: "md-card-content", layout: "layout", "layout-align": "center center",
-                                childelements: [
-                                    {
-                                        tag: "h3", class: "md-headline",
-                                        childelements: [{value: "{{contents.headline}}"}]
-                                    }
-                                ]
-                            },
-                            {
-                                tag: "md-card-content",
-                                layout: "layout",
-                                "layout-align": "center center",
-                                "ng-show": "contents.picture.length == 1",
-                                childelements: [
-                                    {
-                                        tag: "md-radio-group",
-                                        childelements: [
-                                            {
-                                                tag: "md-radio-button",
-                                                "ng-click": "setColor('rgba(200, 20, 30, 0.4)')",
-                                                value: "rgba(200, 20, 30, 0.4)",
-                                                childelements: [{value: "{{'itai' | message}}"}]
-                                            },
-                                            {
-                                                tag: "md-radio-button",
-                                                "ng-click": "setColor('rgba(20, 200, 30, 0.4)')",
-                                                value: "rgba(20, 200, 30, 0.4)",
-                                                childelements: [{value: "{{'hare' | message}}"}]
-                                            },
-                                            {
-                                                tag: "md-radio-button",
-                                                "ng-click": "setColor('rgba(20, 20, 200, 0.4)')",
-                                                value: "rgba(20, 20, 200, 0.4)",
-                                                childelements: [{value: "{{'shibire' | message}}"}]
-                                            }
-                                        ]
-                                    },
-                                    {tag: "canvas", id: "c", width: "300", height: "600"},
-                                    {
-                                        tag: "md-button", "ng-click": "clearPicture()", "class": "md-raised md-warn",
-                                        childelements: [{value: "{{'clear' | message}}"}]
-                                    }
-                                ]
-                            },
-                            {
-                                tag: "md-list",
-                                childelements: [
-                                    {
-                                        tag: "md-list-item",
-                                        "layout-align": "center center",
-                                        "ng-repeat": "content in contents.items",
-                                        childelements: [
-                                            {
-                                                tag: "md-card", flex: "flex",
-                                                childelements: [
-                                                    {
-                                                        tag: "md-card-content", "layout-align": "start center",
-                                                        childelements: [
-                                                            {
-                                                                tag: "md-input-container",
-                                                                style: "width:100%",
-                                                                "ng-if": "content.type == 'text' &amp;&amp; content.items.length == 0",
-                                                                childelements: [
-                                                                    {
-                                                                        tag: "label",
-                                                                        childelements: [{value: "{{content.label}}"}]
-                                                                    },
-                                                                    {
-                                                                        tag: "input",
-                                                                        "ng-model": "content.model",
-                                                                        placeholder: "",
-                                                                        name: "{{content.name}}"
-                                                                    }
-                                                                ]
-                                                            },
-                                                            {
-                                                                tag: "md-input-container",
-                                                                style: "width:100%",
-                                                                "ng-if": "content.type == 'text' &amp;&amp; content.items.length != 0",
-                                                                childelements: [
-                                                                    {
-                                                                        tag: "label",
-                                                                        childelements: [{value: "{{content.label}}"}]
-                                                                    },
-                                                                    {
-                                                                        tag: "input",
-                                                                        "ng-model": "content.model",
-                                                                        placeholder: "",
-                                                                        name: "{{content.name}}",
-                                                                        "md-maxlength": "30",
-                                                                        required: "required"
-                                                                    },
-                                                                    {
-                                                                        tag: "div",
-                                                                        "ng-messages": "validate[content.name].$error",
-                                                                        childelements: [
-                                                                            {
-                                                                                tag: "div",
-                                                                                "ng-repeat": "item in content.items",
-                                                                                "ng-message": "{{item.name}}",
-                                                                                childelements: [{value: "{{item.message}}"}]
-                                                                            }
-                                                                        ]
-                                                                    }
-                                                                ]
-                                                            },
-                                                            {
-                                                                tag: "md-radio-group",
-                                                                "ng-model": "content.model",
-                                                                name: "{{content.name}}",
-                                                                "layout-align": "center center",
-                                                                "ng-if": "content.type == 'select'",
-                                                                required: "required",
-                                                                childelements: [
-                                                                    {
-                                                                        tag: "div", class: "md-display-1",
-                                                                        childelements: [{value: "{{content.label}}"}]
-                                                                    },
-                                                                    {
-                                                                        tag: "md-radio-button",
-                                                                        "ng-repeat": "item in content.items",
-                                                                        "ng-model": "content.model",
-                                                                        value: "{{item}}",
-                                                                        childelements: [
-                                                                            {
-                                                                                tag: "div", class: "md-display-1",
-                                                                                childelements: [{value: "{{item}}"}]
-                                                                            }
-                                                                        ]
-                                                                    },
-                                                                ]
-                                                            },
-                                                            {
-                                                                tag: "md-checkbox",
-                                                                "ng-model": "content.model",
-                                                                "ng-if": "content.type == 'check'",
-                                                                "md-no-ink": "md-no-ink",
-                                                                "aria-label": "Checkbox No Ink",
-                                                                class: "md-primary",
-                                                                childelements: [
-                                                                    {
-                                                                        tag: "div", class: "md-display-1",
-                                                                        childelements: [{value: "{{content.label}}"}]
-                                                                    }
-                                                                ]
-                                                            },
-                                                            {
-                                                                tag: "md-button",
-                                                                flex: "flex",
-                                                                "ng-if": "content.type == 'button' &amp;&amp; content.validate",
-                                                                "ng-class": "content.class",
-                                                                "ng-click": "next(content.path)",
-                                                                "aria-label": "",
-                                                                "ng-disabled": "validate.$invalid",
-                                                                class: "md-raised",
-                                                                childelements: [{value: "{{content.label}}"}]
-                                                            },
-                                                            {
-                                                                tag: "md-button",
-                                                                flex: "flex",
-                                                                "ng-if": "content.type == 'button' &amp;&amp; !content.validate",
-                                                                "ng-class": "content.class",
-                                                                "ng-click": "next(content.path)",
-                                                                "aria-label": "",
-                                                                class: "md-raised",
-                                                                childelements: [{value: "{{content.label}}"}]
-                                                            },
-                                                            {
-                                                                tag: "div",
-                                                                layout: "column",
-                                                                flex: "flex",
-                                                                "ng-if": "content.type == 'numeric'",
-                                                                childelements: [
-                                                                    {
-                                                                        tag: "div", layout: "row", flex: "flex",
-                                                                        childelements: [
-                                                                            {
-                                                                                tag: "md-input-container",
-                                                                                style: "width:100%",
-                                                                                childelements: [
-                                                                                    {
-                                                                                        tag: "label",
-                                                                                        childelements: [{value: "{{content.label}}"}]
-                                                                                    },
-                                                                                    {
-                                                                                        tag: "input",
-                                                                                        "ng-model": "content.model",
-                                                                                        placeholder: "",
-                                                                                        name: "{{content.name}}",
-                                                                                        "ng-pattern": "/^[0-9]+$/",
-                                                                                        "md-maxlength": "30",
-                                                                                        required: "required"
-                                                                                    }
-                                                                                ]
-                                                                            }
-                                                                        ]
-                                                                    },
-                                                                    {
-                                                                        tag: "div",
-                                                                        layout: "row",
-                                                                        "layout-align": "center center",
-                                                                        flex: "flex",
-                                                                        childelements: [
-                                                                            {
-                                                                                tag: "div",
-                                                                                layout: "column",
-                                                                                "layout-align": "center center",
-                                                                                flex: "80",
-                                                                                childelements: [
-                                                                                    {
-                                                                                        tag: "div",
-                                                                                        layout: "row",
-                                                                                        "layout-align": "center center",
-                                                                                        childelements: [
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = content.model + '1'",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab",
-                                                                                                childelements: [{value: "1"}]
-                                                                                            },
-                                                                                            {tag: "div", flex: "5"},
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = content.model + '2'",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab",
-                                                                                                childelements: [{value: "2"}]
-                                                                                            },
-                                                                                            {tag: "div", flex: "5"},
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = content.model + '3'",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab",
-                                                                                                childelements: [{value: "3"}]
-                                                                                            }
-                                                                                        ]
-                                                                                    },
-                                                                                    {tag: "div"},
-                                                                                    {
-                                                                                        tag: "div",
-                                                                                        layout: "row",
-                                                                                        "layout-align": "center center",
-                                                                                        childelements: [
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = content.model + '4'",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab",
-                                                                                                childelements: [{value: "4"}]
-                                                                                            },
-                                                                                            {tag: "div", flex: "5"},
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = content.model + '5'",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab",
-                                                                                                childelements: [{value: "5"}]
-                                                                                            },
-                                                                                            {tag: "div", flex: "5"},
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = content.model + '6'",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab",
-                                                                                                childelements: [{value: "6"}]
-                                                                                            }
-                                                                                        ]
-                                                                                    },
-                                                                                    {tag: "div"},
-                                                                                    {
-                                                                                        tag: "div",
-                                                                                        layout: "row",
-                                                                                        "layout-align": "center center",
-                                                                                        childelements: [
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = content.model + '7'",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab",
-                                                                                                childelements: [{value: "7"}]
-                                                                                            },
-                                                                                            {tag: "div", flex: "5"},
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = content.model + '8'",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab",
-                                                                                                childelements: [{value: "8"}]
-                                                                                            },
-                                                                                            {tag: "div", flex: "5"},
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = content.model + '9'",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab",
-                                                                                                childelements: [{value: "9"}]
-                                                                                            }
-                                                                                        ]
-                                                                                    },
-                                                                                    {tag: "div"},
-                                                                                    {
-                                                                                        tag: "div",
-                                                                                        "layout": "row",
-                                                                                        "layout-align": "center center",
-                                                                                        childelements: [
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = content.model + '0'",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab",
-                                                                                                childelements: [{value: "0"}]
-                                                                                            },
-                                                                                            {tag: "div", flex: "5"},
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = content.model + '.'",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab",
-                                                                                                childelements: [{value: "."}]
-                                                                                            },
-                                                                                            {tag: "div", flex: "5"},
-                                                                                            {
-                                                                                                tag: "md-button",
-                                                                                                flex: "30",
-                                                                                                "ng-click": "content.model = ''",
-                                                                                                "aria-label": "",
-                                                                                                class: "md-fab md-primary",
-                                                                                                childelements: [{value: "Clear"}]
-                                                                                            }
-                                                                                        ]
-                                                                                    },
-                                                                                    {tag: "div", flex: "5"}
-                                                                                ]
-                                                                            }
-                                                                        ]
-                                                                    }
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
+            tag: "md-content", style: 'background-color: #A0A0FF;',
+            childelements: [
+                {
+                    tag: "md-card",
+                    childelements: [
+                        {
+                            tag: "ng-form", name: "validate",
+                            childelements: [
+                                {
+                                    tag: "md-card-content", layout: "layout", "layout-align": "center center",
+                                    childelements: [
+                                        {
+                                            tag: "h3", class: "md-headline",
+                                            childelements: [{value: "{{contents.headline}}"}]
+                                        }
+                                    ]
+                                },
+                                {
+                                    tag: "md-card-content",
+                                    layout: "layout",
+                                    "layout-align": "center center",
+                                    "ng-show": "contents.picture.length == 1",
+                                    childelements: [
+                                        {
+                                            tag: "md-radio-group",
+                                            childelements: [
+                                                {
+                                                    tag: "md-radio-button",
+                                                    "ng-click": "setColor('rgba(200, 20, 30, 0.4)')",
+                                                    value: "rgba(200, 20, 30, 0.4)",
+                                                    childelements: [{value: "{{'itai' | message}}"}]
+                                                },
+                                                {
+                                                    tag: "md-radio-button",
+                                                    "ng-click": "setColor('rgba(20, 200, 30, 0.4)')",
+                                                    value: "rgba(20, 200, 30, 0.4)",
+                                                    childelements: [{value: "{{'hare' | message}}"}]
+                                                },
+                                                {
+                                                    tag: "md-radio-button",
+                                                    "ng-click": "setColor('rgba(20, 20, 200, 0.4)')",
+                                                    value: "rgba(20, 20, 200, 0.4)",
+                                                    childelements: [{value: "{{'shibire' | message}}"}]
+                                                }
+                                            ]
+                                        },
+                                        {tag: "canvas", id: "c", width: "300", height: "600"},
+                                        {
+                                            tag: "md-button",
+                                            "ng-click": "clearPicture()",
+                                            "class": "md-raised md-warn",
+                                            childelements: [{value: "{{'clear' | message}}"}]
+                                        }
+                                    ]
+                                },
+                                {
+                                    tag: "md-list",
+                                    childelements: [
+                                        {
+                                            tag: "md-list-item",
+                                            "layout-align": "center center",
+                                            "ng-repeat": "content in contents.items",
+                                            childelements: [
+                                                {
+                                                    tag: "md-card", flex: "flex",
+                                                    childelements: [
+                                                        {
+                                                            tag: "md-card-content", "layout-align": "start center",
+                                                            childelements: [
+                                                                {
+                                                                    tag: "md-input-container",
+                                                                    style: "width:100%",
+                                                                    "ng-if": "content.type == 'text' &amp;&amp; content.items.length == 0",
+                                                                    childelements: [
+                                                                        {
+                                                                            tag: "label",
+                                                                            childelements: [{value: "{{content.label}}"}]
+                                                                        },
+                                                                        {
+                                                                            tag: "input",
+                                                                            "ng-model": "content.model",
+                                                                            placeholder: "",
+                                                                            name: "{{content.name}}"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    tag: "md-input-container",
+                                                                    style: "width:100%",
+                                                                    "ng-if": "content.type == 'text' &amp;&amp; content.items.length != 0",
+                                                                    childelements: [
+                                                                        {
+                                                                            tag: "label",
+                                                                            childelements: [{value: "{{content.label}}"}]
+                                                                        },
+                                                                        {
+                                                                            tag: "input",
+                                                                            "ng-model": "content.model",
+                                                                            placeholder: "",
+                                                                            name: "{{content.name}}",
+                                                                            "md-maxlength": "30",
+                                                                            required: "required"
+                                                                        },
+                                                                        {
+                                                                            tag: "div",
+                                                                            "ng-messages": "validate[content.name].$error",
+                                                                            childelements: [
+                                                                                {
+                                                                                    tag: "div",
+                                                                                    "ng-repeat": "item in content.items",
+                                                                                    "ng-message": "{{item.name}}",
+                                                                                    childelements: [{value: "{{item.message}}"}]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    tag: "md-radio-group",
+                                                                    "ng-model": "content.model",
+                                                                    name: "{{content.name}}",
+                                                                    "layout-align": "center center",
+                                                                    "ng-if": "content.type == 'select'",
+                                                                    required: "required",
+                                                                    childelements: [
+                                                                        {
+                                                                            tag: "div", class: "md-display-1",
+                                                                            childelements: [{value: "{{content.label}}"}]
+                                                                        },
+                                                                        {
+                                                                            tag: "md-radio-button",
+                                                                            "ng-repeat": "item in content.items",
+                                                                            "ng-model": "content.model",
+                                                                            value: "{{item}}",
+                                                                            childelements: [
+                                                                                {
+                                                                                    tag: "div", class: "md-display-1",
+                                                                                    childelements: [{value: "{{item}}"}]
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    tag: "md-checkbox",
+                                                                    "ng-model": "content.model",
+                                                                    "ng-if": "content.type == 'check'",
+                                                                    "md-no-ink": "md-no-ink",
+                                                                    "aria-label": "Checkbox No Ink",
+                                                                    class: "md-primary",
+                                                                    childelements: [
+                                                                        {
+                                                                            tag: "div", class: "md-display-1",
+                                                                            childelements: [{value: "{{content.label}}"}]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    tag: "md-button",
+                                                                    flex: "flex",
+                                                                    "ng-if": "content.type == 'button' &amp;&amp; content.validate",
+                                                                    "ng-class": "content.class",
+                                                                    "ng-click": "next(content.path)",
+                                                                    "aria-label": "",
+                                                                    "ng-disabled": "validate.$invalid",
+                                                                    class: "md-raised",
+                                                                    childelements: [{value: "{{content.label}}"}]
+                                                                },
+                                                                {
+                                                                    tag: "md-button",
+                                                                    flex: "flex",
+                                                                    "ng-if": "content.type == 'button' &amp;&amp; !content.validate",
+                                                                    "ng-class": "content.class",
+                                                                    "ng-click": "next(content.path)",
+                                                                    "aria-label": "",
+                                                                    class: "md-raised",
+                                                                    childelements: [{value: "{{content.label}}"}]
+                                                                },
+                                                                {
+                                                                    tag: "div",
+                                                                    layout: "column",
+                                                                    flex: "flex",
+                                                                    "ng-if": "content.type == 'numeric'",
+                                                                    childelements: [
+                                                                        {
+                                                                            tag: "div", layout: "row", flex: "flex",
+                                                                            childelements: [
+                                                                                {
+                                                                                    tag: "md-input-container",
+                                                                                    style: "width:100%",
+                                                                                    childelements: [
+                                                                                        {
+                                                                                            tag: "label",
+                                                                                            childelements: [{value: "{{content.label}}"}]
+                                                                                        },
+                                                                                        {
+                                                                                            tag: "input",
+                                                                                            "ng-model": "content.model",
+                                                                                            placeholder: "",
+                                                                                            name: "{{content.name}}",
+                                                                                            "ng-pattern": "/^[0-9]+$/",
+                                                                                            "md-maxlength": "30",
+                                                                                            required: "required"
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            tag: "div",
+                                                                            layout: "row",
+                                                                            "layout-align": "center center",
+                                                                            flex: "flex",
+                                                                            childelements: [
+                                                                                {
+                                                                                    tag: "div",
+                                                                                    layout: "column",
+                                                                                    "layout-align": "center center",
+                                                                                    flex: "80",
+                                                                                    childelements: [
+                                                                                        {
+                                                                                            tag: "div",
+                                                                                            layout: "row",
+                                                                                            "layout-align": "center center",
+                                                                                            childelements: [
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = content.model + '1'",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab",
+                                                                                                    childelements: [{value: "1"}]
+                                                                                                },
+                                                                                                {tag: "div", flex: "5"},
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = content.model + '2'",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab",
+                                                                                                    childelements: [{value: "2"}]
+                                                                                                },
+                                                                                                {tag: "div", flex: "5"},
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = content.model + '3'",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab",
+                                                                                                    childelements: [{value: "3"}]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {tag: "div"},
+                                                                                        {
+                                                                                            tag: "div",
+                                                                                            layout: "row",
+                                                                                            "layout-align": "center center",
+                                                                                            childelements: [
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = content.model + '4'",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab",
+                                                                                                    childelements: [{value: "4"}]
+                                                                                                },
+                                                                                                {tag: "div", flex: "5"},
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = content.model + '5'",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab",
+                                                                                                    childelements: [{value: "5"}]
+                                                                                                },
+                                                                                                {tag: "div", flex: "5"},
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = content.model + '6'",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab",
+                                                                                                    childelements: [{value: "6"}]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {tag: "div"},
+                                                                                        {
+                                                                                            tag: "div",
+                                                                                            layout: "row",
+                                                                                            "layout-align": "center center",
+                                                                                            childelements: [
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = content.model + '7'",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab",
+                                                                                                    childelements: [{value: "7"}]
+                                                                                                },
+                                                                                                {tag: "div", flex: "5"},
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = content.model + '8'",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab",
+                                                                                                    childelements: [{value: "8"}]
+                                                                                                },
+                                                                                                {tag: "div", flex: "5"},
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = content.model + '9'",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab",
+                                                                                                    childelements: [{value: "9"}]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {tag: "div"},
+                                                                                        {
+                                                                                            tag: "div",
+                                                                                            "layout": "row",
+                                                                                            "layout-align": "center center",
+                                                                                            childelements: [
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = content.model + '0'",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab",
+                                                                                                    childelements: [{value: "0"}]
+                                                                                                },
+                                                                                                {tag: "div", flex: "5"},
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = content.model + '.'",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab",
+                                                                                                    childelements: [{value: "."}]
+                                                                                                },
+                                                                                                {tag: "div", flex: "5"},
+                                                                                                {
+                                                                                                    tag: "md-button",
+                                                                                                    flex: "30",
+                                                                                                    "ng-click": "content.model = ''",
+                                                                                                    "aria-label": "",
+                                                                                                    class: "md-fab md-primary",
+                                                                                                    childelements: [{value: "Clear"}]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {tag: "div", flex: "5"}
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
     };
-
-    var a = tohtml.render(data.content);
-
-    res.send(tohtml.render(data.content));
+    */
+    View.find({name: "page2"}, (finderror:any, doc:any):void => {
+        if (!finderror) {
+            if (doc != null) {
+               // var a = tohtml.render(data.content);
+                res.send(tohtml.render(doc));
+            }
+            else {
+                res.send(JSON.stringify(new Result(10, "view get", {})));
+            }
+        }
+        else {
+            res.send(JSON.stringify(new Result(100, "view get", finderror)));
+        }
+    });
 });
 
 var initView:any = {
