@@ -29,6 +29,7 @@ build/Release
 node_modules
 *.map
 app.js
+app.min.js
 routes/account.js
 routes/view.js
 routes/index.js
@@ -39,6 +40,8 @@ public/bower_components
 public/index.html
 public/javascripts/TopControllers.js
 public/javascripts/TopApplication.js
+
+public/partials/logo.html
 
 public/front/index.html
 public/front/javascripts/PatientsApplication.js
@@ -63,40 +66,42 @@ public/backend/partials/account/accountdialog.html
 public/backend/partials/account/accounts.html
 public/backend/partials/account/deletedialog.html
 public/backend/partials/controll/panel.html
-app.min.js
+
 Gruntfile.min.js
+
+TopApplication.min.js
+TopControllers.min.js
+
+PatientsApplication.min.js
+PatientsControllers.min.js
+
 AccountControllers.min.js
 AccountApplication.min.js
+
 view.min.js
 sio.min.js
-TopControllers.min.js
 index.min.js
-PatientsControllers.min.js
-TopApplication.min.js
 account.min.js
-notification.html
-PatientsApplication.min.js
 patient.min.js
+notification.html
 
-public/partials/logo.html
+
 
 public/stylesheets/style.css
 
-views/unsupport.html
+
 
 config/configsample.txt
 
 routes/tohtml.js
-
 routes/tohtml.min.js
-
-views/backend/index.html
-
-views/front/index.html
-
-views/front/partials/browse.html
 routes/result.min.js
 routes/result.min.min.js
+
+views/unsupport.html
+views/backend/index.html
+views/front/index.html
+views/front/partials/browse.html
 views/backend/partials/patient/patients.html
 views/backend/partials/account/accounts.html
 views/backend/partials/patient/sheet.html

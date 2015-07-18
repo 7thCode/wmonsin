@@ -72,6 +72,7 @@ User("root", ():void => {
 }, (message:string, error:any):void => {
 });
 
+/*
 GetView("page1",():void => {
     var view = new View();
     view.Data = initView.Data;
@@ -81,6 +82,7 @@ GetView("page1",():void => {
     () => {},
     (message:string, error:any):void => {
 });
+*/
 
 function Cipher(name:any, pass:any):any {
     var cipher:any = crypto.createCipher('aes192', pass);
