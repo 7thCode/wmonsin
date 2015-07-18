@@ -6,7 +6,7 @@ class Result {
     private code:number;
     private message:string;
     private value:any;
-
+    
     constructor(code:number, message:string, value:any) {
         this.code = code;
         this.message = message;

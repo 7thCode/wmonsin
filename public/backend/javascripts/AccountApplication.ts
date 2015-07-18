@@ -44,7 +44,7 @@ app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRou
             templateUrl: '/backend/partials/account/accounts',
             controller: 'AccountsController'
         })
-
+        
         .state('controlles', {
             url: '/controlles',
             templateUrl: '/backend/partials/controll/panel',

@@ -42,7 +42,6 @@ app.filter('message', ():Function => {
                     result = "スタッフ";
                     break;
             }
-
             return result;
         }
     }

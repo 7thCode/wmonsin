@@ -72,12 +72,14 @@ User("root", ():void => {
 }, (message:string, error:any):void => {
 });
 
-GetView(():void => {
+GetView("page1",():void => {
     var view = new View();
     view.Data = initView.Data;
     view.save((saveerror:any):void => {
     });
-}, (message:string, error:any):void => {
+},
+    () => {},
+    (message:string, error:any):void => {
 });
 
 function Cipher(name:any, pass:any):any {
@@ -118,15 +120,15 @@ function User(name:any, success:any, error:any):void {
     });
 }
 
-function GetView(success:any, error:any):void {
-    View.find({}, {}, {}, (finderror:any, docs:any):void => {
+function GetView(name:string, success:any, found:any, error:any):void {
+    View.find({name: name}, {}, {}, (finderror:any, docs:any):void => {
         if (!finderror) {
             if (docs != null) {
                 if (docs.length == 0) {
                     success();
                 }
                 else { //already
-                    error("Already Found", docs);
+                    found();
                 }
             }
             else {
@@ -877,19 +879,23 @@ router.get('/initview', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
         if (req.session != null) {
-            GetView(():void => {
-                var view:any = new View();
-                view.Data = initView.Data;
-                view.save((saveerror:any):void => {
-                    if (!saveerror) {
-                        res.send(JSON.stringify(new Result(0, "OK", {})));
-                    } else {
-                        res.send(JSON.stringify(new Result(100, "view create", saveerror)));
-                    }
+            GetView("page1", ():void => {
+                    var view:any = new View();
+                    view.Data = initView.Data;
+                    view.save((saveerror:any):void => {
+                        if (!saveerror) {
+                            res.send(JSON.stringify(new Result(0, "OK", {})));
+                        } else {
+                            res.send(JSON.stringify(new Result(100, "view create", saveerror)));
+                        }
+                    });
+                },
+                ():void => {
+                    res.send(JSON.stringify(new Result(1, "already", {})));
+                },
+                (message:string, error:any):void => {
+                    res.send(JSON.stringify(new Result(10, "view create" + message, error)));
                 });
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new Result(10, "view create" + message, error)));
-            });
         }
         else {
             res.send(JSON.stringify(new Result(2000, "view create no session", {})));
@@ -899,102 +905,194 @@ router.get('/initview', (req:any, res:any):void => {
     }
 });
 
+/*! create view */
+router.post('/createview/:name', (req:any, res:any):void => {
+    try {
+        Authenticate(req.body.key, (type:any):void => {
+
+            res = BasicHeader(res, "");
+            GetView(req.params.name, ():void => {
+                    var view:any = new View();
+                    view.Data = req.body.data;
+                    view.save((saveerror:any):void => {
+                        if (!saveerror) {
+                            res.send(JSON.stringify(new Result(0, "OK", view.Data)));
+                        } else {
+                            res.send(JSON.stringify(new Result(100, "view create", saveerror)));
+                        }
+                    });
+                }, ():void => {
+                    res.send(JSON.stringify(new Result(1, "already", {})));
+                },
+                (message:string, error:any):void => {
+                    res.send(JSON.stringify(new Result(10, "view create" + message, error)));
+                });
+
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new Result(2, "config put " + message, error)));
+        });
+    } catch (e) {
+        res.send(JSON.stringify(new Result(10000, "view create" + e.message, e)));
+    }
+});
+
+
+router.post('/updateview/:name', (req:any, res:any):void => {
+    try {
+        Authenticate(req.body.key, (type:any):void => {
+
+            res = BasicHeader(res, "");
+
+            GetView(req.params.name, ():void => {
+                    res.send(JSON.stringify(new Result(1, "not found", {})));
+                },
+                ():void => {
+                    var view:any = new View();
+                    view.Data = req.body.data;
+                    view.save((saveerror:any):void => {
+                        if (!saveerror) {
+                            res.send(JSON.stringify(new Result(0, "OK", view.Data)));
+                        } else {
+                            res.send(JSON.stringify(new Result(100, "view create", saveerror)));
+                        }
+                    });
+                }, (message:string, error:any):void => {
+                    res.send(JSON.stringify(new Result(10, "view create" + message, error)));
+                });
+
+
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new Result(2, "config put " + message, error)));
+        });
+    } catch (e) {
+        res.send(JSON.stringify(new Result(10000, "view create" + e.message, e)));
+    }
+});
+
+router.get('/getview/:key/:name', (req:any, res:any):void => {
+    try {
+        Authenticate(req.params.key, (type:any):void => {
+            res = BasicHeader(res, "");
+            View.find({name: req.params.name}, (finderror:any, doc:any):void => {
+                if (!finderror) {
+                    if (doc != null) {
+                        res.send(JSON.stringify(new Result(0, "OK", doc)));
+                    }
+                    else {
+                        res.send(JSON.stringify(new Result(10, "view get", {})));
+                    }
+                }
+                else {
+                    res.send(JSON.stringify(new Result(100, "view get", finderror)));
+                }
+            });
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new Result(2, "config put " + message, error)));
+        });
+    } catch (e) {
+        res.send(JSON.stringify(new Result(10000, "view create" + e.message, e)));
+    }
+});
+
+
 router.get('/json', function (req, res, next) {
     var tohtml = new ToHtml();
 
     var data = {
-        tag: "md-content",
-        style: 'page.style',
-        childelements: [
-            {
-                tag: "ng-form",
-                name: 'validate',
-                childelements: [
-                    {
-                        tag: "div",
-                        childelements: [
-                            {
-                                tag: "md-card",
-                                childelements: [
-                                    {
-                                        tag: "md-card-content",
-                                        childelements: [
-                                            {
-                                                tag: "md-button",
-                                                class: "md-raised md-primary",
-                                                style: 'height:30px;width:10px;top:130px;left:200px;z-index:1;position: absolute',
-                                                childelements: [{value: "aaaaaaa"}]
-                                            },
-                                            {
-                                                tag: "md-checkbox",
-                                                "ng-model": "checkbox",
-                                                childelements: [{value: "zz"}]
-                                            },
-                                            {
-                                                tag: "md-input-container",
-                                                class: "md-raised md-warn",
-                                                childelements: [
-                                                    {
-                                                        tag: "label",
-                                                        childelements: [{value: "AAA"}]
-                                                    },
-                                                    {
-                                                        tag: "input",
-                                                        name: "input",
-                                                        "ng-model": "input",
-                                                        "md-maxlength": "30",
-                                                        required: "true"
-                                                    },
-                                                    {
-                                                        tag: "div",
-                                                        "ng-messages": "validate.input.$error",
-                                                        childelements: [
-                                                            {
-                                                                tag: "div",
-                                                                "ng-message": "md-maxlength",
-                                                                childelements: [{value: "max"}]
-                                                            },
-                                                            {
-                                                                tag: "div",
-                                                                "ng-message": "required",
-                                                                childelements: [{value: "req"}]
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                tag: "md-switch",
-                                                class: "md-fab md-accent",
-                                                "ng-model": "switch",
-                                                childelements: [{value: "zz"}]
-                                            },
-                                            {
-                                                tag: "md-radio-group",
-                                                class: "md-raised md-primary",
-                                                "ng-model": "radio",
-                                                childelements: [
-                                                    {
-                                                        tag: "md-radio-button",
-                                                        value: "true",
-                                                        childelements: [{value: "AAA"}]
-                                                    },
-                                                    {
-                                                        tag: "md-radio-button",
-                                                        value: "false",
-                                                        childelements: [{value: "a"}]
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
+        name: "page1", content: {
+            tag: "md-content",
+            style: 'page.style',
+            childelements: [
+                {
+                    tag: "ng-form",
+                    name: 'validate',
+                    childelements: [
+                        {
+                            tag: "div",
+                            childelements: [
+                                {
+                                    tag: "md-card",
+                                    childelements: [
+                                        {
+                                            tag: "md-card-content",
+                                            childelements: [
+                                                {
+                                                    tag: "md-button",
+                                                    class: "md-raised md-primary",
+                                                    style: 'height:30px;width:10px;top:130px;left:200px;z-index:1;position: absolute',
+                                                    childelements: [{value: "aaaaaaa"}]
+                                                },
+                                                {
+                                                    tag: "md-checkbox",
+                                                    "ng-model": "checkbox",
+                                                    childelements: [{value: "zz"}]
+                                                },
+                                                {
+                                                    tag: "md-input-container",
+                                                    class: "md-raised md-warn",
+                                                    childelements: [
+                                                        {
+                                                            tag: "label",
+                                                            childelements: [{value: "AAA"}]
+                                                        },
+                                                        {
+                                                            tag: "input",
+                                                            name: "input",
+                                                            "ng-model": "input",
+                                                            "md-maxlength": "30",
+                                                            required: "true"
+                                                        },
+                                                        {
+                                                            tag: "div",
+                                                            "ng-messages": "validate.input.$error",
+                                                            childelements: [
+                                                                {
+                                                                    tag: "div",
+                                                                    "ng-message": "md-maxlength",
+                                                                    childelements: [{value: "max"}]
+                                                                },
+                                                                {
+                                                                    tag: "div",
+                                                                    "ng-message": "required",
+                                                                    childelements: [{value: "req"}]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    tag: "md-switch",
+                                                    class: "md-fab md-accent",
+                                                    "ng-model": "switch",
+                                                    childelements: [{value: "zz"}]
+                                                },
+                                                {
+                                                    tag: "md-radio-group",
+                                                    class: "md-raised md-primary",
+                                                    "ng-model": "radio",
+                                                    childelements: [
+                                                        {
+                                                            tag: "md-radio-button",
+                                                            value: "true",
+                                                            childelements: [{value: "AAA"}]
+                                                        },
+                                                        {
+                                                            tag: "md-radio-button",
+                                                            value: "false",
+                                                            childelements: [{value: "a"}]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
     };
     //var a = tohtml.render(data);
 
@@ -1048,7 +1146,7 @@ router.get('/json', function (req, res, next) {
         '<script type="text/javascript" src="/javascripts/TopControllers.min.js"></script>';
 
 
-    res.send(head + tohtml.render(data) + tail);
+    res.send(head + tohtml.render(data.content) + tail);
 });
 
 router.get('/front/partials/browse2', function (req, res, next) {
@@ -1056,6 +1154,7 @@ router.get('/front/partials/browse2', function (req, res, next) {
     var tohtml = new ToHtml();
 
     var data = {
+        name: "page1", content: {
         tag: "md-content", style: 'background-color: #A0A0FF;',
         childelements: [
             {
@@ -1429,11 +1528,12 @@ router.get('/front/partials/browse2', function (req, res, next) {
                 ]
             }
         ]
+    }
     };
 
-    var a = tohtml.render(data);
+    var a = tohtml.render(data.content);
 
-    res.send(tohtml.render(data));
+    res.send(tohtml.render(data.content));
 });
 
 var initView:any = {
