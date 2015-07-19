@@ -71,14 +71,14 @@ app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use(function (req:any, res:any, next:any):void {
-    var error = new Error('Not Found');
-    error.status = 404;
+  //  var error = new Error('Not Found');
+  //  error.status = 404;
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Pragma", "no-cache");
     res.header("Cache-Control", "no-cache");
     res.contentType('application/json');
     res.send("code:404, message:'not found',value:{}, token:''");
-    next(error);
+    next();
 });
 
 // production error handler
