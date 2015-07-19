@@ -50,30 +50,33 @@ dbまでの接続文字列を用意してください。
 </code></pre>
 
 <h4>
-<a id="3bowertypescriptjadeless" class="anchor" href="#3bowertypescriptjadeless" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.bower,Typescript,Jade,less</h4>
+<a id="3ダウンロード" class="anchor" href="#3%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.ダウンロード</h4>
 
-<pre><code>node.js付属のnpmを使用してbower,Typescript,Jade,lessをインストールします。
+<p>以下のファイルをダウンロードして展開してください。</p>
 
-  npm install -g bower
-  npm install -g typescript
-  npm install -g jade
-  npm install -g less
+<pre><code>    [wmonsin without library](https://dl.dropboxusercontent.com/u/2004743/wmonsin_without_lib.zip)
 </code></pre>
 
-<h4>
-<a id="4ソースをプル" class="anchor" href="#4%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E3%83%97%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.ソースをプル</h4>
+<p>　
+　　次にサーバモジュールをインストールします。</p>
 
-<pre><code>任意のディレクトリにhttps://github.com/7thCode/wmonsin.gitをプルしたら、そのディレクトリで
-
-  npm install
+<pre><code>  　　npm install
 
 そして、publicディレクトリで
 
-  bower install
+  　　bower install
 
-そしてtsをjsにコンパイル、jadeをhtmlに、lessをcssにコンパイルして、ディレクトリで
+ で完了です。
+</code></pre>
 
-  node bin/www
+<p>　　　もしくは、以下のファイル（ライブラリ付属）を 使用すれば、</p>
+
+<pre><code>     [wmonsin with library](https://dl.dropboxusercontent.com/u/2004743/wmonsin_with_lib.zip)
+</code></pre>
+
+<p>　　ディレクトリで</p>
+
+<pre><code>  node bin/www
 
 でport3000番で動きます。
 
@@ -81,7 +84,7 @@ dbまでの接続文字列を用意してください。
 </code></pre>
 
 <h4>
-<a id="5コンフィグ" class="anchor" href="#5%E3%82%B3%E3%83%B3%E3%83%95%E3%82%A3%E3%82%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.コンフィグ</h4>
+<a id="4コンフィグ" class="anchor" href="#4%E3%82%B3%E3%83%B3%E3%83%95%E3%82%A3%E3%82%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.コンフィグ</h4>
 
 <pre><code>起動後、ユーザ名root、パスワードrootでログイン後、スタッフ画面のコンフィグから、Connectionに先ほど用意した接続文字列を入力してください。
 同時にSession KeyやPassword Key、Account Keyも任意のものに変更してください。
