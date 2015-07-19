@@ -967,7 +967,8 @@ router.get('/getview/:key/:name', (req:any, res:any):void => {
         Authenticate(req.params.key, (type:any):void => {
             res = BasicHeader(res, "");
             GetView(req.params.name, (view:any):void => {
-                res.send(JSON.stringify(new Result(0, "OK", view.content)));
+            var z =    JSON.stringify(new Result(0, "OK", view.Data.content));
+                res.send(JSON.stringify(new Result(0, "OK", view.Data.content)));
 
             }, () => {
                 res.send(JSON.stringify(new Result(10, "no view get", {})));
