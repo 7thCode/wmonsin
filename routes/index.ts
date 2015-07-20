@@ -72,17 +72,20 @@ User("root", ():void => {
 }, (message:string, error:any):void => {
 });
 
-/*
+
  GetView("page1",():void => {
  var view = new View();
  view.Data = initView.Data;
- view.save((saveerror:any):void => {
- });
+    view.save((saveerror:any):void => {});
  },
- () => {},
+ () => {
+     var view = new View();
+     view.Data = initView.Data;
+     view.save((saveerror:any):void => {});
+ },
  (message:string, error:any):void => {
  });
- */
+
 
 function Cipher(name:any, pass:any):any {
     var cipher:any = crypto.createCipher('aes192', pass);
@@ -827,7 +830,11 @@ router.put('/config', (req:any, res:any):void => {
 router.get('/view', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-        View.find({}, (finderror:any, doc:any):void => {
+
+        res.send(JSON.stringify(new Result(0, "OK", initView)));
+
+
+    /*    View.find({}, (finderror:any, doc:any):void => {
             if (!finderror) {
                 if (doc != null) {
                     res.send(JSON.stringify(new Result(0, "OK", doc)));
@@ -839,7 +846,7 @@ router.get('/view', (req:any, res:any):void => {
             else {
                 res.send(JSON.stringify(new Result(100, "view get", finderror)));
             }
-        });
+        }); */
     } catch (e) {
         res.send(JSON.stringify(new Result(10000, "view get " + e.message, e)));
     }
@@ -847,7 +854,7 @@ router.get('/view', (req:any, res:any):void => {
 
 /*! create view */
 router.post('/view', (req:any, res:any):void => {
-    try {
+  /*  try {
         res = BasicHeader(res, "");
         if (req.session != null) {
             var view:any = new View();
@@ -867,7 +874,7 @@ router.post('/view', (req:any, res:any):void => {
         }
     } catch (e) {
         res.send(JSON.stringify(new Result(10000, "view create" + e.message, e)));
-    }
+    } */
 });
 
 

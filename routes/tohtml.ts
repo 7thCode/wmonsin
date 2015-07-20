@@ -8,7 +8,7 @@ class ElementData {
 }
 
 class ToHtml {
-    
+
     constructor() {
     }
 
@@ -38,13 +38,22 @@ class ToHtml {
                 result += "</" + element["dv_tag"] + ">";
             }
             else {
-                result = result += "/>";
+                switch (element["dv_tag"]) {
+                    case "link":
+                        result = result += ">";
+                        break;
+                    case "meta":
+                        result = result += ">";
+                        break;
+                    default:
+                        result = result += "/>";
+                        break;
+                }
             }
         }
-        else
-        {
+        else {
             if ("dv_value" in element) {
-               result = element["dv_value"];
+                result = element["dv_value"];
             }
         }
         return result;

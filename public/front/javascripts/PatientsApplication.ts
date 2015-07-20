@@ -34,7 +34,7 @@ app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRou
                 var page = $stateParams.page;
 
                 return "/front/partials/browse";
-        //        return "/front/partials/browse2/page2";
+           //     return "/front/partials/browse2/page2";
             } ,
             controller: 'BrowseController'
         }).

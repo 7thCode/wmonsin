@@ -134,7 +134,7 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
         resource.$get({}, (data:any):void => {
             if (data != null) {
                 if (data.code == 0) {
-                    Views.Data = data.value[0].Data;
+                    Views.Data = data.value.Data;
                 }
             }
         });
