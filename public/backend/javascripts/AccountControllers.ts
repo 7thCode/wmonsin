@@ -425,6 +425,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                 });
                             }
                             $scope.Input.push(value);
+                            $scope.Information = data.value.Information;
                         });
                     }
                     else {

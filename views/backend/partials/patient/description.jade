@@ -8,6 +8,9 @@ md-content(style="background-color: #A0A0FF;")
     md-card
         md-card-content
             h1.md-headline 問診内容
+            h4 {{Information.time}}
+            h3 {{Information.kana}}
+            h4 {{Information.name}}  -  {{Information.insurance}}
         md-card-content
             md-button.md-fab.md-warn(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'")
                 ng-md-icon(icon="{{icon}}", style="fill:#ffffff", size="46", options='{"rotation": "none"}')
@@ -48,6 +51,22 @@ md-content(style="background-color: #A0A0FF;")
                             md-card-content(layout="row", layout-align="start center", flex)
                                 label.md-subhead {{item.name}}
                                     .md-title {{item.value}}
+
+        md-tab(label="copyable")
+            md-card
+                md-card-content(layout-align="start start", flex)
+                    div(layout="column", layout-align="start start", ng-repeat="item in Input")
+                        div(ng-show="item.type == 'text'", flex)
+                           div(flex="20") {{item.name}}
+                           div(flex="20") {{item.value}}
+                        div(ng-show="item.type == 'select'", flex)
+                            div(flex="20") {{item.name}}
+                            div(flex="20") {{item.value}}
+                        div(ng-show="item.type == 'check'", flex)
+                            div(ng-show="item.value == true") {{item.name}}
+                        div(ng-show="item.type == 'numeric'", flex)
+                            div(flex="20") {{item.name}}
+                            div(flex="20") {{item.value}}
 
         md-tab(label="schema")
             md-card

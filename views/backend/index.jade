@@ -34,7 +34,7 @@ html(lang="ja")
         link(rel="stylesheet", type="text/css", href="stylesheets/style.css")
     body(ng-app="AccountApplication", ng-controller="ApplicationController",layout="column", layout-fill,style="background-color: #A0A0FF;")
 
-        md-toolbar( style="z-index:10;")
+        md-toolbar(style="z-index:10;")
             .md-toolbar-tools(layout-align="center center")
                 h3.md-display-1(flex="60") {{username}} - {{type}}
 
@@ -87,6 +87,8 @@ script(type="text/javascript", src="javascripts/svg-morpheus/svg-morpheus.js")
 
 script(type="text/javascript", src="/bower_components/lodash/lodash.min.js")
 script(type="text/javascript", src="/bower_components/fabric/dist/fabric.min.js")
+script(type="text/javascript", src='/bower_components/jquery/dist/jquery.min.js')
+
 if debug
     script(type="text/javascript", src="javascripts/AccountApplication.js")
     script(type="text/javascript", src="javascripts/AccountControllers.js")
