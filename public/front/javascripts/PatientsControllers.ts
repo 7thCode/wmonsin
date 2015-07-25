@@ -260,7 +260,16 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
         $scope.next = (path:any):any => {
 
             _.map<any,any>($scope.contents.items, (value:any, key:any):void => {
-                $scope.Input[value.name] = {'name': value.name, 'value': value.model, 'type': value.type};
+                if (value.type == "check")
+                {
+                    var name_and_value = value.name.split("-");
+                    $scope.Input[value.name] = {'name': name_and_value[0], 'value': name_and_value[1], 'type': value.type};
+                }
+                else
+                {
+                    $scope.Input[value.name] = {'name': value.name, 'value': value.model, 'type': value.type};
+                }
+
             });
 
             _.map<any,any>($scope.contents.picture, (value:any, key:any):void => {

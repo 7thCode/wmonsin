@@ -42,9 +42,10 @@ md-content(style="background-color: #A0A0FF;")
                                     .md-title {{item.value}}
 
                     div(layout="row",ng-show="item.type == 'check'", flex)
-                        md-card(flex ng-show="item.value == true")
+                        md-card(flex)
                             md-card-content(layout="row", layout-align="start center", flex)
-                                label.md-title {{item.name}}
+                                label.md-subhead {{item.name}}
+                                    .md-title {{item.value}}
 
                     div(layout="row",ng-show="item.type == 'numeric'", flex)
                         md-card(flex)
@@ -54,19 +55,20 @@ md-content(style="background-color: #A0A0FF;")
 
         md-tab(label="copyable")
             md-card
-                md-card-content(layout-align="start start", flex)
-                    div(layout="column", layout-align="start start", ng-repeat="item in Input")
-                        div(ng-show="item.type == 'text'", flex)
-                           div(flex="20") {{item.name}}
-                           div(flex="20") {{item.value}}
-                        div(ng-show="item.type == 'select'", flex)
-                            div(flex="20") {{item.name}}
-                            div(flex="20") {{item.value}}
-                        div(ng-show="item.type == 'check'", flex)
-                            div(ng-show="item.value == true") {{item.name}}
-                        div(ng-show="item.type == 'numeric'", flex)
-                            div(flex="20") {{item.name}}
-                            div(flex="20") {{item.value}}
+                md-card-content(layout-align="start start",flex)
+                    div(layout="column", ng-repeat="item in Input", flex)
+                        div(ng-show="item.type == 'text'")
+                            strong {{item.name}} :
+                            span {{item.value}}
+                        div(ng-show="item.type == 'select'")
+                            strong {{item.name}} :
+                            span {{item.value}}
+                        div(ng-show="item.type == 'check'")
+                            strong {{item.name}} :
+                            span {{item.value}}
+                        div(ng-show="item.type == 'numeric'")
+                            strong {{item.name}} :
+                            span {{item.value}}
 
         md-tab(label="schema")
             md-card

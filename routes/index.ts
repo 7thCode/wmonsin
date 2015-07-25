@@ -879,6 +879,7 @@ router.post('/view', (req:any, res:any):void => {
 
 
 /*! create view */
+/*
 router.get('/initview', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
@@ -908,8 +909,9 @@ router.get('/initview', (req:any, res:any):void => {
         res.send(JSON.stringify(new Result(10000, "view create" + e.message, e)));
     }
 });
-
+*/
 /*! create view */
+
 router.post('/createview/:key/:name', (req:any, res:any):void => {
     try {
         Authenticate(req.params.key, (type:any):void => {
@@ -991,6 +993,8 @@ router.get('/getview/:key/:name', (req:any, res:any):void => {
         res.send(JSON.stringify(new Result(10000, "view create" + e.message, e)));
     }
 });
+
+//Test area
 
 router.get('/front/partials/browse2/:name', function (req, res, next) {
 
@@ -1540,6 +1544,7 @@ router.get('/json', function (req, res, next) {
     res.send(head + tohtml.render(data.content) + tail);
 });
 
+//Test area
 
 var initView:any = {
     Data: {
