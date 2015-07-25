@@ -98,7 +98,6 @@ controllers.factory('PatientQuery', ['$resource', ($resource:any):angular.resour
 
 controllers.factory('Patient', ['$resource', ($resource:any):angular.resource.IResource<any> => {
     return $resource('/patient/:id', {}, {
-        //    get: {method: 'GET'},
         update: {method: 'PUT'}
     });
 }]);
@@ -134,17 +133,15 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
         resource.$get({}, (data:any):void => {
             if (data != null) {
                 if (data.code == 0) {
-                    Views.Data = data.value.Data;
+                    List(PatientQuery, {}, (patients:any):void => {
+                        $scope.patients = patients;
+                        Views.Data = data.value.Data;
+                    });
                 }
             }
         });
 
-        List(PatientQuery, {}, (data:any):void => {
-            $scope.patients = data;
-        });
-
         $scope.next = (id:any):void => {
-
             var resource:any = new Patient();
             resource.$get({id: id}, (data:any):void => {
                 if (data != null) {
