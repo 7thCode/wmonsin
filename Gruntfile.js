@@ -1,16 +1,24 @@
 module.exports = function (grunt) {
-    var pkg = grunt.file.readJSON('package.json');
-    grunt.initConfig({
-        uglify: {
-            dist: {
-                files: {
-                    // 出力ファイル: 元ファイル
-                    'public/front/javascripts/PatientsApplication.min.js': 'public/front/javascripts/PatientsApplication.js'
-                }
+    grunt.initConfig(
+        {'ftp-deploy': {
+            build: {
+                auth: {
+                    host: 'seventh-code.com',
+                    port: 21
+                },
+                src: '',
+                dest: 'wmonsin',
+                exclusions: [
+                    '.settings',
+                    'node_modules',
+                    'parts',
+                    'public/bower_components',
+                    '**/*.ts',
+                    '**/*.js.map'
+                ]
             }
         }
-    });
-
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.registerTask('default', ['uglify']);
+    }
+    );
+    grunt.loadNpmTasks('grunt-ftp-deploy');
 };

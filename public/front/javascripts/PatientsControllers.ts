@@ -18,7 +18,7 @@
 
 'use strict';
 
-var controllers:angular.IModule = angular.module('PatientsControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons']);
+var controllers:angular.IModule = angular.module('PatientsControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons','ngAnimate']);
 
 class Browser {
     public name:string;

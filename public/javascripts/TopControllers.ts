@@ -15,7 +15,7 @@
 ///<reference path="../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
 ///<reference path="../../../DefinitelyTyped/lodash/lodash.d.ts" />
 
-var controllers:angular.IModule = angular.module('TopControllers', ["ngMaterial", "ngResource"]);
+var controllers:angular.IModule = angular.module('TopControllers', ["ngMaterial", "ngResource",'ngAnimate']);
 
 controllers.controller('TopController', ["$scope",  ($scope:any):void => {
 

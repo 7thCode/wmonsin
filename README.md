@@ -1,6 +1,4 @@
-#W-monsin
-
-##Web問診表
+wmonsin - Web問診表
 
 医院等で使用するための問診票をMEANスタック/マテリアルデザインで実装しました。
 現在、ORCAとの受付の連携、及び問診票エディタを開発中です。
@@ -9,7 +7,7 @@
 ###インストール方法
 
 wmomsinはnode.js上で動作します。
-またデータストアにはMongoDBを使用するため、まずnode.jsとongoDBをインストールする必要が有ります。
+またデータストアにはMongoDBを使用するため、node.jsとongoDBをインストールする必要が有ります。
 
 ####1.mongodbのインストール
 
@@ -17,12 +15,14 @@ wmomsinはnode.js上で動作します。
 
 ###[MongoDB](https://www.mongodb.org/ "MongoDB")
 
-dbまでの接続文字列を用意してください。
+
+dbの接続文字列をメモしてください。
 
 例
 
 `
 mongodb://localhost/patient
+mongodb://your.domain.name/new_db_name
 `
 
 ####2.node.jsのインストール
@@ -57,7 +57,7 @@ cd wmonsin
 sudo npm install
 `
 
-そして、publicディレクトリでクライアントライブラリをインストールしてください。
+publicディレクトリでクライアントライブラリをインストールしてください。
 
 `
 cd public
