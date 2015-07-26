@@ -1,4 +1,4 @@
-wmonsin - Web問診表
+# wmonsin - Web問診表
 
 医院等で使用するための問診票をMEANスタック/マテリアルデザインで実装しました。
 現在、ORCAとの受付の連携、及び問診票エディタを開発中です。
@@ -13,35 +13,35 @@ wmomsinはnode.js上で動作します。
 
 まず、mongodbを用意します。もしインストール済みなら不要です。
 
-###[MongoDB](https://www.mongodb.org/ "MongoDB")
+#### [MongoDB](https://www.mongodb.org/ "MongoDB")
 
 
 dbの接続文字列をメモしてください。
 
 例
 
-`
+```bash
 mongodb://localhost/patient
 mongodb://your.domain.name/new_db_name
-`
+```
 
 ####2.node.jsのインストール
 
 node.jsをインストールしてください。用意されていれば必要ありません。
 
-###[node.js](https://nodejs.org/ "node.js")
+#### [node.js](https://nodejs.org/ "node.js")
 
 ####3.ダウンロード
 
-以下のどちらかのファイルをダウンロードして展開してください。
+以下のどちらかのファイルをダウンロードして展開してサーバにデプロイください。
 
-ライブラリなし
+ライブラリなし(ダウンロード軽いけどちょい手間)
 
-###[wmonsin without library](https://dl.dropboxusercontent.com/u/2004743/wmonsin_without_lib.zip "wmonsin without library")
+####[wmonsin without library](https://dl.dropboxusercontent.com/u/2004743/wmonsin_without_lib.zip "wmonsin without library")
 
-ライブラリ付属
+ライブラリ付属(ダウンロード重いけど手間なし！)
 
-###[wmonsin with library](https://dl.dropboxusercontent.com/u/2004743/wmonsin_with_lib.zip "wmonsin with library")
+####[wmonsin with library](https://dl.dropboxusercontent.com/u/2004743/wmonsin_with_lib.zip "wmonsin with library")
 
 ここから先の手順はダウンロードしたパッケージごとに異なります。
 
@@ -52,17 +52,17 @@ node.jsをインストールしてください。用意されていれば必要�
 
 まずサーバライブラリをインストールしてください。
 
-`
+```bash
 cd wmonsin
 sudo npm install
-`
+```
 
 publicディレクトリでクライアントライブラリをインストールしてください。
 
-`
+```bash
 cd public
 bower install
-`
+```
 
 で完了です。
 
@@ -70,16 +70,16 @@ bower install
 
 ディレクトリで
 
-`
+```bash
 cd wmonsin
 node bin/www
-`
+```
 
 で
 
-`
+```
 http://localhost:3000
-`
+```
 
 で動きます。
 プロセスを継続的に起動しておくにはforeverなどをお使いください。
