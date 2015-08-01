@@ -135,7 +135,7 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
                 if (data.code == 0) {
                     List(PatientQuery, {}, (patients:any):void => {
                         $scope.patients = patients;
-                        Views.Data = data.value.Data;
+                        Views.Data = data.value[0].Data;
                     });
                 }
             }
@@ -185,7 +185,7 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
         $scope.contents = Views.Data[CurrentPatient.Category][page];
 
         if ($scope.contents.picture != null) {
-            var canvas:fabric.ICanvas = new fabric.Canvas('c');
+            var canvas:fabric.ICanvas = new fabric.Canvas('schema');
 
             _.map<any,any>($scope.contents.picture, (value:any, key:any):void => {
 

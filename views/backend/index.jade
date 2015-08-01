@@ -4,7 +4,7 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
-- var debug = false;
+- var debug = true;
 doctype html
 html(lang="ja")
     head
@@ -43,7 +43,7 @@ html(lang="ja")
                         ng-md-icon(icon="home", aria-label="Top", style="position:relative;top:5px;fill:#a0ffff", size="42")
                         md-tooltip {{'top' | message }}
 
-                div(flex="10", ng-if="type == 'Admin'")
+                div(flex="10", ng-show="type == 'Admin'")
                     md-button.md-fab.menu-button(ng-click="goConfig()", aria-label="", style="background-color:#fc7af6;z-index:10;")
                         ng-md-icon(icon="settings", aria-label="Config", style="position:relative;top:5px;fill:#ff40f0", size="42")
                         md-tooltip {{'config' | message }}
@@ -58,12 +58,12 @@ html(lang="ja")
                         ng-md-icon(icon="perm_identity", aria-label="Patients", style="position:relative;top:6px;fill:#70ffff", size="42")
                         md-tooltip {{'patient' | message }}
 
-                div(flex, ng-if="type == ''")
+                div(flex, ng-show="type == ''")
                     md-button.md-fab.menu-button(ng-click="showLoginDialog()", aria-label="", style="background-color:#ff7050;z-index:10;")
                         ng-md-icon(icon="check_box_outline_blank", aria-label="Account", style="position:relative;top:5px;fill:#ffd0d0", size="42")
                         md-tooltip {{'login' | message }}
 
-                div(flex, ng-if="type != ''")
+                div(flex, ng-show="type != ''")
                     md-button.md-fab.menu-button(ng-click="Logout()", aria-label="", style="background-color:#ff5070;z-index:10;")
                         ng-md-icon(icon="check_box", aria-label="Account", style="position:relative;top:5px;fill:#ffd0d0", size="42")
                         md-tooltip {{'logout' | message }}

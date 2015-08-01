@@ -16,7 +16,6 @@
 ///<reference path="../../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
 ///<reference path="../../../../DefinitelyTyped/lodash/lodash.d.ts" />
 
-
 /**
  0 - ok
  1 - rights
@@ -31,9 +30,10 @@
  Done
 
  */
+
 'use strict';
 
-var controllers:angular.IModule = angular.module('AccountControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons','ngAnimate']);
+var controllers:angular.IModule = angular.module('AccountControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate']);
 
 controllers.value('Global', {
         socket: null
@@ -161,32 +161,68 @@ function AccountsList(resource:any, query:any, success:(value:any) => void):void
     });
 }
 
-function SetAccount(CurrentAccount:any, $scope:any):void {
-    var account:any = JSON.parse(localStorage.getItem("account"));
-    CurrentAccount.username = account.username;
-    CurrentAccount.type = account.type;
-    $scope.username = CurrentAccount.username;
-    $scope.type = CurrentAccount.type;
-}
+/*
+ function SetAccount(CurrentAccount:any, $scope:any):void {
+ var account:any = JSON.parse(localStorage.getItem("account"));
+ CurrentAccount.username = account.username;
+ CurrentAccount.type = account.type;
+ $scope.username = CurrentAccount.username;
+ $scope.type = CurrentAccount.type;
+ }
 
-function ClearAccount(CurrentAccount:any, $scope:any):void {
-    CurrentAccount.username = "";
-    CurrentAccount.type = "";
-    $scope.username = "";
-    $scope.type = "";
-}
+ function ClearAccount(CurrentAccount:any, $scope:any):void {
+ CurrentAccount.username = "";
+ CurrentAccount.type = "";
+ $scope.username = "";
+ $scope.type = "";
+ }
 
-function Init(CurrentAccount:any, $scope:any):void {
-    if (localStorage.getItem("account") != null) {
-        SetAccount(CurrentAccount, $scope);
-    } else {
-        ClearAccount(CurrentAccount, $scope);
-    }
-}
-
+ function Init(CurrentAccount:any, $scope:any):void {
+ if (localStorage.getItem("account") != null) {
+ SetAccount(CurrentAccount, $scope);
+ } else {
+ ClearAccount(CurrentAccount, $scope);
+ }
+ }
+ */
 /*! Controllers  */
 controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount', 'ViewItem', 'Views',
     ($scope:any, $state:any, CurrentAccount:any, ViewItem:any, Views:any):void => {
+        /*
+         if (localStorage.getItem("account") != null) {
+         var account:any = JSON.parse(localStorage.getItem("account"));
+         CurrentAccount.username = account.username;
+         CurrentAccount.type = account.type;
+         } else {
+         CurrentAccount.username = "";
+         CurrentAccount.type = "";
+         }
+
+         if (CurrentAccount.type != "") {
+         $state.go('patients');
+         }
+         */
+        $scope.username = CurrentAccount.username;
+        $scope.type = CurrentAccount.type;
+
+
+        var resource:any = new ViewItem();
+        resource.$get({}, (data:any):void => {
+            if (data) {
+                if (data.code == 0) {
+                    Views.Data = data.value[0];
+                }
+            } else {
+
+            }
+        });
+
+
+    }]);
+
+controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDialog", '$mdToast', '$state', 'Login', 'Logout', 'CurrentAccount', 'Global',
+    ($scope:any, $rootScope:any, $mdDialog:any, $mdToast:any, $state:any, Login:any, Logout:any, CurrentAccount:any, Global:any):void => {
+
 
         if (localStorage.getItem("account") != null) {
             var account:any = JSON.parse(localStorage.getItem("account"));
@@ -197,28 +233,12 @@ controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
             CurrentAccount.type = "";
         }
 
-        if (CurrentAccount.type != "") {
-            $state.go('patients');
-        }
-
-        var resource:any = new ViewItem();
-        resource.$get({}, (data:any):void => {
-            if (data) {
-                if (data.code == 0) {
-                    Views.Data = data.value.Data;
-                }
-            } else {
-
-            }
-        });
-    }]);
-
-controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDialog", '$mdToast', '$state', 'Login', 'Logout', 'CurrentAccount', 'Global',
-    ($scope:any, $rootScope:any, $mdDialog:any, $mdToast:any, $state:any, Login:any, Logout:any, CurrentAccount:any, Global:any):void => {
+        $scope.username = CurrentAccount.username;
+        $scope.type = CurrentAccount.type;
 
         $scope.mode = "Patient";
 
-        Init(CurrentAccount, $scope);
+        //     Init(CurrentAccount, $scope);
 
         $scope.goTop = ():void => {
             $state.go('start');
@@ -253,8 +273,8 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDia
                             if (account.code == 0) {
                                 CurrentAccount.username = account.value.username;
                                 CurrentAccount.type = account.value.type;
-                                $scope.username = CurrentAccount.username;
-                                $scope.type = CurrentAccount.type;
+                                $scope.username = account.value.username;
+                                $scope.type = account.value.type;
                                 localStorage.setItem("account", JSON.stringify(CurrentAccount));
                                 $rootScope.$broadcast('Login');
                             }
@@ -295,8 +315,10 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDia
 
 controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomSheet', '$mdToast', '$state', 'Patient', 'PatientAccept', 'PatientQuery', 'CurrentAccount', 'CurrentPatient', 'Global',
     ($scope:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, $state:any, Patient:any, PatientAccept:any, PatientQuery:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
+
         $scope.username = CurrentAccount.username;
         $scope.type = CurrentAccount.type;
+
         $scope.progress = true;
         List(PatientQuery, {}, (data:any):void => {
             $scope.patients = data;
@@ -406,30 +428,35 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
 
 controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$mdToast', 'Patient', 'PatientStatus', 'CurrentAccount', 'CurrentPatient', 'Global',
     ($scope:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientStatus:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
-        Init(CurrentAccount, $scope);
-        var resource:any = new Patient();
-        resource.$get({id: CurrentPatient.id}, (data:any):void => {
-                if (data) {
-                    if (data.code == 0) {
-                        $scope.Input = [];
-                        _.each<any>(data.value.Input, (value:any, index:number, array:any[]):void => {
-                            if (value.type == "picture") {
-                                var canvas:any = new fabric.Canvas('cc');
-                                var hoge:string = JSON.stringify(value.value);
-                                canvas.loadFromJSON(hoge, canvas.renderAll.bind(canvas), (o:any, object:any):void => {
-                                });
-                            }
-                            $scope.Input.push(value);
-                            $scope.Information = data.value.Information;
-                        });
+        //  Init(CurrentAccount, $scope);
+
+        $scope.selectedIndex = 0;
+
+        $scope.$watch('selectedIndex', function (current, old) {
+            var resource:any = new Patient();
+            resource.$get({id: CurrentPatient.id}, (data:any):void => {
+                    if (data) {
+                        if (data.code == 0) {
+                            $scope.Input = [];
+                            _.each<any>(data.value.Input, (value:any, index:number, array:any[]):void => {
+                                if (value.type == "picture") {
+                                    var canvas:any = new fabric.Canvas('schema');
+                                    var hoge:string = JSON.stringify(value.value);
+                                    canvas.loadFromJSON(hoge, canvas.renderAll.bind(canvas), (o:any, object:any):void => {
+                                    });
+                                }
+                                $scope.Input.push(value);
+                                $scope.Information = data.value.Information;
+                            });
+                        } else {
+                            $mdToast.show($mdToast.simple().content(data.message));
+                        }
                     } else {
-                        $mdToast.show($mdToast.simple().content(data.message));
+                        $mdToast.show($mdToast.simple().content('patient error'));
                     }
-                } else {
-                    $mdToast.show($mdToast.simple().content('patient error'));
                 }
-            }
-        );
+            );
+        });
 
         var resource:any = new PatientStatus();
         resource.$get({id: CurrentPatient.id}, (result:any):void => {
@@ -470,7 +497,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
         };
 
         $scope.download = (event:any):void => {
-            var canvas:any = document.getElementById("cc");
+            var canvas:any = document.getElementById("schema");
             Canvas2Image.saveAsPNG(canvas);
         };
 
@@ -528,6 +555,7 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
 
         $scope.username = CurrentAccount.username;
         $scope.type = CurrentAccount.type;
+
         $scope.progress = true;
         AccountsList(AccountQuery, {}, (data:any):void => {
             $scope.progress = false;
@@ -845,7 +873,7 @@ controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog', 
 
         $scope.categories = [];
 
-        _.map<any,any>(Views.Data, (num:any, key:any):void  => {
+        _.map<any,any>(Views.Data.Data, (num:any, key:any):void  => {
             $scope.categories.push(key);
         });
 

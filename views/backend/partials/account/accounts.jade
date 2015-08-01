@@ -7,9 +7,8 @@
 md-content(style="background-color: #A0A0FF;")
     md-progress-circular.md-accent(ng-if="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
     md-card
-        md-card-content
+        md-card-header
             h1.md-headline スタッフ
-        md-card-content
             md-button.md-fab.md-accent(ng-click="showRegisterDialog()", ng-if="type != 'Viewer'", aria-label="")
                 ng-md-icon(icon="person_add", aria-label="スタッフ", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
                 md-tooltip 追加...
