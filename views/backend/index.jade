@@ -39,27 +39,27 @@ html(lang="ja")
                 h3.md-display-1(flex="50") {{username}} - {{type}}
 
                 div(flex="10")
-                    md-button.md-fab.menu-button(ng-click="goTop()", aria-label="", style="background-color:#c0c0ff;z-index:10;")
+                    md-button.md-fab.menu-button(class="lock-size", ng-click="goTop()", aria-label="", style="background-color:#c0c0ff;z-index:10;")
                         ng-md-icon(icon="home", aria-label="Top", style="position:relative;top:5px;fill:#a0ffff", size="42")
                         md-tooltip {{'top' | message }}
 
                 div(flex="10", ng-show="type == 'Admin'")
-                    md-button.md-fab.menu-button(ng-click="goConfig()", aria-label="", style="background-color:#fc7af6;z-index:10;")
+                    md-button.md-fab.menu-button(class="lock-size", ng-click="goConfig()", aria-label="", style="background-color:#fc7af6;z-index:10;")
                         ng-md-icon(icon="settings", aria-label="Config", style="position:relative;top:5px;fill:#ff40f0", size="42")
                         md-tooltip {{'config' | message }}
 
                 div(flex="10", ng-show="type == 'Admin'")
-                    md-button.md-fab.menu-button(ng-click="goEdit()", aria-label="", style="background-color:#7afcf6;z-index:10;")
+                    md-button.md-fab.menu-button(class="lock-size", ng-click="goEdit()", aria-label="", style="background-color:#7afcf6;z-index:10;")
                         ng-md-icon(icon="edit", aria-label="Edit", style="position:relative;top:5px;fill:#40cee0", size="42")
                         md-tooltip {{'config' | message }}
 
                 div(flex="10", ng-show="mode == 'Patient'")
-                    md-button.md-fab.menu-button(ng-click="goAccount()", aria-label="", style="background-color:#85c0fc;z-index:10;")
+                    md-button.md-fab.menu-button(class="lock-size", ng-click="goAccount()", aria-label="", style="background-color:#85c0fc;z-index:10;")
                         ng-md-icon(icon="face", aria-label="Account", style="position:relative;top:6px;fill:#70ffff", size="42")
                         md-tooltip {{'stuff' | message}}
 
                 div(flex="10", ng-show="mode == 'Account'")
-                    md-button.md-fab.menu-button(ng-click="goPatient()", aria-label="", style="background-color:#85c0fc;z-index:10;")
+                    md-button.md-fab.menu-button(class="lock-size", ng-click="goPatient()", aria-label="", style="background-color:#85c0fc;z-index:10;")
                         ng-md-icon(icon="perm_identity", aria-label="Patients", style="position:relative;top:6px;fill:#70ffff", size="42")
                         md-tooltip {{'patient' | message }}
 

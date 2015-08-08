@@ -14,12 +14,13 @@ md-content(style="background-color: #A0A0FF;")
     md-list
         md-list-item(ng-repeat="Page in Pages", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
-                md-card-content(layout="row", layout-align="center center", flex)
+                md-card-content(layout="row", layout-align="end center", flex)
+                    div(flex) {{Page.headline}}
                     div(flex="10", ng-if="type == 'Viewer'")
-                        ng-md-icon(icon="person", size="50")
+                        ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
                     div(flex="10", ng-if="type != 'Viewer'")
                         md-button.md-fab.md-primary(ng-click="PageUpdate($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                            ng-md-icon(icon="person", size="42")
+                            ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
                             md-tooltip 更新...
                     div(flex="10")
                         md-button.md-fab.md-warn(ng-click="showPageDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")

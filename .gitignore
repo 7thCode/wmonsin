@@ -106,3 +106,23 @@ views/backend/partials/patient/patients.html
 views/backend/partials/account/accounts.html
 views/backend/partials/patient/sheet.html
 
+
+views/backend/partials/edit/department.html
+
+views/backend/partials/edit/page.html
+
+views/backend/partials/patient/start.html
+
+views/backend/partials/patient/description.html
+
+views/backend/partials/patient/patientacceptdialog.html
+
+views/backend/partials/edit/departments.html
+
+views/backend/partials/account/registerdialog.html
+
+views/backend/partials/account/logindialog.html
+
+views/backend/partials/account/deletedialog.html
+
+views/backend/partials/account/accountdialog.html
