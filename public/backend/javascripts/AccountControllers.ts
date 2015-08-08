@@ -894,15 +894,10 @@ controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog','
         $scope.categories = [];
 
         List(ViewQuery, {}, (data:any):void  => {
-
             _.each(data,(item, index):void => {
-
                 $scope.categories.push(item.Name);
-
             });
-
         });
-
 
      //   _.map<any,any>(Views.Data.Data, (num:any, key:any):void  => {
      //       $scope.categories.push(key);
@@ -922,7 +917,6 @@ controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog','
 
     }]);
 
-
 controllers.controller('DepartmentsController', ['$scope','$state',"CurrentView","View","ViewQuery",
     ($scope:any,$state:any,CurrentView:any,View:any,ViewQuery:any):void  => {
 
@@ -937,14 +931,12 @@ controllers.controller('DepartmentsController', ['$scope','$state',"CurrentView"
         };
 
         $scope.DepartmentUpdate = (id:any):void => {
-
             var view:any = new View();
             view.$get({id:id}, (data:any):void => {
                 CurrentView.Data = data.value;
                 $scope.Pages =  CurrentView.Data.Pages;
                 $state.go('department');
             });
-
         };
 
         $scope.showDepartmentDeleteDialog = (id:any):void => {
@@ -958,14 +950,6 @@ controllers.controller('DepartmentEditController', ['$scope','$state',"CurrentVi
     ($scope:any, $state:any, CurrentView:any, View:any):void  => {
 
         $scope.Pages =  CurrentView.Data.Pages;
-    //    $scope.progress = true;
-
-     //   var view:any = new View();
-     //   view.$get({id:CurrentView.id}, (data:any):void => {
-     //       CurrentView.Data = data.value;
-
-     //       $scope.progress = false;
-     //   });
 
         $scope.showPageCreateDialog= ():void => {
 
