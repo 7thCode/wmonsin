@@ -1,17 +1,19 @@
 # wmonsin - Web問診表
+## Medical questionnaire
+
 
 医院等で使用するための問診票をMEANスタック/マテリアルデザインで実装しました。
 現在、ORCAとの受付の連携、及び問診票エディタを開発中です。
 最終的には問診票だけではなく、Webでの汎用的なアンケート/入力フォーマットシステムになる予定です。
 
-##インストール方法
+## インストール方法
 
 wmomsinはnode.js上で動作します。
 またデータストアにはMongoDBを使用するため、node.jsとongoDBをインストールする必要が有ります。
 
 
 - - -
-####1.mongodbのインストール
+#### 1.mongodbのインストール
 
 まず、mongodbを用意します。もしインストール済みなら不要です。
 
@@ -28,7 +30,7 @@ mongodb://your.domain.name/new_db_name
 ```
 
 - - -
-####2.node.jsのインストール
+#### 2.node.jsのインストール
 
 node.jsをインストールしてください。用意されていれば必要ありません。
 
@@ -36,23 +38,23 @@ node.jsをインストールしてください。用意されていれば必要�
 
 
 - - -
-####3.ダウンロード
+#### 3.ダウンロード
 
 以下のどちらかのファイルをダウンロードして展開してサーバにデプロイください。
 
 ライブラリなし(ダウンロード軽いけどちょい手間)
 
-####[wmonsin without library](https://dl.dropboxusercontent.com/u/2004743/wmonsin_without_lib.zip "wmonsin without library")
+#### [wmonsin without library](https://dl.dropboxusercontent.com/u/2004743/wmonsin_without_lib.zip "wmonsin without library")
 
 ライブラリ付属(ダウンロード重いけど手間なし！)
 
-####[wmonsin with library](https://dl.dropboxusercontent.com/u/2004743/wmonsin_with_lib.zip "wmonsin with library")
+#### [wmonsin with library](https://dl.dropboxusercontent.com/u/2004743/wmonsin_with_lib.zip "wmonsin with library")
 
 ここから先の手順はダウンロードしたパッケージごとに異なります。
 
 
 - - -
-####4.サーバモジュールをインストール
+#### 4.サーバモジュールをインストール
 
 "wmonsin with library"をダウンロードされた場合、このセクションは不要です。
 次のセクションに進んでください。
@@ -75,7 +77,7 @@ bower install
 
 
 - - -
-####5.起動
+#### 5.起動
 
 ディレクトリで
 
@@ -95,7 +97,7 @@ http://localhost:3000
 
 
 - - -
-####6.コンフィグ
+#### 6.コンフィグ
 
 起動後、ユーザ名root、パスワードrootでログイン後、スタッフ画面のコンフィグから、Connectionに先ほど用意した接続文字列を入力してください。
 同時にSession KeyやPassword Key、Account Keyも任意のものに変更してください。
