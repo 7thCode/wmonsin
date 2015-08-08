@@ -55,6 +55,24 @@ app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRou
             url: '/error',
             templateUrl: '/backend/partials/error',
             controller: 'ErrorController'
+        })
+
+        .state('departments', {
+            url: '/departments',
+            templateUrl: '/backend/partials/edit/departments',
+            controller: 'DepartmentsController'
+        })
+
+        .state('department', {
+            url: '/department',
+            templateUrl: '/backend/partials/edit/department',
+            controller: 'DepartmentEditController'
+        })
+
+        .state('page', {
+            url: '/page',
+            templateUrl: '/backend/partials/edit/page',
+            controller: 'PageEditController'
         });
 
     $urlRouterProvider.otherwise('/start');

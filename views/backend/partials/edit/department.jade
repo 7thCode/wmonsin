@@ -1,0 +1,27 @@
+//
+    accounts.jade　
+    Copyright (c) 2015 7ThCode.
+    This software is released under the MIT License.
+    http://opensource.org/licenses/mit-license.php
+md-content(style="background-color: #A0A0FF;")
+    md-progress-circular.md-accent(ng-if="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
+    md-card
+        md-card-header
+            h1.md-headline ページリスト
+            md-button.md-fab.md-accent(ng-click="showPageCreateDialog()", ng-if="type != 'Viewer'", aria-label="")
+                ng-md-icon(icon="person_add", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
+                md-tooltip 追加...
+    md-list
+        md-list-item(ng-repeat="Page in Pages", ng-show="account.type != 'Admin'")
+            md-card(layout="row", flex)
+                md-card-content(layout="row", layout-align="center center", flex)
+                    div(flex="10", ng-if="type == 'Viewer'")
+                        ng-md-icon(icon="person", size="50")
+                    div(flex="10", ng-if="type != 'Viewer'")
+                        md-button.md-fab.md-primary(ng-click="PageUpdate($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                            ng-md-icon(icon="person", size="42")
+                            md-tooltip 更新...
+                    div(flex="10")
+                        md-button.md-fab.md-warn(ng-click="showPageDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
+                            ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
+                            md-tooltip 削除

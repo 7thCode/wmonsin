@@ -48,7 +48,7 @@ md-content(style="background-color: #A0A0FF;")
                                     .md-title {{item.value}}
 
                     div(layout="row",ng-show="item.type == 'check'", flex)
-                        md-card(flex)
+                        md-card(flex, ng-show="item.value")
                             md-card-content(layout="row", layout-align="start center", flex)
                                 label.md-subhead {{item.name}}
                                     .md-title {{item.value}}
@@ -70,8 +70,9 @@ md-content(style="background-color: #A0A0FF;")
                             strong {{item.name}} :
                             span {{item.value}}
                         div(ng-show="item.type == 'check'")
-                            strong {{item.name}} :
-                            span {{item.value}}
+                            div(ng-show="item.value")
+                                strong {{item.name}} :
+                                span {{item.value}}
                         div(ng-show="item.type == 'numeric'")
                             strong {{item.name}} :
                             span {{item.value}}

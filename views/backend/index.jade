@@ -36,7 +36,7 @@ html(lang="ja")
 
         md-toolbar(style="z-index:10;")
             .md-toolbar-tools(layout-align="center center")
-                h3.md-display-1(flex="60") {{username}} - {{type}}
+                h3.md-display-1(flex="50") {{username}} - {{type}}
 
                 div(flex="10")
                     md-button.md-fab.menu-button(ng-click="goTop()", aria-label="", style="background-color:#c0c0ff;z-index:10;")
@@ -46,6 +46,11 @@ html(lang="ja")
                 div(flex="10", ng-show="type == 'Admin'")
                     md-button.md-fab.menu-button(ng-click="goConfig()", aria-label="", style="background-color:#fc7af6;z-index:10;")
                         ng-md-icon(icon="settings", aria-label="Config", style="position:relative;top:5px;fill:#ff40f0", size="42")
+                        md-tooltip {{'config' | message }}
+
+                div(flex="10", ng-show="type == 'Admin'")
+                    md-button.md-fab.menu-button(ng-click="goEdit()", aria-label="", style="background-color:#7afcf6;z-index:10;")
+                        ng-md-icon(icon="edit", aria-label="Edit", style="position:relative;top:5px;fill:#40cee0", size="42")
                         md-tooltip {{'config' | message }}
 
                 div(flex="10", ng-show="mode == 'Patient'")

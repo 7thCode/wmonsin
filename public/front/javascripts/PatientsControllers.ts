@@ -18,7 +18,7 @@
 
 'use strict';
 
-var controllers:angular.IModule = angular.module('PatientsControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons','ngAnimate']);
+var controllers:angular.IModule = angular.module('PatientsControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate']);
 
 class Browser {
     public name:string;
@@ -75,7 +75,7 @@ controllers.value('Global', {
 );
 
 controllers.value("Views", {
-        Data: {}
+        Data: []
     }
 );
 
@@ -88,6 +88,17 @@ controllers.value("CurrentPatient", {
     "Category": "",
     'Input': {}
 });
+
+function List(resource:any, query:any, success:(value:any) => void):void {
+    var result:any[] = [];
+    resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any):void => {
+        if (data) {
+            if (data.code == 0) {
+                success(data.value);
+            }
+        }
+    });
+}
 
 // Patient resource
 controllers.factory('PatientQuery', ['$resource', ($resource:any):angular.resource.IResource<any> => {
@@ -102,13 +113,20 @@ controllers.factory('Patient', ['$resource', ($resource:any):angular.resource.IR
     });
 }]);
 
-controllers.factory('ViewItem', ['$resource', ($resource:any):angular.resource.IResource<any> => {
-    return $resource('/view', {}, {
-        //     get: {method: 'GET'}
-    });
-}]);
+//controllers.factory('ViewItem', ['$resource', ($resource:any):angular.resource.IResource<any> => {
+//    return $resource('/view/query/:query', {}, {
+//        //     get: {method: 'GET'}
+//    });
+//}]);
 
-function List(resource:any, query:any, success:(value:any, headers:any) => void):void {
+controllers.factory('ViewQuery', ['$resource',
+    ($resource:any):angular.resource.IResource<any> => {
+        return $resource('/view/query/:query', {query: '@query'}, {
+            query: {method: 'GET'}
+        });
+    }]);
+
+function PatientsList(resource:any, query:any, success:(value:any, headers:any) => void):void {
     var result:any[] = [];
 
     var today:Date = new Date();
@@ -126,20 +144,16 @@ function List(resource:any, query:any, success:(value:any, headers:any) => void)
     });
 }
 
-controllers.controller('BrowseSController', ["$scope", "$stateParams", "$location", 'Patient', 'PatientQuery', "CurrentPatient", "Global", 'ViewItem', 'Views',
-    ($scope:any, $stateParams:any, $location:any, Patient:any, PatientQuery:any, CurrentPatient:any, Global:any, ViewItem:any, Views:any):void => {
+controllers.controller('BrowseSController', ["$scope", "$stateParams", "$location", 'Patient', 'PatientQuery', "CurrentPatient", "Global", 'ViewQuery', 'Views',
+    ($scope:any, $stateParams:any, $location:any, Patient:any, PatientQuery:any, CurrentPatient:any, Global:any, ViewQuery:any, Views:any):void => {
 
-        var resource:any = new ViewItem();
-        resource.$get({}, (data:any):void => {
-            if (data != null) {
-                if (data.code == 0) {
-                    List(PatientQuery, {}, (patients:any):void => {
-                        $scope.patients = patients;
-                        Views.Data = data.value[0].Data;
-                    });
-                }
-            }
+        List(ViewQuery, {}, (data:any):void  => {
+            PatientsList(PatientQuery, {}, (patients:any):void => {
+                $scope.patients = patients;
+                Views.Data = data;
+            });
         });
+
 
         $scope.next = (id:any):void => {
             var resource:any = new Patient();
@@ -167,7 +181,7 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
 
         Global.socket.on('client', (data:any):void => {
             if (data.value === "1") {
-                List(PatientQuery, {}, (data:any):void => {
+                PatientsList(PatientQuery, {}, (data:any):void => {
                     $scope.patients = data;
                 });
             }
@@ -182,7 +196,9 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
         var page:any = $stateParams.page;
         var color:string = "rgba(200, 20, 30, 0.4)";
 
-        $scope.contents = Views.Data[CurrentPatient.Category][page];
+        var depertment = _.filter(Views.Data, (data:any):boolean => { return (data.Name == CurrentPatient.Category);});
+
+        $scope.contents = depertment[0].Pages[page];
 
         if ($scope.contents.picture != null) {
             var canvas:fabric.ICanvas = new fabric.Canvas('schema');
@@ -257,13 +273,27 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
         $scope.next = (path:any):any => {
 
             _.map<any,any>($scope.contents.items, (value:any, key:any):void => {
-                if (value.type == "check")
-                {
-                    var name_and_value = value.name.split("-");
-                    $scope.Input[value.name] = {'name': name_and_value[0], 'value': name_and_value[1], 'type': value.type};
+                if (value.type == "check") {
+                    if(value.model)
+                    {
+                        var name_and_value = value.name.split("-");
+                        $scope.Input[value.name] = {
+                            'name': name_and_value[0],
+                            'value': name_and_value[1],
+                            'type': value.type
+                        };
+                    }
+                    else
+                    {
+                        var name_and_value = value.name.split("-");
+                        $scope.Input[value.name] = {
+                            'name': name_and_value[0],
+                            'value': false,
+                            'type': value.type
+                        };
+                    }
                 }
-                else
-                {
+                else {
                     $scope.Input[value.name] = {'name': value.name, 'value': value.model, 'type': value.type};
                 }
 

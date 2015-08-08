@@ -21,6 +21,7 @@ md-content(style="background-color: #A0A0FF;")
 
             md-list
                 md-list-item(layout-align="center center" ng-repeat="content in contents.items")
+
                     md-card(flex)
                         md-card-content(layout-align="start center")
 
@@ -34,7 +35,7 @@ md-content(style="background-color: #A0A0FF;")
                                 div(ng-messages="validate[content.name].$error")
                                     div(ng-repeat="item in content.items", ng-message="{{item.name}}") {{item.message}}
 
-                            md-radio-group(ng-model="content.model", name="{{content.name}}", layout-align="center center", ng-if="content.type == 'select'", required)
+                            md-radio-group(ng-model="content.model",ng-if="content.type == 'select'", name="{{content.name}}", layout-align="center center",  required)
                                 .md-display-1 {{content.label}}
                                 md-radio-button(ng-repeat="item in content.items", ng-model="content.model", value="{{item}}")
                                     .md-display-1 {{item}}

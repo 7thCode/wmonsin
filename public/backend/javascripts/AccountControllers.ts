@@ -44,15 +44,21 @@ controllers.value("CurrentPatient", {
     'id': ""
 });
 
+controllers.value("CurrentView", {
+    'id': "",
+    'Page': 0,
+    'Data': {}
+});
+
 controllers.value("CurrentAccount", {
     'username': "",
     'type': ""
 });
 
-controllers.value("Views", {
-        Data: {}
-    }
-);
+//controllers.value("Views", {
+//        Data: {}
+//    }
+//);
 
 controllers.factory('ViewItem', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
@@ -120,10 +126,27 @@ controllers.factory('Patient', ['$resource',
         });
     }]);
 
+
+
 controllers.factory('PatientStatus', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
         return $resource('/patient/status/:id', {}, {
             update: {method: 'PUT'}
+        });
+    }]);
+
+controllers.factory('View', ['$resource',
+    ($resource:any):angular.resource.IResource<any> => {
+        return $resource('/view/:id', {}, {
+            update: {method: 'PUT'},
+            remove: {method: 'DELETE'}
+        });
+    }]);
+
+controllers.factory('ViewQuery', ['$resource',
+    ($resource:any):angular.resource.IResource<any> => {
+        return $resource('/view/query/:query', {query: '@query'}, {
+            query: {method: 'GET'}
         });
     }]);
 
@@ -134,7 +157,7 @@ controllers.factory('Config', ['$resource',
         });
     }]);
 
-function List(resource:any, query:any, success:(value:any, headers:any) => void):void {
+function PatientsList(resource:any, query:any, success:(value:any, headers:any) => void):void {
     var today:Date = new Date();
     today.setHours(23, 59, 59, 99);
     var yesterday:Date = new Date();
@@ -149,9 +172,8 @@ function List(resource:any, query:any, success:(value:any, headers:any) => void)
     });
 }
 
-function AccountsList(resource:any, query:any, success:(value:any) => void):void {
+function List(resource:any, query:any, success:(value:any) => void):void {
     var result:any[] = [];
-    var query:any = {};
     resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any):void => {
         if (data) {
             if (data.code == 0) {
@@ -186,8 +208,8 @@ function AccountsList(resource:any, query:any, success:(value:any) => void):void
  }
  */
 /*! Controllers  */
-controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount', 'ViewItem', 'Views',
-    ($scope:any, $state:any, CurrentAccount:any, ViewItem:any, Views:any):void => {
+controllers.controller("StartController", ["$scope", 'CurrentAccount',
+    ($scope:any, CurrentAccount:any):void => {
         /*
          if (localStorage.getItem("account") != null) {
          var account:any = JSON.parse(localStorage.getItem("account"));
@@ -206,7 +228,7 @@ controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
         $scope.type = CurrentAccount.type;
 
 
-        var resource:any = new ViewItem();
+  /*      var resource:any = new ViewItem();
         resource.$get({}, (data:any):void => {
             if (data) {
                 if (data.code == 0) {
@@ -216,7 +238,7 @@ controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
 
             }
         });
-
+*/
 
     }]);
 
@@ -246,6 +268,10 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDia
 
         $scope.goConfig = ():void => {
             $state.go('controlles');
+        };
+
+        $scope.goEdit = ():void => {
+            $state.go('departments');
         };
 
         $scope.goPatient = ():void => {
@@ -320,7 +346,7 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
         $scope.type = CurrentAccount.type;
 
         $scope.progress = true;
-        List(PatientQuery, {}, (data:any):void => {
+        PatientsList(PatientQuery, {}, (data:any):void => {
             $scope.patients = data;
             $scope.progress = false;
         });
@@ -378,7 +404,7 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
                     resource.$save({}, (result:any):void => {
                         if (result) {
                             if (result.code == 0) {
-                                List(PatientQuery, {}, (data:any):void => {
+                                PatientsList(PatientQuery, {}, (data:any):void => {
                                     $scope.progress = false;
                                     Global.socket.emit('server', {value: "1"});
                                     $scope.patients = data;
@@ -397,7 +423,7 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
 
         $scope.$on('Login', ():void => {
             $scope.progress = true;
-            List(PatientQuery, {}, (data:any):void => {
+            PatientsList(PatientQuery, {}, (data:any):void => {
                 $scope.patients = data;
                 $scope.progress = false;
             });
@@ -409,7 +435,7 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
 
         $scope.$on('Update', ():void => {
             $scope.progress = true;
-            List(PatientQuery, {}, (data:any):void => {
+            PatientsList(PatientQuery, {}, (data:any):void => {
                 $scope.patients = data;
                 $scope.progress = false;
             });
@@ -418,7 +444,7 @@ controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomS
         Global.socket.on('client', (data:any):void => {
             if (data.value === "1") {
                 $scope.progress = true;
-                List(PatientQuery, {}, (data:any):void => {
+                PatientsList(PatientQuery, {}, (data:any):void => {
                     $scope.patients = data;
                     $scope.progress = false;
                 });
@@ -557,7 +583,7 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
         $scope.type = CurrentAccount.type;
 
         $scope.progress = true;
-        AccountsList(AccountQuery, {}, (data:any):void => {
+        List(AccountQuery, {}, (data:any):void => {
             $scope.progress = false;
             $scope.accounts = data;
         });
@@ -578,7 +604,7 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
                     resource.$save({}, (result:any):void => {
                         if (result) {
                             if (result.code == 0) {
-                                AccountsList(AccountQuery, {}, (data:any):void => {
+                                List(AccountQuery, {}, (data:any):void => {
                                     $scope.accounts = data;
                                     $scope.progress = false;
                                 });
@@ -605,7 +631,7 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
                     resource.$remove({id: id}, (result:any):void => {
                         if (result) {
                             if (result.code == 0) {
-                                AccountsList(AccountQuery, {}, (data:any):void => {
+                                List(AccountQuery, {}, (data:any):void => {
                                     $scope.accounts = data;
                                     $scope.progress = false;
                                 });
@@ -657,7 +683,7 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
                                             post.$update({id: id}, (result:any):void => {
                                                 if (result) {
                                                     if (result.code == 0) {
-                                                        AccountsList(AccountQuery, {}, (data:any):void => {
+                                                        List(AccountQuery, {}, (data:any):void => {
                                                             $scope.accounts = data;
                                                             $scope.progress = false;
                                                             $mdToast.show($mdToast.simple().content(result.message));
@@ -685,7 +711,7 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
 
         $scope.$on('Login', ():void  => {
             $scope.progress = true;
-            AccountsList(AccountQuery, {}, (data:any):void  => {
+            List(AccountQuery, {}, (data:any):void  => {
                 $scope.accounts = data;
                 $scope.progress = false;
             });
@@ -697,7 +723,7 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
 
         $scope.$on('Update', ():void  => {
             $scope.progress = true;
-            AccountsList(AccountQuery, {}, (data:any):void  => {
+            List(AccountQuery, {}, (data:any):void  => {
                 $scope.accounts = data;
                 $scope.progress = false;
             });
@@ -868,14 +894,25 @@ controllers.controller('NotificationDialogController', ['$scope', '$mdDialog',
 
     }]);
 
-controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog', 'Views',
-    ($scope:any, $mdDialog:any, Views:any):void  => {
+controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog','ViewQuery',
+    ($scope:any, $mdDialog:any, ViewQuery:any):void  => {
 
         $scope.categories = [];
 
-        _.map<any,any>(Views.Data.Data, (num:any, key:any):void  => {
-            $scope.categories.push(key);
+        List(ViewQuery, {}, (data:any):void  => {
+
+            _.each(data,(item, index):void => {
+
+                $scope.categories.push(item.Name);
+
+            });
+
         });
+
+
+     //   _.map<any,any>(Views.Data.Data, (num:any, key:any):void  => {
+     //       $scope.categories.push(key);
+     //   });
 
         $scope.hide = ():void => {
             $mdDialog.hide();
@@ -887,6 +924,75 @@ controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog', 
 
         $scope.answer = (answer:any):void => {
             $mdDialog.hide($scope);
+        };
+
+    }]);
+
+
+controllers.controller('DepartmentsController', ['$scope','$state',"CurrentView","View","ViewQuery",
+    ($scope:any,$state:any,CurrentView:any,View:any,ViewQuery:any):void  => {
+
+        $scope.progress = true;
+        List(ViewQuery, {}, (data:any):void  => {
+            $scope.Departments = data;
+            $scope.progress = false;
+        });
+
+        $scope.showDepartmentCreateDialog = ():void => {
+
+        };
+
+        $scope.DepartmentUpdate = (id:any):void => {
+            CurrentView.id = id;
+            $state.go('department');
+        };
+
+        $scope.showDepartmentDeleteDialog = (id:any):void => {
+
+        };
+
+    }]);
+
+
+controllers.controller('DepartmentEditController', ['$scope','$state',"CurrentView","View",
+    ($scope:any, $state:any, CurrentView:any, View:any):void  => {
+
+        $scope.progress = true;
+        var view:any = new View();
+        view.$get({id:CurrentView.id}, (data:any):void => {
+            CurrentView.Data = data.value;
+            $scope.Pages =  CurrentView.Data.Pages;
+            $scope.progress = false;
+        });
+
+        $scope.showPageCreateDialog= ():void => {
+
+        };
+
+        $scope.PageUpdate= (index:number):void => {
+            CurrentView.Page = index;
+            $state.go('page');
+        };
+
+        $scope.showPageDeleteDialog = (index:number):void => {
+
+        };
+
+    }]);
+
+
+controllers.controller('PageEditController', ['$scope','$state',"CurrentView","View",
+    ($scope:any, $state:any, CurrentView:any, View:any):void  => {
+
+        $scope.Page = CurrentView.Data.Pages[CurrentView.Page];
+
+        $scope.showItemCreateDialog= ():void => {
+
+        };
+
+
+        $scope.showItemDeleteDialog = (index:number):void => {
+
         };
 
     }]);
