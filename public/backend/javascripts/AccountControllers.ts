@@ -45,7 +45,6 @@ controllers.value("CurrentPatient", {
 });
 
 controllers.value("CurrentView", {
-    'id': "",
     'Page': 0,
     'Data': {}
 });
@@ -54,11 +53,6 @@ controllers.value("CurrentAccount", {
     'username': "",
     'type': ""
 });
-
-//controllers.value("Views", {
-//        Data: {}
-//    }
-//);
 
 controllers.factory('ViewItem', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
@@ -943,8 +937,14 @@ controllers.controller('DepartmentsController', ['$scope','$state',"CurrentView"
         };
 
         $scope.DepartmentUpdate = (id:any):void => {
-            CurrentView.id = id;
-            $state.go('department');
+
+            var view:any = new View();
+            view.$get({id:id}, (data:any):void => {
+                CurrentView.Data = data.value;
+                $scope.Pages =  CurrentView.Data.Pages;
+                $state.go('department');
+            });
+
         };
 
         $scope.showDepartmentDeleteDialog = (id:any):void => {
@@ -957,13 +957,15 @@ controllers.controller('DepartmentsController', ['$scope','$state',"CurrentView"
 controllers.controller('DepartmentEditController', ['$scope','$state',"CurrentView","View",
     ($scope:any, $state:any, CurrentView:any, View:any):void  => {
 
-        $scope.progress = true;
-        var view:any = new View();
-        view.$get({id:CurrentView.id}, (data:any):void => {
-            CurrentView.Data = data.value;
-            $scope.Pages =  CurrentView.Data.Pages;
-            $scope.progress = false;
-        });
+        $scope.Pages =  CurrentView.Data.Pages;
+    //    $scope.progress = true;
+
+     //   var view:any = new View();
+     //   view.$get({id:CurrentView.id}, (data:any):void => {
+     //       CurrentView.Data = data.value;
+
+     //       $scope.progress = false;
+     //   });
 
         $scope.showPageCreateDialog= ():void => {
 
