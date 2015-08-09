@@ -8,6 +8,9 @@ md-content(style="background-color: #A0A0FF;")
     md-card
         md-card-header
             h1.md-headline ページリスト
+            md-button.md-fab.md-accent(ng-click="DepartmentUpdate()", ng-if="type != 'Viewer'", aria-label="")
+                ng-md-icon(icon="save", aria-label="科目保存", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
+                md-tooltip 保存
             md-button.md-fab.md-accent(ng-click="showPageCreateDialog()", ng-if="type != 'Viewer'", aria-label="")
                 ng-md-icon(icon="person_add", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
                 md-tooltip 追加...
