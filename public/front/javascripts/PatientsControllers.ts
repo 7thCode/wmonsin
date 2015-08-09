@@ -273,30 +273,21 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
         $scope.next = (path:any):any => {
 
             _.map<any,any>($scope.contents.items, (value:any, key:any):void => {
-                if (value.type == "check") {
-                    if(value.model)
+                if (value.type == "check") { //checkboxの場合は、値がfalseならば表示しない方針。よって、modelの値がfalseyならばvalueはfalseとする。trueならば、"name-value"コンベンションに従う。
+                    var name_and_value = value.name.split("-");//"name-value"コンベンション。
+                    var value = name_and_value[1];
+                    if(!value.model)
                     {
-                        var name_and_value = value.name.split("-");
-                        $scope.Input[value.name] = {
-                            'name': name_and_value[0],
-                            'value': name_and_value[1],
-                            'type': value.type
-                        };
+                        value = false;
                     }
-                    else
-                    {
-                        var name_and_value = value.name.split("-");
-                        $scope.Input[value.name] = {
-                            'name': name_and_value[0],
-                            'value': false,
-                            'type': value.type
-                        };
-                    }
-                }
-                else {
+                    $scope.Input[value.name] = {
+                        'name': name_and_value[0],
+                        'value': value,
+                        'type': value.type
+                    };
+                } else {//checkbox以外
                     $scope.Input[value.name] = {'name': value.name, 'value': value.model, 'type': value.type};
                 }
-
             });
 
             _.map<any,any>($scope.contents.picture, (value:any, key:any):void => {
