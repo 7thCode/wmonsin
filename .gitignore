@@ -137,3 +137,19 @@ routes/result.min.js
 views/backend/partials/edit/departmentdeletedialog.html
 
 views/backend/partials/edit/departmentcreatedialog.html
+
+routes/configure.js
+
+views/backend/partials/edit/itemcreatedialog.html
+
+views/backend/partials/edit/itemdeletedialog.html
+
+views/backend/partials/edit/itemupdatedialog.html
+
+views/backend/partials/edit/pagecreatedialog.html
+
+views/backend/partials/edit/pagedeletedialog.html
+
+routes/configure.js
+
+routes/configure.js

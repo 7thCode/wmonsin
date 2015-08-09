@@ -214,6 +214,17 @@ router.get('/backend/partials/edit/pagedeletedialog', (req:any, res:any):void =>
     res.render('backend/partials/edit/pagedeletedialog');
 });
 
+router.get('/backend/partials/edit/itemcreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/itemcreatedialog');
+});
+
+router.get('/backend/partials/edit/itemupdatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/itemupdatedialog');
+});
+
+router.get('/backend/partials/edit/itemdeletedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/itemdeletedialog');
+});
 
 router.get('/backend/partials/edit/departments', (req:any, res:any):void => {
     res.render('backend/partials/edit/departments');

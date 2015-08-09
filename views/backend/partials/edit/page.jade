@@ -15,13 +15,18 @@ md-content(style="background-color: #A0A0FF;")
                     div(ng-messages="validate.title.$error")
                         div(ng-message="required") {{'required' | message}}
                         div(ng-message="md-maxlength") {{'maxlength' | message}}
-                md-button.md-fab.md-accent(ng-click="showDepartmentCreateDialog()", ng-if="type != 'Viewer'", aria-label="")
+                md-button.md-fab.md-accent(ng-click="showItemCreateDialog()", ng-if="type != 'Viewer'", aria-label="")
                     ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
                         ng-md-icon(icon="note_add", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
                         md-tooltip 追加...
     md-list
         md-list-item(ng-repeat="item in Page.items", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
+                div(flex="10", ng-if="type != 'Viewer'")
+                    md-button.md-fab.md-primary(ng-click="showItemUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                        ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
+                        md-tooltip 更新...
+
                 md-card-content(layout="row", layout-align="center center", flex)
                     h3.md-title(flex="80") {{item.type}}
                     div(flex="10")

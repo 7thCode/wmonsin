@@ -874,11 +874,6 @@ controllers.controller('DepartmentEditController', ['$scope', '$state','$mdDialo
 
                     CurrentView.Data.Pages.push(page);
 
-
-
-
-
-
                 }, ():void => { // Cancel
                 });
         };
@@ -896,9 +891,7 @@ controllers.controller('DepartmentEditController', ['$scope', '$state','$mdDialo
             })
                 .then((answer:any):void => {  // Answer
 
-
-
-
+//todo Page Delete
 
                 }, ():void => {
                 });
@@ -906,17 +899,67 @@ controllers.controller('DepartmentEditController', ['$scope', '$state','$mdDialo
 
     }]);
 
-controllers.controller('PageEditController', ['$scope', '$state', "CurrentView", "View",
-    ($scope:any, $state:any, CurrentView:any, View:any):void  => {
+controllers.controller('PageEditController', ['$scope', '$state','$mdDialog', "CurrentView", "View",
+    ($scope:any, $state:any,$mdDialog:any, CurrentView:any, View:any):void  => {
 
         $scope.Page = CurrentView.Data.Pages[CurrentView.Page];
 
         $scope.showItemCreateDialog = ():void => {
 
+            $mdDialog.show({
+                controller: 'ItemCreateDialogController',
+                templateUrl: '/backend/partials/edit/itemcreatedialog',
+                targetEvent: null
+            })
+                .then((answer:any):void => { // Answer
+
+
+//todo Item Create
+
+
+                }, ():void => { // Cancel
+                });
+
         };
 
+        $scope.showItemUpdateDialog = (index:number):void => {
+
+            $scope.items = $scope.Page.items[index];
+
+            $mdDialog.show({
+                controller: 'ItemUpdateDialogController',
+                templateUrl: '/backend/partials/edit/itemupdatedialog',
+                targetEvent: null,
+                locals: {
+                    items: $scope.items
+                }
+            })
+                .then((answer:any):void => { // Answer
+
+
+//todo Item Update
+
+
+                }, ():void => { // Cancel
+                });
+
+        };
 
         $scope.showItemDeleteDialog = (index:number):void => {
+
+            $mdDialog.show({
+                controller: 'ItemDeleteDialogController',
+                templateUrl: '/backend/partials/edit/itemdeletedialog',
+                targetEvent: index
+            })
+                .then((answer:any):void => {  // Answer
+
+
+//todo Item Delete
+
+
+                }, ():void => {
+                });
 
         };
 
@@ -1193,3 +1236,56 @@ controllers.controller('PageDeleteDialogController', ['$scope', '$mdDialog',
 
 
 
+controllers.controller('ItemCreateDialogController', ['$scope', '$mdDialog',
+    ($scope:any, $mdDialog:any):void  => {
+
+
+        $scope.hide = ():void => {
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = ():void => {
+            $mdDialog.cancel();
+        };
+
+        $scope.answer = (answer:any):void => {
+            $mdDialog.hide($scope);
+        };
+
+    }]);
+
+controllers.controller('ItemUpdateDialogController', ['$scope', '$mdDialog', 'items',
+    ($scope:any, $mdDialog:any, items:any):void  => {
+
+        $scope.items = items;
+
+        $scope.hide = ():void  => {
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = ():void  => {
+            $mdDialog.cancel();
+        };
+
+        $scope.answer = (answer:any):void  => {
+            $mdDialog.hide($scope);
+        };
+
+    }]);
+
+controllers.controller('ItemDeleteDialogController', ['$scope', '$mdDialog',
+    ($scope:any, $mdDialog:any):void  => {
+
+        $scope.hide = ():void  => {
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = ():void  => {
+            $mdDialog.cancel();
+        };
+
+        $scope.answer = (answer:any):void  => {
+            $mdDialog.hide($scope);
+        };
+
+    }]);
