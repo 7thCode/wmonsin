@@ -133,3 +133,7 @@ routes/configure.min.min.js
 routes/result.min.js
 routes/configure.js
 routes/result.min.js
+
+views/backend/partials/edit/departmentdeletedialog.html
+
+views/backend/partials/edit/departmentcreatedialog.html

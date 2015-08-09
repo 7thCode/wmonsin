@@ -129,6 +129,12 @@ controllers.factory('PatientStatus', ['$resource',
         });
     }]);
 
+
+controllers.factory('ViewCreate', ['$resource',
+    ($resource:any):angular.resource.IResource<any> => {
+        return $resource('/view/create', {}, {});
+    }]);
+
 controllers.factory('View', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
         return $resource('/view/:id', {}, {
@@ -725,6 +731,120 @@ controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast',
 
     }]);
 
+controllers.controller('DepartmentsController', ['$scope','$state',"$mdDialog","$mdToast", "CurrentView","ViewCreate","View","ViewQuery",
+    ($scope:any, $state:any, $mdDialog:any,$mdToast:any, CurrentView:any, ViewCreate:any, View:any, ViewQuery:any):void  => {
+
+        $scope.progress = true;
+        List(ViewQuery, {}, (data:any):void  => {
+            $scope.Departments = data;
+            $scope.progress = false;
+        });
+
+        $scope.showDepartmentCreateDialog = ():void => { // Register Dialog
+            $mdDialog.show({
+                controller: 'DepartmentCreateDialogController',
+                templateUrl: '/backend/partials/edit/departmentcreatedialog',
+                targetEvent: null
+            })
+                .then((answer:any):void => { // Answer
+                    var view:any = new ViewCreate();
+                    view.Name = answer.items.department;
+                    view.$save({}, (result:any):void => {
+                        if (result) {
+                            if (result.code == 0) {
+                                $scope.progress = true;
+                                List(ViewQuery, {}, (data:any):void  => {
+                                    $scope.Departments = data;
+                                    $scope.progress = false;
+                                    $mdToast.show($mdToast.simple().content(result.message));
+                                });
+                            } else {
+                                $mdToast.show($mdToast.simple().content(result.message));
+                            }
+                        } else {
+                            $mdToast.show($mdToast.simple().content("save error"));
+                        }
+                    });
+                }, ():void => { // Cancel
+                });
+        };
+
+        $scope.DepartmentUpdate = (id:any):void => {
+            var view:any = new View();
+            view.$get({id:id}, (data:any):void => {
+                CurrentView.Data = data.value;
+                $scope.Pages =  CurrentView.Data.Pages;
+                $state.go('department');
+            });
+        };
+
+        $scope.showDepartmentDeleteDialog = (id:any):void => {
+            $mdDialog.show({
+                controller: 'DepartmentDeleteDialogController',
+                templateUrl: '/backend/partials/edit/departmentdeletedialog',
+                targetEvent: id
+            })
+                .then((answer:any):void => {  // Answer
+                    var view:any = new View();
+                    $scope.progress = true;
+                    view.$remove({id: id}, (result:any):void => {
+                        if (result) {
+                            if (result.code == 0) {
+                                $scope.progress = true;
+                                List(ViewQuery, {}, (data:any):void  => {
+                                    $scope.Departments = data;
+                                    $scope.progress = false;
+                                    $mdToast.show($mdToast.simple().content(result.message));
+                                });
+                            } else {
+                                $mdToast.show($mdToast.simple().content(result.message));
+                            }
+                        } else {
+                            $mdToast.show($mdToast.simple().content("save error"));
+                        }
+                    });
+                }, ():void => {
+                });
+        };
+
+    }]);
+
+controllers.controller('DepartmentEditController', ['$scope','$state',"CurrentView","View",
+    ($scope:any, $state:any, CurrentView:any, View:any):void  => {
+
+        $scope.Pages =  CurrentView.Data.Pages;
+
+        $scope.showPageCreateDialog= ():void => {
+
+        };
+
+        $scope.PageUpdate= (index:number):void => {
+            CurrentView.Page = index;
+            $state.go('page');
+        };
+
+        $scope.showPageDeleteDialog = (index:number):void => {
+
+        };
+
+    }]);
+
+controllers.controller('PageEditController', ['$scope','$state',"CurrentView","View",
+    ($scope:any, $state:any, CurrentView:any, View:any):void  => {
+
+        $scope.Page = CurrentView.Data.Pages[CurrentView.Page];
+
+        $scope.showItemCreateDialog= ():void => {
+
+        };
+
+
+        $scope.showItemDeleteDialog = (index:number):void => {
+
+        };
+
+    }]);
+
 controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBottomSheet', '$mdDialog', 'Config',
     ($scope:any, $mdToast:any, $mdBottomSheet:any, $mdDialog:any, Config:any):void  => {
 
@@ -776,6 +896,10 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
         };
 
     }]);
+
+
+
+
 
 controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet',
     ($scope:any, $mdBottomSheet:any):void  => {
@@ -917,68 +1041,44 @@ controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog','
 
     }]);
 
-controllers.controller('DepartmentsController', ['$scope','$state',"CurrentView","View","ViewQuery",
-    ($scope:any,$state:any,CurrentView:any,View:any,ViewQuery:any):void  => {
+controllers.controller('DepartmentCreateDialogController', ['$scope', '$mdDialog','ViewQuery',
+    ($scope:any, $mdDialog:any, ViewQuery:any):void  => {
 
-        $scope.progress = true;
-        List(ViewQuery, {}, (data:any):void  => {
-            $scope.Departments = data;
-            $scope.progress = false;
-        });
+      //  $scope.categories = [];
 
-        $scope.showDepartmentCreateDialog = ():void => {
-
-        };
-
-        $scope.DepartmentUpdate = (id:any):void => {
-            var view:any = new View();
-            view.$get({id:id}, (data:any):void => {
-                CurrentView.Data = data.value;
-                $scope.Pages =  CurrentView.Data.Pages;
-                $state.go('department');
+        /*List(ViewQuery, {}, (data:any):void  => {
+            _.each(data,(item, index):void => {
+                $scope.categories.push(item.Name);
             });
+        });*/
+
+        $scope.hide = ():void => {
+            $mdDialog.hide();
         };
 
-        $scope.showDepartmentDeleteDialog = (id:any):void => {
-
+        $scope.cancel = ():void => {
+            $mdDialog.cancel();
         };
 
-    }]);
-
-
-controllers.controller('DepartmentEditController', ['$scope','$state',"CurrentView","View",
-    ($scope:any, $state:any, CurrentView:any, View:any):void  => {
-
-        $scope.Pages =  CurrentView.Data.Pages;
-
-        $scope.showPageCreateDialog= ():void => {
-
-        };
-
-        $scope.PageUpdate= (index:number):void => {
-            CurrentView.Page = index;
-            $state.go('page');
-        };
-
-        $scope.showPageDeleteDialog = (index:number):void => {
-
+        $scope.answer = (answer:any):void => {
+            $mdDialog.hide($scope);
         };
 
     }]);
 
+controllers.controller('DepartmentDeleteDialogController', ['$scope', '$mdDialog',
+    ($scope:any, $mdDialog:any):void  => {
 
-controllers.controller('PageEditController', ['$scope','$state',"CurrentView","View",
-    ($scope:any, $state:any, CurrentView:any, View:any):void  => {
-
-        $scope.Page = CurrentView.Data.Pages[CurrentView.Page];
-
-        $scope.showItemCreateDialog= ():void => {
-
+        $scope.hide = ():void  => {
+            $mdDialog.hide();
         };
 
+        $scope.cancel = ():void  => {
+            $mdDialog.cancel();
+        };
 
-        $scope.showItemDeleteDialog = (index:number):void => {
-
+        $scope.answer = (answer:any):void  => {
+            $mdDialog.hide($scope);
         };
 
     }]);
