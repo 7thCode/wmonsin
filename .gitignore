@@ -131,3 +131,5 @@ routes/configure.js
 routes/configure.min.js
 routes/configure.min.min.js
 routes/result.min.js
+routes/configure.js
+routes/result.min.js
