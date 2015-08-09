@@ -126,3 +126,8 @@ views/backend/partials/account/logindialog.html
 views/backend/partials/account/deletedialog.html
 
 views/backend/partials/account/accountdialog.html
+routes/result.min.js
+routes/configure.js
+routes/configure.min.js
+routes/configure.min.min.js
+routes/result.min.js
