@@ -214,6 +214,27 @@ router.get('/backend/partials/edit/pagedeletedialog', (req:any, res:any):void =>
     res.render('backend/partials/edit/pagedeletedialog');
 });
 
+
+router.get('/backend/partials/edit/item/checkcreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/checkcreatedialog');
+});
+
+router.get('/backend/partials/edit/item/selectcreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/selectcreatedialog');
+});
+
+router.get('/backend/partials/edit/item/numericcreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/numericcreatedialog');
+});
+
+router.get('/backend/partials/edit/item/picturecreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/picturecreatedialog');
+});
+
+router.get('/backend/partials/edit/item/buttoncreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/buttoncreatedialog');
+});
+
 router.get('/backend/partials/edit/itemcreatedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/itemcreatedialog');
 });
@@ -225,6 +246,13 @@ router.get('/backend/partials/edit/itemupdatedialog', (req:any, res:any):void =>
 router.get('/backend/partials/edit/itemdeletedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/itemdeletedialog');
 });
+
+
+
+
+
+
+
 
 router.get('/backend/partials/edit/departments', (req:any, res:any):void => {
     res.render('backend/partials/edit/departments');
@@ -581,8 +609,7 @@ router.post('/account/login', (req:any, res:any):void => {
                         }
                         res.send(JSON.stringify(new result(0, "logged in success.", account)));
                     }
-                }
-                else {
+                } else {
                     res.send(JSON.stringify(new result(10, "unknown user or wrong password.", {})));
                 }
             } else {
@@ -830,8 +857,7 @@ router.post('/view', (req:any, res:any):void => {
                     res.send(JSON.stringify(new result(100, "view create", saveerror)));
                 }
             });
-        }
-        else {
+        } else {
             res.send(JSON.stringify(new result(2000, "view create no session", {})));
         }
     } catch (e) {
@@ -884,7 +910,6 @@ router.get('/view/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
 
-        // res.send(JSON.stringify(new Result(0, "OK", initView)));
         var id:string = req.params.id;
         View.findById(id, (finderror:any, doc:any):void => {
             if (!finderror) {
@@ -998,122 +1023,6 @@ router.get('/view/query/:query', (req:any, res:any):void => {
         }
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "account query " + e.message, e)));
-    }
-});
-
-
-/*! create view */
-/*
- router.get('/initview', (req:any, res:any):void => {
- try {
- res = BasicHeader(res, "");
- if (req.session != null) {
- GetView("page2", (view:any):void => {
- res.send(JSON.stringify(new Result(1, "already", {})));
- },
- ():void => {
- var view:any = new View();
- view.Data = initView.Data;
- view.save((saveerror:any):void => {
- if (!saveerror) {
- res.send(JSON.stringify(new Result(0, "OK", {})));
- } else {
- res.send(JSON.stringify(new Result(100, "view create", saveerror)));
- }
- });
- },
- (message:string, error:any):void => {
- res.send(JSON.stringify(new Result(10, "view create" + message, error)));
- });
- }
- else {
- res.send(JSON.stringify(new Result(2000, "view create no session", {})));
- }
- } catch (e) {
- res.send(JSON.stringify(new Result(10000, "view create" + e.message, e)));
- }
- });
- */
-/*! create view */
-router.post('/createview/:key/:name', (req:any, res:any):void => {
-    try {
-        Authenticate(req.params.key, (type:any):void => {
-            res = BasicHeader(res, "");
-            GetView(req.params.name, (view:any):void => {
-                    res.send(JSON.stringify(new result(1, "already", {})));
-                }, ():void => {
-                    var view:any = new View();
-                    var viewdocument = {name: req.params.name, content: JSON.parse(req.body.data)};
-                    view.Data = viewdocument;
-                    view.save((saveerror:any):void => {
-                        if (!saveerror) {
-                            res.send(JSON.stringify(new result(0, "OK", view.Data.content)));
-                        } else {
-                            res.send(JSON.stringify(new result(100, "view create", saveerror)));
-                        }
-                    });
-                },
-                (message:string, error:any):void => {
-                    res.send(JSON.stringify(new result(10, "view create" + message, error)));
-                });
-
-        }, (message:string, error:any):void => {
-            res.send(JSON.stringify(new result(2, "config put " + message, error)));
-        });
-    } catch (e) {
-        res.send(JSON.stringify(new result(10000, "view create" + e.message, e)));
-    }
-});
-
-router.post('/updateview/:key/:name', (req:any, res:any):void => {
-    try {
-        Authenticate(req.params.key, (type:any):void => {
-            res = BasicHeader(res, "");
-            GetView(req.params.name, (view:any):void => {
-                    //    var view:any = new View();
-                    var viewdocument = {name: req.params.name, content: JSON.parse(req.body.data)};
-                    view.Data = viewdocument;
-                    view.save((saveerror:any):void => {
-                        if (!saveerror) {
-                            res.send(JSON.stringify(new result(0, "OK", view.Data.content)));
-                        } else {
-                            res.send(JSON.stringify(new result(100, "view create", saveerror)));
-                        }
-                    });
-                },
-                ():void => {
-                    res.send(JSON.stringify(new result(1, "not found", {})));
-                }, (message:string, error:any):void => {
-                    res.send(JSON.stringify(new result(10, "view create" + message, error)));
-                });
-        }, (message:string, error:any):void => {
-            res.send(JSON.stringify(new result(2, "config put " + message, error)));
-        });
-    } catch (e) {
-        res.send(JSON.stringify(new result(10000, "view create" + e.message, e)));
-    }
-});
-
-router.get('/getview/:key/:name', (req:any, res:any):void => {
-    try {
-        Authenticate(req.params.key, (type:any):void => {
-            res = BasicHeader(res, "");
-            GetView(req.params.name, (view:any):void => {
-                //var z = JSON.stringify(new Result(0, "OK", view.Data.content));
-                res.send(JSON.stringify(new result(0, "OK", view.Data.content)));
-
-            }, () => {
-                res.send(JSON.stringify(new result(10, "no view get", {})));
-
-            }, (message:string, error:any) => {
-                res.send(JSON.stringify(new result(100, message, error)));
-            });
-
-        }, (message:string, error:any):void => {
-            res.send(JSON.stringify(new result(2, "config put " + message, error)));
-        });
-    } catch (e) {
-        res.send(JSON.stringify(new result(10000, "view create" + e.message, e)));
     }
 });
 

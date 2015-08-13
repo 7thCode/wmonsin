@@ -15,20 +15,44 @@ md-content(style="background-color: #A0A0FF;")
                     div(ng-messages="validate.title.$error")
                         div(ng-message="required") {{'required' | message}}
                         div(ng-message="md-maxlength") {{'maxlength' | message}}
-                md-button.md-fab.md-accent(ng-click="showItemCreateDialog()", ng-if="type != 'Viewer'", aria-label="")
-                    ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
-                        ng-md-icon(icon="note_add", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
-                        md-tooltip 追加...
+
+                div(class="lock-size" layout="row" layout-align="start center",ng-if="type != 'Viewer'",style="z-index:1;")
+                    md-fab-speed-dial.md-fling(md-open="false", md-direction="right")
+                        md-fab-trigger
+                            md-button.md-fab.md-warn(aria-label="menu")
+                                ng-md-icon(icon="menu", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
+                        md-fab-actions
+                            md-button.md-fab.md-primary(aria-label="",ng-click="showCheckCreateDialog()", style="background-color:#eeeeff;z-index:10;")
+
+                                ng-md-icon(icon="check_circle", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#9abcde", size="42")
+
+                            md-button.md-fab.md-primary(aria-label="",ng-click="showSelectCreateDialog()", style="background-color:#ddddff;z-index:10;")
+
+                                ng-md-icon(icon="list", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#789abc", size="42")
+
+                            md-button.md-fab.md-primary(aria-label="",ng-click="showNumericCreateDialog()", style="background-color:#ccccff;z-index:10;")
+
+                                ng-md-icon(icon="dialpad", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#56789a", size="42")
+
+                            md-button.md-fab.md-primary(aria-label="",ng-click="showPictureCreateDialog()", style="background-color:#bbbbff;z-index:10;")
+
+                                ng-md-icon(icon="picture_in_picture", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#345678", size="42")
+
+                            md-button.md-fab.md-primary(aria-label="",ng-click="showButtonCreateDialog()", style="background-color:#bbbbff;z-index:10;")
+
+                                ng-md-icon(icon="crop_5_4", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#345678", size="42")
+
+
     md-list
         md-list-item(ng-repeat="item in Page.items", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
-                div(flex="10", ng-if="type != 'Viewer'")
-                    md-button.md-fab.md-primary(ng-click="showItemUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                        ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
-                        md-tooltip 更新...
 
                 md-card-content(layout="row", layout-align="center center", flex)
                     h3.md-title(flex="80") {{item.type}}
+                    div(flex="10", ng-if="type != 'Viewer'")
+                        md-button.md-fab.md-primary(ng-click="showItemUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                            ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
+                            md-tooltip 更新...
                     div(flex="10")
                         md-button.md-fab.md-warn(ng-click="showItemDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
                             ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
