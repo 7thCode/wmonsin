@@ -153,3 +153,25 @@ views/backend/partials/edit/pagedeletedialog.html
 routes/configure.js
 
 routes/configure.js
+
+views/backend/partials/edit/item/buttoncreatedialog.html
+
+routes/configure.js
+
+views/backend/partials/edit/item/selectcreatedialog.html
+
+views/backend/partials/edit/item/picturecreatedialog.html
+
+views/backend/partials/edit/item/numericcreatedialog.html
+
+views/backend/partials/edit/item/itemupdatedialog.html
+
+views/backend/partials/edit/item/itemdeletedialog.html
+
+views/index.html
+
+views/backend/partials/edit/item/itemcreatedialog.html
+
+views/backend/partials/edit/item/checkcreatedialog.html
+
+routes/configure.js
