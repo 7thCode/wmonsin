@@ -175,3 +175,7 @@ views/backend/partials/edit/item/itemcreatedialog.html
 views/backend/partials/edit/item/checkcreatedialog.html
 
 routes/configure.js
+
+views/partials/logo.html
+
+routes/configure.js

@@ -215,25 +215,88 @@ router.get('/backend/partials/edit/pagedeletedialog', (req:any, res:any):void =>
 });
 
 
-router.get('/backend/partials/edit/item/checkcreatedialog', (req:any, res:any):void => {
-    res.render('backend/partials/edit/item/checkcreatedialog');
+router.get('/backend/partials/edit/item/text/textcreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/text/textcreatedialog');
 });
 
-router.get('/backend/partials/edit/item/selectcreatedialog', (req:any, res:any):void => {
-    res.render('backend/partials/edit/item/selectcreatedialog');
+router.get('/backend/partials/edit/item/check/checkcreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/check/checkcreatedialog');
 });
 
-router.get('/backend/partials/edit/item/numericcreatedialog', (req:any, res:any):void => {
-    res.render('backend/partials/edit/item/numericcreatedialog');
+router.get('/backend/partials/edit/item/select/selectcreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/select/selectcreatedialog');
 });
 
-router.get('/backend/partials/edit/item/picturecreatedialog', (req:any, res:any):void => {
-    res.render('backend/partials/edit/item/picturecreatedialog');
+router.get('/backend/partials/edit/item/numeric/numericcreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/numeric/numericcreatedialog');
 });
 
-router.get('/backend/partials/edit/item/buttoncreatedialog', (req:any, res:any):void => {
-    res.render('backend/partials/edit/item/buttoncreatedialog');
+router.get('/backend/partials/edit/item/picture/picturecreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/picture/picturecreatedialog');
 });
+
+router.get('/backend/partials/edit/item/button/buttoncreatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/button/buttoncreatedialog');
+});
+
+
+
+router.get('/backend/partials/edit/item/text/textupdatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/text/textupdatedialog');
+});
+
+router.get('/backend/partials/edit/item/check/checkupdatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/check/checkupdatedialog');
+});
+
+router.get('/backend/partials/edit/item/select/selectupdatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/select/selectupdatedialog');
+});
+
+router.get('/backend/partials/edit/item/numeric/numericupdatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/numeric/numericupdatedialog');
+});
+
+router.get('/backend/partials/edit/item/picture/pictureupdatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/picture/pictureupdatedialog');
+});
+
+router.get('/backend/partials/edit/item/button/buttonupdatedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/button/buttonupdatedialog');
+});
+
+
+
+
+
+router.get('/backend/partials/edit/item/text/textdeletedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/text/textdeletedialog');
+});
+
+router.get('/backend/partials/edit/item/check/checkdeletedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/check/checkdeletedialog');
+});
+
+router.get('/backend/partials/edit/item/select/selectdeletedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/select/selectdeletedialog');
+});
+
+router.get('/backend/partials/edit/item/numeric/numericdeletedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/numeric/numericdeletedialog');
+});
+
+router.get('/backend/partials/edit/item/picture/picturedeletedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/picture/picturedeletedialog');
+});
+
+router.get('/backend/partials/edit/item/button/buttondeletedialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/item/button/buttondeletedialog');
+});
+
+
+
+
+
 
 router.get('/backend/partials/edit/itemcreatedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/itemcreatedialog');

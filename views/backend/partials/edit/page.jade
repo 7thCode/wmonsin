@@ -22,24 +22,23 @@ md-content(style="background-color: #A0A0FF;")
                             md-button.md-fab.md-warn(aria-label="menu")
                                 ng-md-icon(icon="menu", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
                         md-fab-actions
-                            md-button.md-fab.md-primary(aria-label="",ng-click="showCheckCreateDialog()", style="background-color:#eeeeff;z-index:10;")
 
+                            md-button.md-fab.md-primary(aria-label="",ng-click="showTextCreateDialog()", style="background-color:#ffffff;z-index:10;")
+                                ng-md-icon(icon="edit", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
+
+                            md-button.md-fab.md-primary(aria-label="",ng-click="showCheckCreateDialog()", style="background-color:#eeeeff;z-index:10;")
                                 ng-md-icon(icon="check_circle", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#9abcde", size="42")
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showSelectCreateDialog()", style="background-color:#ddddff;z-index:10;")
-
                                 ng-md-icon(icon="list", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#789abc", size="42")
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showNumericCreateDialog()", style="background-color:#ccccff;z-index:10;")
-
                                 ng-md-icon(icon="dialpad", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#56789a", size="42")
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showPictureCreateDialog()", style="background-color:#bbbbff;z-index:10;")
-
                                 ng-md-icon(icon="picture_in_picture", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#345678", size="42")
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showButtonCreateDialog()", style="background-color:#bbbbff;z-index:10;")
-
                                 ng-md-icon(icon="crop_5_4", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#345678", size="42")
 
 
@@ -49,11 +48,65 @@ md-content(style="background-color: #A0A0FF;")
 
                 md-card-content(layout="row", layout-align="center center", flex)
                     h3.md-title(flex="80") {{item.type}}
-                    div(flex="10", ng-if="type != 'Viewer'")
-                        md-button.md-fab.md-primary(ng-click="showItemUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                            ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
-                            md-tooltip 更新...
-                    div(flex="10")
-                        md-button.md-fab.md-warn(ng-click="showItemDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
-                            ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
-                            md-tooltip 削除
+
+
+                    div(ng-if="item.type == 'text'")
+                        div(flex="10", ng-if="type != 'Viewer'")
+                            md-button.md-fab.md-primary(ng-click="showCheckUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
+                                md-tooltip 更新...
+                        div(flex="10")
+                            md-button.md-fab.md-warn(ng-click="showCheckDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
+                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
+                                md-tooltip 削除
+
+                    div(ng-if="item.type == 'check'")
+
+                        div(flex="10", ng-if="type != 'Viewer'")
+                            md-button.md-fab.md-primary(ng-click="showCheckUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
+                                md-tooltip 更新...
+                        div(flex="10")
+                            md-button.md-fab.md-warn(ng-click="showCheckDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
+                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
+                                md-tooltip 削除
+
+                    div(ng-if="item.type == 'select'")
+                        div(flex="10", ng-if="type != 'Viewer'")
+                            md-button.md-fab.md-primary(ng-click="showSelectUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
+                                md-tooltip 更新...
+                        div(flex="10")
+                            md-button.md-fab.md-warn(ng-click="showSelectDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
+                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
+                                md-tooltip 削除
+
+                    div(ng-if="item.type == 'numeric'")
+                        div(flex="10", ng-if="type != 'Viewer'")
+                            md-button.md-fab.md-primary(ng-click="showNumericUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
+                                md-tooltip 更新...
+                        div(flex="10")
+                            md-button.md-fab.md-warn(ng-click="showNumericDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
+                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
+                                md-tooltip 削除
+
+                    div(ng-if="item.type == 'picture'")
+                        div(flex="10", ng-if="type != 'Viewer'")
+                            md-button.md-fab.md-primary(ng-click="showPictureUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
+                                md-tooltip 更新...
+                        div(flex="10")
+                            md-button.md-fab.md-warn(ng-click="showPictureDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
+                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
+                                md-tooltip 削除
+
+                    div(ng-if="item.type == 'button'")
+                        div(flex="10", ng-if="type != 'Viewer'")
+                            md-button.md-fab.md-primary(ng-click="showButtonUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
+                                md-tooltip 更新...
+                        div(flex="10")
+                            md-button.md-fab.md-warn(ng-click="showButtonDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
+                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
+                                md-tooltip 削除
