@@ -19,17 +19,20 @@ md-dialog(flex)
                 ng-form(name="validate")
                     div(layout="row", layout-align="start center")
                         ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
+
                         md-input-container(flex)
-                            label アイテムラベル
-                            input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter title', md-maxlength="30", required)
-                            div(ng-messages="validate.label.$error")
-                                div(ng-message="required") {{'required' | message}}
-                                div(ng-message="md-maxlength") {{'maxlength' | message}}
-                        md-input-container(flex)
-                            label アイテム名
+                            label 質問
                             input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter title', md-maxlength="30", required)
                             div(ng-messages="validate.label.$error")
                                 div(ng-message="required") {{'required' | message}}
                                 div(ng-message="md-maxlength") {{'maxlength' | message}}
+
+                        md-input-container(flex)
+                            label 答え
+                            input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter title', md-maxlength="30", required)
+                            div(ng-messages="validate.label.$error")
+                                div(ng-message="required") {{'required' | message}}
+                                div(ng-message="md-maxlength") {{'maxlength' | message}}
+
                     div(layout="row", layout-align="space-around center")
                         md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") 更新

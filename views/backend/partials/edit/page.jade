@@ -47,7 +47,8 @@ md-content(style="background-color: #A0A0FF;")
             md-card(layout="row", flex)
 
                 md-card-content(layout="row", layout-align="center center", flex)
-                    h3.md-title(flex="80") {{item.type}}
+                    h3.md-title(flex="40") {{item.type}}
+                    h4(flex="40") {{item.name}}
 
 
                     div(ng-if="item.type == 'text'")

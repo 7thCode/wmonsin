@@ -12,24 +12,37 @@ md-dialog(flex)
                 md-button.md-raised.md-primary(ng-click='cancel()', aria-label="")
                     ng-md-icon(icon="cancel", style="fill:#ffffff", size="46")
                     md-tooltip キャンセル
-
     md-content
         md-card
             md-card-content
                 ng-form(name="validate")
-                    div(layout="row", layout-align="start center")
-                        ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
-                        md-input-container(flex)
-                            label アイテムラベル
-                            input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter title', md-maxlength="30", required)
-                            div(ng-messages="validate.label.$error")
-                                div(ng-message="required") {{'required' | message}}
-                                div(ng-message="md-maxlength") {{'maxlength' | message}}
-                        md-input-container(flex)
-                            label アイテム名
-                            input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter title', md-maxlength="30", required)
-                            div(ng-messages="validate.label.$error")
-                                div(ng-message="required") {{'required' | message}}
-                                div(ng-message="md-maxlength") {{'maxlength' | message}}
-                    div(layout="row", layout-align="space-around center")
-                        md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") 更新
+                    div(layout="column")
+                        div(layout="row", layout-align="start center")
+                            ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
+                            md-input-container(flex)
+                                label アイテムラベル
+                                input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter Label', md-maxlength="30", required)
+                                div(ng-messages="validate.label.$error")
+                                    div(ng-message="required") {{'required' | message}}
+                                    div(ng-message="md-maxlength") {{'maxlength' | message}}
+                            md-input-container(flex)
+                                label アイテム名
+                                input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter Name', md-maxlength="30", required)
+                                div(ng-messages="validate.name.$error")
+                                    div(ng-message="required") {{'required' | message}}
+                                    div(ng-message="md-maxlength") {{'maxlength' | message}}
+                        div(layout="row")
+                            md-input-container(flex)
+                                label パス
+                                input(ng-model="items.path", data-ng-required="true", name="path", placeholder='Enter Path', md-maxlength="50", required)
+                                div(ng-messages="validate.path.$error")
+                                    div(ng-message="required") {{'required' | message}}
+                                    div(ng-message="md-maxlength") {{'maxlength' | message}}
+                        div(layout="row")
+                            md-switch(ng-model="items.validate", aria-label="validate", equired) バリデート
+                            md-select(ng-model="items.class", equired)
+                                md-option(value="md-primary") 標準
+                                md-option(value="md-accent") アクセント
+                                md-option(value="md-warn") 注意
+                        div(layout="row", layout-align="space-around center")
+                            md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") 登録

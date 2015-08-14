@@ -945,7 +945,6 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
             })
                 .then((answer:any):void => { // Answer
 
-
                     var control = 	{
                         "height" : 600,
                         "width" : 300,
@@ -958,7 +957,6 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
 
                     CurrentView.Data.Pages[CurrentView.Page].picture.push(control);
 
-
                 }, ():void => { // Cancel
                 });
 
@@ -966,10 +964,19 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
 
         $scope.showButtonCreateDialog = ():void => {
 
+            var items = {
+                type: "button",
+                validate: true,
+                class: "md-accent"
+            };
+
             $mdDialog.show({
                 controller: 'ButtonCreateDialogController',
                 templateUrl: '/backend/partials/edit/item/button/buttoncreatedialog',
-                targetEvent: null
+                targetEvent: null,
+                locals: {
+                    items: items
+                }
             })
                 .then((answer:any):void => { // Answer
 
@@ -978,16 +985,14 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                         name: answer.items.name,
                         model: "",
                         type: "button",
-                        validate: true,
-                        path: "/browse/6",
-                        class: "md-accent"
+                        validate: answer.items.validate,
+                        path: answer.items.path,
+                        class: answer.items.class,
                     };
 
                     CurrentView.Data.Pages[CurrentView.Page].items.push(control);
-
                 }, ():void => { // Cancel
                 });
-
         };
 
         $scope.showTextUpdateDialog = (index:number):void => {
@@ -1003,19 +1008,14 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 }
             })
                 .then((answer:any):void => { // Answer
-
-                    answer.items.name = answer.items.name + "-" + answer.items.label;
-
-
+                    CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
                 }, ():void => { // Cancel
                 });
-
         };
 
         $scope.showCheckUpdateDialog = (index:number):void => {
 
             var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
-
             items.name = items.name.split("-")[0];
 
             $mdDialog.show({
@@ -1027,14 +1027,10 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 }
             })
                 .then((answer:any):void => { // Answer
-
                     answer.items.name = answer.items.name + "-" + answer.items.label;
-
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
-
                 }, ():void => { // Cancel
                 });
-
         };
 
         $scope.showSelectUpdateDialog = (index:number):void => {
@@ -1050,12 +1046,9 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 }
             })
                 .then((answer:any):void => { // Answer
-
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
-
                 }, ():void => { // Cancel
                 });
-
         };
 
         $scope.showNumericUpdateDialog = (index:number):void => {
@@ -1071,12 +1064,9 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 }
             })
                 .then((answer:any):void => { // Answer
-
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
-
                 }, ():void => { // Cancel
                 });
-
         };
 
         $scope.showPictureUpdateDialog = (index:number):void => {
@@ -1092,13 +1082,9 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 }
             })
                 .then((answer:any):void => { // Answer
-
                     CurrentView.Data.Pages[CurrentView.Page].picture[index] = answer.items;
-
-
                 }, ():void => { // Cancel
                 });
-
         };
 
         $scope.showButtonUpdateDialog = (index:number):void => {
@@ -1114,12 +1100,9 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 }
             })
                 .then((answer:any):void => { // Answer
-
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
-
                 }, ():void => { // Cancel
                 });
-
         };
 
 

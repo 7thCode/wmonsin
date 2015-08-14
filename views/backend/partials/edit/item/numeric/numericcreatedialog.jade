@@ -28,7 +28,7 @@ md-dialog(flex)
                         md-input-container(flex)
                             label アイテム名
                             input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter title', md-maxlength="30", required)
-                            div(ng-messages="validate.label.$error")
+                            div(ng-messages="validate.name.$error")
                                 div(ng-message="required") {{'required' | message}}
                                 div(ng-message="md-maxlength") {{'maxlength' | message}}
                     div(layout="row", layout-align="space-around center")
