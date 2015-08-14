@@ -217,3 +217,5 @@ views/backend/partials/edit/item/button/buttonupdatedialog.html
 views/backend/partials/edit/item/picture/picturedeletedialog.html
 
 views/backend/partials/edit/item/numeric/numericdeletedialog.html
+
+routes/configure.js
