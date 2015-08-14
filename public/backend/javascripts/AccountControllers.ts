@@ -776,37 +776,54 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
                 .then((answer:any):void => { // Answer
 
                     var name:string = answer.items.title;
-                    var next:number = CurrentView.Data.Pages.length + 1;
-                    var prev:number = CurrentView.Data.Pages.length - 1;
+                    //   var next:number = CurrentView.Data.Pages.length + 1;
+                    //   var prev:number = CurrentView.Data.Pages.length - 1;
 
                     var page:any = {
                         headline: name,
                         items: []
                     };
 
-                    var nextbutton = {
-                        label: "次へ",
-                        name: "次へ",
-                        model: "",
-                        type: "button",
-                        validate: true,
-                        path: "/browse/" + next,
-                        class: "md-accent"
+                    var shemapage:any = {
+                        headline: name,
+                        items: [],
+                        "picture": [
+                            {
+                                "height": 600,
+                                "width": 300,
+                                "path": "images/schema.png",
+                                "type": "picture",
+                                "model": "",
+                                "name": "痛いところ",
+                                "label": ""
+                            }
+                        ]
                     };
-                    page.items.push(nextbutton);
 
-                    if (prev >= 0) {
-                        var prevbutton = {
-                            label: "戻る",
-                            name: "戻る",
-                            model: "",
-                            type: "button",
-                            validate: false,
-                            path: "/browse/" + prev,
-                            class: "md-primary"
-                        };
-                        page.items.push(prevbutton);
-                    }
+                    /*     var nextbutton = {
+                     label: "次へ",
+                     name: "次へ",
+                     model: "",
+                     type: "button",
+                     validate: true,
+                     path: "/browse/" + next,
+                     class: "md-accent"
+                     };
+                     page.items.push(nextbutton);
+
+                     if (prev >= 0) {
+                     var prevbutton = {
+                     label: "戻る",
+                     name: "戻る",
+                     model: "",
+                     type: "button",
+                     validate: false,
+                     path: "/browse/" + prev,
+                     class: "md-primary"
+                     };
+                     page.items.push(prevbutton);
+                     }
+                     */
 
                     CurrentView.Data.Pages.push(page);
 
@@ -826,9 +843,8 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
                 targetEvent: index
             })
                 .then((answer:any):void => {  // Answer
-
-//todo Page Delete
-
+                    CurrentView.Data.Pages[index] = null;
+                    CurrentView.Data.Pages = _.compact(CurrentView.Data.Pages);
                 }, ():void => {
                 });
         };
@@ -945,17 +961,17 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
             })
                 .then((answer:any):void => { // Answer
 
-                    var control = 	{
-                        "height" : 600,
-                        "width" : 300,
-                        "path" : "images/schema.png",
-                        "type" : "picture",
-                        "model" : "",
-                        "name" : "痛いところ",
-                        "label" : ""
+                    var control = {
+                        "height": 600,
+                        "width": 300,
+                        "path": "images/schema.png",
+                        "type": "picture",
+                        "model": "",
+                        "name": "痛いところ",
+                        "label": ""
                     };
 
-                    CurrentView.Data.Pages[CurrentView.Page].picture.push(control);
+                    CurrentView.Data.Pages[CurrentView.Page].picture = control;
 
                 }, ():void => { // Cancel
                 });
@@ -1071,7 +1087,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
 
         $scope.showPictureUpdateDialog = (index:number):void => {
 
-            var items = CurrentView.Data.Pages[CurrentView.Page].picture[index];
+            var items = CurrentView.Data.Pages[CurrentView.Page].picture;
 
             $mdDialog.show({
                 controller: 'PictureUpdateDialogController',
@@ -1082,7 +1098,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 }
             })
                 .then((answer:any):void => { // Answer
-                    CurrentView.Data.Pages[CurrentView.Page].picture[index] = answer.items;
+                    CurrentView.Data.Pages[CurrentView.Page].picture = answer.items;
                 }, ():void => { // Cancel
                 });
         };
@@ -1115,7 +1131,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
             })
                 .then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
-                    CurrentView.Data.Pages[CurrentView.Page].items =  _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
+                    CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
                 }, ():void => {
                 });
 
@@ -1130,7 +1146,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
             })
                 .then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
-                    CurrentView.Data.Pages[CurrentView.Page].items =  _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
+                    CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
                 }, ():void => {
                 });
 
@@ -1145,7 +1161,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
             })
                 .then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
-                    CurrentView.Data.Pages[CurrentView.Page].items =  _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
+                    CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
                 }, ():void => {
                 });
 
@@ -1160,7 +1176,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
             })
                 .then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
-                    CurrentView.Data.Pages[CurrentView.Page].items =  _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
+                    CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
                 }, ():void => {
                 });
 
@@ -1175,7 +1191,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
             })
                 .then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[CurrentView.Page].picture[index] = null;
-                    CurrentView.Data.Pages[CurrentView.Page].picture =  _.compact(CurrentView.Data.Pages[CurrentView.Page].picture);
+                    CurrentView.Data.Pages[CurrentView.Page].picture = _.compact(CurrentView.Data.Pages[CurrentView.Page].picture);
                 }, ():void => {
                 });
 
@@ -1190,7 +1206,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
             })
                 .then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
-                    CurrentView.Data.Pages[CurrentView.Page].items =  _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
+                    CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
                 }, ():void => {
                 });
 
@@ -1645,7 +1661,6 @@ controllers.controller('ButtonCreateDialogController', ['$scope', '$mdDialog',
     }]);
 
 
-
 controllers.controller('CheckUpdateDialogController', ['$scope', '$mdDialog', 'items',
     ($scope:any, $mdDialog:any, items:any):void  => {
 
@@ -1670,9 +1685,9 @@ controllers.controller('SelectUpdateDialogController', ['$scope', '$mdDialog', '
 
         $scope.items = items;
 
-      //  var self = this;
-      //  self.tags = [];
-      //  $scope.tags = angular.copy(self.tags);
+        //  var self = this;
+        //  self.tags = [];
+        //  $scope.tags = angular.copy(self.tags);
 
         $scope.hide = ():void => {
             $mdDialog.hide();
@@ -1744,8 +1759,6 @@ controllers.controller('ButtonUpdateDialogController', ['$scope', '$mdDialog', '
         };
 
     }]);
-
-
 
 
 controllers.controller('TextDeleteDialogController', ['$scope', '$mdDialog',
@@ -1849,8 +1862,6 @@ controllers.controller('ButtonDeleteDialogController', ['$scope', '$mdDialog',
         };
 
     }]);
-
-
 
 
 controllers.controller('ItemCreateDialogController', ['$scope', '$mdDialog',

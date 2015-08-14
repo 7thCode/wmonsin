@@ -18,18 +18,19 @@ md-content(style="background-color: #A0A0FF;")
                         md-tooltip ツール...
                 div
                     md-switch(ng-model="IsDone") Done
+    md-card(style="height:600px;")
+       md-tabs(md-selected="selectedIndex",style="min-height:600px;")
 
-    md-tabs(md-stretch-tabs, md-selected="selectedIndex")
-
-        md-tab(label="schema")
+        md-tab(label="schema",style="height:600px;")
             md-card
-                div(layout="row", flex)
+                div(layout="row")
                     div(flex)
                         md-button.md-fab.md-warn(ng-click="download()", aria-label="Download")
                             ng-md-icon(icon="save", style="fill:#abcdef", size="46", id="icon")
                     div(flex)
-                        canvas#schema(width="300", height="600",style="z-index:100;")
+                        canvas#schema(width="300", height="600")
                     div(flex)
+
 
         md-tab(label="data")
             md-list

@@ -273,7 +273,6 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
         $scope.next = (path:any):any => {
 
 
-
             _.map<any,any>($scope.contents.items, (value:any, key:any):void => {
                 if (value.type == "check") { //checkboxの場合は、値がfalseならば表示しない方針。よって、modelの値がfalseyならばvalueはfalseとする。trueならば、"name-value"コンベンションに従う。
                     var name_and_value = value.name.split("-");//"name-value"コンベンション。
