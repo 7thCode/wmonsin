@@ -199,7 +199,7 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
 
         $scope.contents = depertment[0].Pages[page];
 
-        if ($scope.contents.picture != null) {
+        if ($scope.contents.picture.length > 0) {
             var canvas:fabric.ICanvas = new fabric.Canvas('schema');
 
             _.map<any,any>($scope.contents.picture, (value:any, key:any):void => {

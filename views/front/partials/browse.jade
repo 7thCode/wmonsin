@@ -10,7 +10,7 @@ md-content(style="background-color: #A0A0FF;")
             md-card-content(layout layout-align="center center")
                 h3.md-headline {{contents.headline}}
 
-            md-card-content(layout layout-align="center center", ng-show="contents.picture.length == 1")
+            md-card-content(layout layout-align="center center", ng-show="contents.picture.length > 0")
                 md-radio-group
                     md-radio-button(ng-click="setColor('rgba(200, 20, 30, 0.4)')", value="rgba(200, 20, 30, 0.4)") {{'itai' | message}}
                     md-radio-button(ng-click="setColor('rgba(20, 200, 30, 0.4)')", value="rgba(20, 200, 30, 0.4)") {{'hare' | message}}

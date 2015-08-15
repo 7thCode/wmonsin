@@ -31,10 +31,10 @@ md-content(style="background-color: #A0A0FF;")
                         canvas#schema(width="300", height="600")
                     div(flex)
 
-
         md-tab(label="data")
             md-list
-                md-card-content(layout layout-align="center center", ng-repeat="item in Input")
+                md-card-content
+                 div(layout layout-align="center center", ng-repeat="item in Input")
 
                     div(layout="row",ng-show="item.type == 'text'", flex)
                         md-card(flex)

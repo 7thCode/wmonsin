@@ -24,23 +24,29 @@ md-content(style="background-color: #A0A0FF;")
                                 ng-md-icon(icon="menu", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
                         md-fab-actions
 
-                            md-button.md-fab.md-primary(aria-label="",ng-click="showTextCreateDialog()", style="background-color:#ffffff;z-index:10;")
+                            md-button.md-fab(aria-label="",ng-click="showTextCreateDialog()", style="background-color:#ffffff;z-index:10;")
                                 ng-md-icon(icon="edit", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
+                                md-tooltip テキスト
 
-                            md-button.md-fab.md-primary(aria-label="",ng-click="showCheckCreateDialog()", style="background-color:#eeeeff;z-index:10;")
+                            md-button.md-fab(aria-label="",ng-click="showCheckCreateDialog()", style="background-color:#eeeeff;z-index:10;")
                                 ng-md-icon(icon="check_circle", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#9abcde", size="42")
+                                md-tooltip チェックボックス
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showSelectCreateDialog()", style="background-color:#ddddff;z-index:10;")
                                 ng-md-icon(icon="list", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#789abc", size="42")
+                                md-tooltip ラジオ
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showNumericCreateDialog()", style="background-color:#ccccff;z-index:10;")
                                 ng-md-icon(icon="dialpad", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#56789a", size="42")
+                                md-tooltip 数値
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showButtonCreateDialog()", style="background-color:#bbbbff;z-index:10;")
                                 ng-md-icon(icon="crop_5_4", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#345678", size="42")
+                                md-tooltip ボタン
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showPictureCreateDialog()", style="background-color:#bbbbff;z-index:10;", ng-show="Page.picture.length <= 0")
                                 ng-md-icon(icon="picture_in_picture", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#345678", size="42")
+                                md-tooltip シェーマ
 
     md-list
         md-list-item(ng-repeat="item in Page.items", ng-show="account.type != 'Admin'")

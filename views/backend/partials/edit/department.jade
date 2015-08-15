@@ -3,6 +3,7 @@
     Copyright (c) 2015 7ThCode.
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
+
 md-content(style="background-color: #A0A0FF;")
     md-progress-circular.md-accent(ng-show="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
     md-card
@@ -19,11 +20,23 @@ md-content(style="background-color: #A0A0FF;")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="end center", flex)
                     div(flex) {{Page.headline}}
+
                     div(flex="10", ng-show="type != 'Viewer'")
                         md-button.md-fab.md-primary(ng-click="PageUpdate($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
                             ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#cccccc", size="42")
                             md-tooltip 更新...
-                    div(flex="10")
+
+                    div(flex="10", ng-show="type != 'Viewer'")
                         md-button.md-fab.md-warn(ng-click="showPageDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
                             ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
                             md-tooltip 削除
+
+                    div(flex="10", ng-show="type != 'Viewer'")
+                        md-button.md-fab(ng-click="up($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
+                            ng-md-icon(layout-align="center center", icon="up", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
+                            md-tooltip Up
+
+                    div(flex="10", ng-show="type != 'Viewer'")
+                        md-button.md-fab(ng-click="down($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
+                            ng-md-icon(layout-align="center center", icon="down", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
+                            md-tooltip Down

@@ -750,6 +750,24 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
 
         $scope.Pages = CurrentView.Data.Pages;
 
+        $scope.up = (index:number) => {
+            if (index > 0)
+            {
+                var control = CurrentView.Data.Pages[index];
+                CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index - 1];
+                CurrentView.Data.Pages[index] = control;
+            }
+        };
+
+        $scope.down = (index:number) => {
+            if (index < CurrentView.Data.Pages.length - 1 )
+            {
+                var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index + 1];
+                CurrentView.Data.Pages[index + 1] = control;
+            }
+        };
+
         $scope.DepartmentUpdate = ():void => {
             var view:any = new View();
             view.Name = CurrentView.Data.Name;
@@ -842,6 +860,24 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
     ($scope:any, $state:any, $mdDialog:any, CurrentView:any, View:any):void  => {
 
         $scope.Page = CurrentView.Data.Pages[CurrentView.Page];
+
+        $scope.up = (index:number) => {
+            if (index > 0)
+            {
+                var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                CurrentView.Data.Pages[CurrentView.Page].items[index] = CurrentView.Data.Pages[CurrentView.Page].items[index - 1];
+                CurrentView.Data.Pages[CurrentView.Page].items[index - 1] = control;
+            }
+        };
+
+        $scope.down = (index:number) => {
+            if (index < CurrentView.Data.Pages[CurrentView.Page].items.length - 1 )
+            {
+                var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                CurrentView.Data.Pages[CurrentView.Page].items[index] = CurrentView.Data.Pages[CurrentView.Page].items[index + 1];
+                CurrentView.Data.Pages[CurrentView.Page].items[index + 1] = control;
+            }
+        };
 
         $scope.showTextCreateDialog = ():void => {
 

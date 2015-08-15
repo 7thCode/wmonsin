@@ -120,7 +120,8 @@ class Configure {
                             path: "/browse/1",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "この症状で他の医療機関（病院・診療所）を受診されましたか？",
@@ -157,7 +158,8 @@ class Configure {
                             path: "/browse/2",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "薬・注射などでアレルギー症状が出たことがありますか？",
@@ -202,7 +204,8 @@ class Configure {
                             path: "/browse/3",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "大きな病気・手術をされたことがある場合、どのような病気・手術をされましたか？",
@@ -236,7 +239,8 @@ class Configure {
                             path: "/browse/4",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "タバコを吸いますか？",
@@ -274,7 +278,8 @@ class Configure {
                             path: "/browse/5",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "お酒を飲みますか？",
@@ -334,7 +339,8 @@ class Configure {
                             path: "/browse/6",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "女性の方のみごご回答ください",
@@ -364,7 +370,8 @@ class Configure {
                             path: "/browse/7",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 }
             ]},
             {Name:"外科", Pages:[
@@ -385,7 +392,8 @@ class Configure {
                             path: "/browse/1",
                             class: "md-accent"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "お歳は？",
@@ -414,7 +422,8 @@ class Configure {
                             path: "/browse/0",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "痛いところは？",
@@ -478,7 +487,8 @@ class Configure {
                             path: "/browse/3",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "治療中の病気がありますか？",
@@ -511,7 +521,8 @@ class Configure {
                             path: "/browse/4",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "普段飲んでいる薬はありますか？",
@@ -553,7 +564,8 @@ class Configure {
                             path: "/browse/5",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "現在妊娠中ですか？",
@@ -578,7 +590,8 @@ class Configure {
                             path: "/browse/6",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "thanks",
@@ -601,7 +614,8 @@ class Configure {
                             path: "/browse/6",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "thanks",
@@ -624,7 +638,8 @@ class Configure {
                             path: "/browse/7",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 }
             ]},
             {Name:"整形外科", Pages:[
@@ -641,7 +656,8 @@ class Configure {
                             path: "/browse/1",
                             class: "md-accent"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "体重を入力して下さい",
@@ -665,7 +681,8 @@ class Configure {
                             path: "/browse/0",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "どうされましたか？",
@@ -695,7 +712,8 @@ class Configure {
                             path: "/browse/1",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "診て欲しいところをタッチして下さい",
@@ -759,7 +777,8 @@ class Configure {
                             path: "/browse/3",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "考えられる原因はありますか？",
@@ -789,7 +808,8 @@ class Configure {
                             path: "/browse/4",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "職業を選択して下さい",
@@ -819,7 +839,8 @@ class Configure {
                             path: "/browse/5",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "スポーツをしていますか？",
@@ -847,7 +868,8 @@ class Configure {
                             path: "/browse/6",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "現在、治療中の病気がありますか？",
@@ -880,7 +902,8 @@ class Configure {
                             path: "/browse/7",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "普段飲んでいる薬はありますか？",
@@ -907,7 +930,8 @@ class Configure {
                             path: "/browse/8",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "今までに大きな病気にかかったり手術を受けたことがありますか？",
@@ -967,7 +991,8 @@ class Configure {
                             path: "/browse/10",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "アレルギー体質といわれたことがありますか？",
@@ -1006,7 +1031,8 @@ class Configure {
                             path: "/browse/11",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "女性の方のみごご回答ください",
@@ -1033,7 +1059,8 @@ class Configure {
                             path: "/browse/12",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 }
             ]},
             {Name:"耳鼻いんこう科", Pages:[]},
