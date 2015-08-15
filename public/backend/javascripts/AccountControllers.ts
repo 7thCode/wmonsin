@@ -755,14 +755,14 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
             {
                 var control = CurrentView.Data.Pages[index];
                 CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index - 1];
-                CurrentView.Data.Pages[index] = control;
+                CurrentView.Data.Pages[index - 1] = control;
             }
         };
 
         $scope.down = (index:number) => {
             if (index < CurrentView.Data.Pages.length - 1 )
             {
-                var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                var control = CurrentView.Data.Pages[index];
                 CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index + 1];
                 CurrentView.Data.Pages[index + 1] = control;
             }

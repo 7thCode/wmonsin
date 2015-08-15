@@ -10,7 +10,7 @@ md-content(style="background-color: #A0A0FF;")
         md-card-header
             h1.md-headline 問診票科目
             md-button.md-fab.md-accent(ng-click="showDepartmentCreateDialog()", ng-if="type != 'Viewer'", aria-label="")
-                ng-md-icon(icon="note_add", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
+                ng-md-icon(icon="note_add", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
                 md-tooltip 追加...
     md-list
         md-list-item(ng-repeat="Department in Departments", ng-show="account.type != 'Admin'")
@@ -21,9 +21,9 @@ md-content(style="background-color: #A0A0FF;")
                         ng-md-icon(icon="person", size="50")
                     div(flex="10", ng-if="type != 'Viewer'")
                         md-button.md-fab.md-primary(ng-click="DepartmentUpdate(Department._id)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                            ng-md-icon(icon="pages",style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
+                            ng-md-icon(icon="pages",style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
                             md-tooltip 更新...
                     div(flex="10")
                         md-button.md-fab.md-warn(ng-click="showDepartmentDeleteDialog(Department._id)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
-                            ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
+                            ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
                             md-tooltip 削除
