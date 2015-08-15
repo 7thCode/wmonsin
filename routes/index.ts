@@ -20,6 +20,8 @@
 var express = require('express');
 var emitter = require('events').EventEmitter;
 var _ = require('lodash');
+var phantom = require('phantom');
+
 var Patient = require('./patient');
 var Account = require('./account');
 var View = require('./view');
@@ -169,6 +171,22 @@ router.get('/backend/partials/patient/description', (req:any, res:any):void => {
     res.render('backend/partials/patient/description');
 });
 
+router.get('/backend/partials/patient/document/:id', (req:any, res:any):void => {
+
+    var id:string = req.params.id;
+    Patient.findById(id, (finderror:any, patient:any):void => {
+        if (!finderror) {
+            if (patient) {
+                res.render('backend/partials/patient/document', {Information: patient});
+            } else {
+                res.send(JSON.stringify(new result(10, "patient get", {})));
+            }
+        } else {
+            res.send(JSON.stringify(new result(100, "patient get", finderror)));
+        }
+    });
+});
+
 router.get('/backend/partials/patient/patientacceptdialog', (req:any, res:any):void => {
     res.render('backend/partials/patient/patientacceptdialog');
 });
@@ -240,7 +258,6 @@ router.get('/backend/partials/edit/item/button/buttoncreatedialog', (req:any, re
 });
 
 
-
 router.get('/backend/partials/edit/item/text/textupdatedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/item/text/textupdatedialog');
 });
@@ -264,9 +281,6 @@ router.get('/backend/partials/edit/item/picture/pictureupdatedialog', (req:any, 
 router.get('/backend/partials/edit/item/button/buttonupdatedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/item/button/buttonupdatedialog');
 });
-
-
-
 
 
 router.get('/backend/partials/edit/item/text/textdeletedialog', (req:any, res:any):void => {
@@ -293,29 +307,19 @@ router.get('/backend/partials/edit/item/button/buttondeletedialog', (req:any, re
     res.render('backend/partials/edit/item/button/buttondeletedialog');
 });
 
+/*
+ router.get('/backend/partials/edit/itemcreatedialog', (req:any, res:any):void => {
+ res.render('backend/partials/edit/itemcreatedialog');
+ });
 
+ router.get('/backend/partials/edit/itemupdatedialog', (req:any, res:any):void => {
+ res.render('backend/partials/edit/itemupdatedialog');
+ });
 
-
-
-
-router.get('/backend/partials/edit/itemcreatedialog', (req:any, res:any):void => {
-    res.render('backend/partials/edit/itemcreatedialog');
-});
-
-router.get('/backend/partials/edit/itemupdatedialog', (req:any, res:any):void => {
-    res.render('backend/partials/edit/itemupdatedialog');
-});
-
-router.get('/backend/partials/edit/itemdeletedialog', (req:any, res:any):void => {
-    res.render('backend/partials/edit/itemdeletedialog');
-});
-
-
-
-
-
-
-
+ router.get('/backend/partials/edit/itemdeletedialog', (req:any, res:any):void => {
+ res.render('backend/partials/edit/itemdeletedialog');
+ });
+ */
 
 router.get('/backend/partials/edit/departments', (req:any, res:any):void => {
     res.render('backend/partials/edit/departments');
@@ -850,7 +854,7 @@ router.put('/account/password/:id', (req:any, res:any):void => {
             res.send(JSON.stringify(new result(2000, "account password no session", {})));
         }
     } catch (e) {
-        res.send(JSON.stringify(new  result(10000, "account password " + e.message, e)));
+        res.send(JSON.stringify(new result(10000, "account password " + e.message, e)));
     }
 });
 
@@ -866,7 +870,7 @@ router.get('/config', (req:any, res:any):void => {
                 res.send(JSON.stringify(new result(2, "config get auth error", {})));
             });
         } else {
-            res.send(JSON.stringify(new  result(2000, "config get no session", {})));
+            res.send(JSON.stringify(new result(2000, "config get no session", {})));
         }
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "config get " + e.message, e)));
@@ -934,7 +938,7 @@ router.post('/view/create', (req:any, res:any):void => {
         if (req.session) {
             Authenticate(req.session.key, (type:any):void => {
                 if (type != "Viewer") {
-                    View.count({Name:req.body.Name}, (counterror:any, count:number):void => {
+                    View.count({Name: req.body.Name}, (counterror:any, count:number):void => {
                         if (!counterror) {
                             if (count == 0) {
                                 var view:any = new View();
@@ -1088,6 +1092,34 @@ router.get('/view/query/:query', (req:any, res:any):void => {
         res.send(JSON.stringify(new result(10000, "account query " + e.message, e)));
     }
 });
+
+/*! PDF */
+router.get('/pdf/:id', function (request, response, next) {
+    try {
+        var id:string = request.params.id;
+        phantom.create(function (ph) {
+            ph.createPage(function (page) {
+                page.set('viewportSize', {width: 1200, height: 1200}, function (err) {
+                    page.open("http://localhost:3000/backend/partials/patient/document/" + id, function (error, status) {
+                        page.render("public/output/output.pdf", function (error) {
+                            if (!error) {
+                                ph.exit();
+                                response.redirect(302, "output/output.pdf");
+                            }
+                            else {
+                                response.send(JSON.stringify(new Result(1, "pdf create error", error)));
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    catch (e) {
+        response.send(JSON.stringify(new Result(10000, "exception " + e.message, e)));
+    }
+});
+
 
 //Test area
 
