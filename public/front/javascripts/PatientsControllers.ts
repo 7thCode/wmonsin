@@ -154,7 +154,6 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
             });
         });
 
-
         $scope.next = (id:any):void => {
             var resource:any = new Patient();
             resource.$get({id: id}, (data:any):void => {
@@ -272,18 +271,17 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
 
         $scope.next = (path:any):any => {
 
-
             _.map<any,any>($scope.contents.items, (value:any, key:any):void => {
                 if (value.type == "check") { //checkboxの場合は、値がfalseならば表示しない方針。よって、modelの値がfalseyならばvalueはfalseとする。trueならば、"name-value"コンベンションに従う。
                     var name_and_value = value.name.split("-");//"name-value"コンベンション。
-                    var value = name_and_value[1];
+                    var value1 = name_and_value[1];
                     if(!value.model)
                     {
-                        value = false;
+                        value1 = false;
                     }
                     $scope.Input[value.name] = {
                         'name': name_and_value[0],
-                        'value': value,
+                        'value': value1,
                         'type': value.type
                     };
                 } else {//checkbox以外

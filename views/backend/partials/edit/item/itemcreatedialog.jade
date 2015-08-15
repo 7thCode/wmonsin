@@ -9,8 +9,8 @@ md-dialog(flex)
             h3(flex)
                 span(flex) 問診票アイテム登録
             div
-                md-button.md-raised.md-primary(ng-click='cancel()', aria-label="")
-                    ng-md-icon(icon="cancel", style="fill:#ffffff", size="46")
+                md-button.md-fab.md-warn(ng-click='cancel()', aria-label="Cancel", style="position:relative;top:20px;")
+                    ng-md-icon(icon="clear", style="position:relative;top:4px;fill:#ffffff", size="46")
                     md-tooltip キャンセル
 
     md-content

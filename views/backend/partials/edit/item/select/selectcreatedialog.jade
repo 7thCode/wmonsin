@@ -3,14 +3,15 @@
     Copyright (c) 2015 7ThCode.
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
+
 md-dialog(flex)
     md-toolbar
         .md-toolbar-tools(layout="row", layout-align="end center")
             h3(flex)
                 span(flex) セレクト
             div
-                md-button.md-raised.md-primary(ng-click='cancel()', aria-label="")
-                    ng-md-icon(icon="cancel", style="fill:#ffffff", size="46")
+                md-button.md-fab.md-warn(ng-click='cancel()', aria-label="Cancel", style="position:relative;top:20px;")
+                    ng-md-icon(icon="clear", style="position:relative;top:4px;fill:#ffffff", size="46")
                     md-tooltip キャンセル
 
     md-content

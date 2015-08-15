@@ -3,6 +3,7 @@
     Copyright (c) 2015 7ThCode.
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
+
 md-content(style="background-color: #A0A0FF;")
     md-progress-circular.md-accent(ng-show="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
     md-card
@@ -26,5 +27,3 @@ md-content(style="background-color: #A0A0FF;")
                         md-button.md-fab.md-warn(ng-click="showDepartmentDeleteDialog(Department._id)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
                             ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42")
                             md-tooltip 削除
-
-                            aaaa
