@@ -219,3 +219,9 @@ views/backend/partials/edit/item/picture/picturedeletedialog.html
 views/backend/partials/edit/item/numeric/numericdeletedialog.html
 
 routes/configure.js
+
+views/backend/partials/patient/document.html
+
+views/document/index.html
+
+views/backend/partials/patient/document.html
