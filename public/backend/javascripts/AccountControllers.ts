@@ -112,6 +112,13 @@ controllers.factory('PatientQuery', ['$resource',
         });
     }]);
 
+controllers.factory('PatientCount', ['$resource',
+    ($resource:any):angular.resource.IResource<any> => {
+        return $resource('/patient/count/:query', {query: '@query'}, {
+            query: {method: 'GET'}
+        });
+    }]);
+
 controllers.factory('Patient', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
         return $resource('/patient/:id', {}, {
@@ -154,12 +161,21 @@ controllers.factory('Config', ['$resource',
         });
     }]);
 
-function PatientsList(resource:any, query:any, success:(value:any, headers:any) => void):void {
+controllers.factory('Pdf', ['$resource',
+    ($resource:any):angular.resource.IResource<any> => {
+        return $resource('/pdf/:id', {}, {});
+    }]);
+
+function TodayQuery():any {
     var today:Date = new Date();
     today.setHours(23, 59, 59, 99);
     var yesterday:Date = new Date();
     yesterday.setHours(0, 0, 0, 1);
-    var query:any = {$and: [{Date: {$lte: today}}, {Date: {$gt: yesterday}}]};
+    return {$and: [{Date: {$lte: today}}, {Date: {$gt: yesterday}}]};
+}
+
+function PatientsList(resource:any, query:any, success:(value:any, headers:any) => void):void {
+    var query:any = TodayQuery();
     resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any, headers:any):void => {
         if (data) {
             if (data.code == 0) {
@@ -182,14 +198,20 @@ function List(resource:any, query:any, success:(value:any) => void):void {
 
 /*! Controllers  */
 
-controllers.controller("StartController", ["$scope", 'CurrentAccount',
-    ($scope:any, CurrentAccount:any):void => {
-        $scope.username = CurrentAccount.username;
-        $scope.type = CurrentAccount.type;
+controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
+    ($scope:any, $state:any, CurrentAccount:any):void => {
+        if (CurrentAccount) {
+            $scope.username = CurrentAccount.username;
+            $scope.type = CurrentAccount.type;
+        }
+        else {
+            $state.go('start');
+        }
+
     }]);
 
-controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDialog", '$mdToast', '$state', 'Login', 'Logout', 'CurrentAccount', 'Global',
-    ($scope:any, $rootScope:any, $mdDialog:any, $mdToast:any, $state:any, Login:any, Logout:any, CurrentAccount:any, Global:any):void => {
+controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state', "$mdDialog", '$mdToast', 'Login', 'Logout', 'CurrentAccount', 'Global',
+    ($scope:any, $rootScope:any, $state:any, $mdDialog:any, $mdToast:any, Login:any, Logout:any, CurrentAccount:any, Global:any):void => {
 
         if (localStorage.getItem("account") != null) {
             var account:any = JSON.parse(localStorage.getItem("account"));
@@ -282,114 +304,135 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", "$mdDia
 
     }]);
 
-controllers.controller('PatientsController', ['$scope', "$mdDialog", '$mdBottomSheet', '$mdToast', '$state', 'Patient', 'PatientAccept', 'PatientQuery', 'CurrentAccount', 'CurrentPatient', 'Global',
-    ($scope:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, $state:any, Patient:any, PatientAccept:any, PatientQuery:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
+controllers.controller('PatientsController', ['$scope', '$state', "$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
+    ($scope:any, $state:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientAccept:any, PatientQuery:any, PatientCount:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
 
-        $scope.username = CurrentAccount.username;
-        $scope.type = CurrentAccount.type;
+        if (CurrentAccount) {
+            $scope.username = CurrentAccount.username;
+            $scope.type = CurrentAccount.type;
 
-        $scope.progress = true;
-        PatientsList(PatientQuery, {}, (data:any):void => {
-            $scope.patients = data;
-            $scope.progress = false;
-        });
-
-        $scope.showPatientDescription = (id:any):void => {
-            CurrentPatient.id = id;
-            $state.go('description');
-        };
-
-        $scope.icon = "vertical_align_top";
-        $scope.showSheet = ($event:any):void => {
-            $scope.icon = "vertical_align_bottom";
-            $mdBottomSheet.show({
-                templateUrl: '/backend/partials/patient/sheet',
-                controller: 'PatientSheetControl',
-                targetEvent: $event
-            }).then((clickedItem:any):void => {
-                $scope.icon = "vertical_align_top";
-            }, ():void => {
-                $scope.icon = "vertical_align_top";
+            $scope.progress = true;
+            PatientsList(PatientQuery, {}, (data:any):void => {
+                $scope.patients = data;
+                $scope.progress = false;
             });
-        };
 
-        $scope.showPatientAcceptDialog = (id:any):void => { // Register Dialog
+            $scope.showPatientDescription = (id:any):void => {
+                CurrentPatient.id = id;
+                $state.go('description');
+            };
 
-            $mdDialog.show({
-                controller: 'PatientAcceptDialogController',
-                templateUrl: '/backend/partials/patient/patientacceptdialog',
-                targetEvent: id
-            })
-                .then((answer:any):void => { // Answer
-
-                    var resource:any = new PatientAccept();
-                    resource.Input = {};
-                    resource.Information = {};
-                    resource.Information.name = answer.items.name;
-
-                    var now:Date = new Date();
-                    var hour:string = ("0" + now.getHours()).slice(-2); // 時
-                    var min:string = ("0" + now.getMinutes()).slice(-2); // 分
-                    var sec:string = ("0" + now.getSeconds()).slice(-2); // 秒
-                    resource.Information.time = hour + ':' + min + ':' + sec;
-
-                    answer.items.kana = answer.items.kana.replace(/[ぁ-ん]/g, (s:any):string => {
-                        return String.fromCharCode(s.charCodeAt(0) + 0x60);
-                    });
-
-                    resource.Information.kana = answer.items.kana;
-                    resource.Information.insurance = answer.items.insurance;
-                    resource.Category = answer.items.category;
-                    $scope.progress = true;
-                    resource.$save({}, (result:any):void => {
-                        if (result) {
-                            if (result.code == 0) {
-                                PatientsList(PatientQuery, {}, (data:any):void => {
-                                    $scope.progress = false;
-                                    Global.socket.emit('server', {value: "1"});
-                                    $scope.patients = data;
-                                    $mdToast.show($mdToast.simple().content(result.message));
-                                });
-                            } else {
-                                $mdToast.show($mdToast.simple().content(result.message));
-                            }
-                        } else {
-                            $mdToast.show($mdToast.simple().content("save error"));
-                        }
-                    });
-                }, ():void => { // Cancel
+            $scope.icon = "vertical_align_top";
+            $scope.showSheet = ($event:any):void => {
+                $scope.icon = "vertical_align_bottom";
+                $mdBottomSheet.show({
+                    templateUrl: '/backend/partials/patient/sheet',
+                    controller: 'PatientSheetControl',
+                    targetEvent: $event
+                }).then((clickedItem:any):void => {
+                    $scope.icon = "vertical_align_top";
+                }, ():void => {
+                    $scope.icon = "vertical_align_top";
                 });
-        };
+            };
 
-        $scope.$on('Login', ():void => {
-            $scope.progress = true;
-            PatientsList(PatientQuery, {}, (data:any):void => {
-                $scope.patients = data;
-                $scope.progress = false;
-            });
-        });
+            $scope.showPatientAcceptDialog = (id:any):void => { // Register Dialog
 
-        $scope.$on('Logout', ():void => {
-            $scope.patients = [];
-        });
+                var query:any = TodayQuery();
+                PatientCount.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any):void => {
+                    if (data) {
+                        if (data.code == 0) {
+                            var items = {count:0};
+                            items.count = data.value;
 
-        $scope.$on('Update', ():void => {
-            $scope.progress = true;
-            PatientsList(PatientQuery, {}, (data:any):void => {
-                $scope.patients = data;
-                $scope.progress = false;
-            });
-        });
+                            $mdDialog.show({
+                                controller: 'PatientAcceptDialogController',
+                                templateUrl: '/backend/partials/patient/patientacceptdialog',
+                                targetEvent: id,
+                                locals: {
+                                    items: items
+                                }
+                            })
+                                .then((answer:any):void => { // Answer
 
-        Global.socket.on('client', (data:any):void => {
-            if (data.value === "1") {
+                                    var resource:any = new PatientAccept();
+                                    resource.Input = {};
+                                    resource.Information = {};
+                                    resource.Information.name = answer.items.name;
+
+                                    var now:Date = new Date();
+                                    var hour:string = ("0" + now.getHours()).slice(-2); // 時
+                                    var min:string = ("0" + now.getMinutes()).slice(-2); // 分
+                                    var sec:string = ("0" + now.getSeconds()).slice(-2); // 秒
+                                    resource.Information.time = hour + ':' + min + ':' + sec;
+
+                                    answer.items.kana = answer.items.kana.replace(/[ぁ-ん]/g, (s:any):string => {
+                                        return String.fromCharCode(s.charCodeAt(0) + 0x60);
+                                    });
+
+                                    resource.Information.kana = answer.items.kana;
+                                    resource.Information.insurance = answer.items.insurance;
+                                    resource.Category = answer.items.category;
+                                    resource.Sequential = items.count;
+                                    $scope.progress = true;
+                                    resource.$save({}, (result:any):void => {
+                                        if (result) {
+                                            if (result.code == 0) {
+                                                PatientsList(PatientQuery, {}, (data:any):void => {
+                                                    $scope.progress = false;
+                                                    Global.socket.emit('server', {value: "1"});
+                                                    $scope.patients = data;
+                                                    $mdToast.show($mdToast.simple().content(result.message));
+                                                });
+                                            } else {
+                                                $mdToast.show($mdToast.simple().content(result.message));
+                                            }
+                                        } else {
+                                            $mdToast.show($mdToast.simple().content("save error"));
+                                        }
+                                    });
+                                }, ():void => { // Cancel
+                                });
+                        }
+                    }
+                });
+
+
+            };
+
+            $scope.$on('Login', ():void => {
                 $scope.progress = true;
                 PatientsList(PatientQuery, {}, (data:any):void => {
                     $scope.patients = data;
                     $scope.progress = false;
                 });
-            }
-        });
+            });
+
+            $scope.$on('Logout', ():void => {
+                $scope.patients = [];
+            });
+
+            $scope.$on('Update', ():void => {
+                $scope.progress = true;
+                PatientsList(PatientQuery, {}, (data:any):void => {
+                    $scope.patients = data;
+                    $scope.progress = false;
+                });
+            });
+
+            Global.socket.on('client', (data:any):void => {
+                if (data.value === "1") {
+                    $scope.progress = true;
+                    PatientsList(PatientQuery, {}, (data:any):void => {
+                        $scope.patients = data;
+                        $scope.progress = false;
+                    });
+                }
+            });
+        }
+        else {
+            $state.go('start');
+        }
     }]);
 
 controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$mdToast', 'Patient', 'PatientStatus', 'CurrentAccount', 'CurrentPatient', 'Global',
@@ -406,8 +449,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                             _.each<any>(data.value.Input, (value:any, index:number, array:any[]):void => {
                                 if (value.type == "picture") {
                                     var canvas:any = new fabric.Canvas('schema');
-                                    var hoge:string = JSON.stringify(value.value);
-                                    canvas.loadFromJSON(hoge, canvas.renderAll.bind(canvas), (o:any, object:any):void => {
+                                    canvas.loadFromJSON(JSON.stringify(value.value), canvas.renderAll.bind(canvas), (o:any, object:any):void => {
                                     });
                                 }
                                 $scope.Input.push(value);
@@ -512,159 +554,164 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
         });
     }]);
 
-controllers.controller('AccountsController', ['$scope', "$mdDialog", '$mdToast', 'Account', 'AccountQuery', 'AccountCreate', 'AccountPassword', 'CurrentAccount',
-    ($scope:any, $mdDialog:any, $mdToast:any, Account:any, AccountQuery:any, AccountCreate:any, AccountPassword:any, CurrentAccount:any):void => {
+controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '$mdToast', 'Account', 'AccountQuery', 'AccountCreate', 'AccountPassword', 'CurrentAccount',
+    ($scope:any, $state:any, $mdDialog:any, $mdToast:any, Account:any, AccountQuery:any, AccountCreate:any, AccountPassword:any, CurrentAccount:any):void => {
 
-        $scope.username = CurrentAccount.username;
-        $scope.type = CurrentAccount.type;
+        if (CurrentAccount) {
+            $scope.username = CurrentAccount.username;
+            $scope.type = CurrentAccount.type;
 
-        $scope.progress = true;
-        List(AccountQuery, {}, (data:any):void => {
-            $scope.progress = false;
-            $scope.accounts = data;
-        });
+            $scope.progress = true;
+            List(AccountQuery, {}, (data:any):void => {
+                $scope.progress = false;
+                $scope.accounts = data;
+            });
 
-        $scope.showRegisterDialog = (id:any):void => {
+            $scope.showRegisterDialog = (id:any):void => {
 
-            $mdDialog.show({
-                controller: 'RegisterDialogController',
-                templateUrl: '/backend/partials/account/registerdialog',
-                targetEvent: id
-            })
-                .then((answer:any):void => {
-                    var resource:any = new AccountCreate();
-                    resource.username = answer.items.username;
-                    resource.password = answer.items.password;
-                    resource.type = answer.items.type;
-                    $scope.progress = true;
-                    resource.$save({}, (result:any):void => {
-                        if (result) {
-                            if (result.code == 0) {
-                                List(AccountQuery, {}, (data:any):void => {
-                                    $scope.accounts = data;
-                                    $scope.progress = false;
-                                });
-                            }
-                            $mdToast.show($mdToast.simple().content(result.message));
-                        } else {
-                            $mdToast.show($mdToast.simple().content('Status Updated.'));
-                        }
-                    });
-
-                }, ():void => {
-                });
-        };
-
-        $scope.showAccountDeleteDialog = (id:any):void => {
-            $mdDialog.show({
-                controller: 'AccountDeleteDialogController',
-                templateUrl: '/backend/partials/account/deletedialog',
-                targetEvent: id
-            })
-                .then((answer:any):void => {  // Answer
-                    var resource:any = new Account();
-                    $scope.progress = true;
-                    resource.$remove({id: id}, (result:any):void => {
-                        if (result) {
-                            if (result.code == 0) {
-                                List(AccountQuery, {}, (data:any):void => {
-                                    $scope.accounts = data;
-                                    $scope.progress = false;
-                                });
-                                $mdToast.show($mdToast.simple().content(result.message));
-                            }
-                        } else {
-                            $mdToast.show($mdToast.simple().content('Status Updated.'));
-                        }
-                    });
-                }, ():void => {
-                });
-        };
-
-        $scope.showAccountUpdateDialog = (id:any):void => {
-            var resource:any = new Account();
-            resource.$get({id: id}, (data:any):void => {
-                    if (data) {
-                        if (data.code == 0) {
-                            $scope.items = data.value;
-                            $scope.items.password = "";
-                            $mdDialog.show({
-                                controller: 'AccountUpdateDialogController',
-                                templateUrl: '/backend/partials/account/accountdialog',
-                                targetEvent: id,
-                                locals: {
-                                    items: $scope.items
+                $mdDialog.show({
+                    controller: 'RegisterDialogController',
+                    templateUrl: '/backend/partials/account/registerdialog',
+                    targetEvent: id
+                })
+                    .then((answer:any):void => {
+                        var resource:any = new AccountCreate();
+                        resource.username = answer.items.username;
+                        resource.password = answer.items.password;
+                        resource.type = answer.items.type;
+                        $scope.progress = true;
+                        resource.$save({}, (result:any):void => {
+                            if (result) {
+                                if (result.code == 0) {
+                                    List(AccountQuery, {}, (data:any):void => {
+                                        $scope.accounts = data;
+                                        $scope.progress = false;
+                                    });
                                 }
-                            })
-                                .then((answer:any):void => {
-                                    switch (answer.a) {
-                                        case 1:
-                                        {
-                                            var post:any = new AccountPassword();
-                                            post.password = answer.items.password;
-                                            post.$update({id: id}, (result:any):void => {
-                                                if (result) {
-                                                    $mdToast.show($mdToast.simple().content(result.message));
-                                                } else {
-                                                    $mdToast.show($mdToast.simple().content('Password Updated error.'));
-                                                }
-                                            });
-                                        }
-                                        case 2:
-                                        {
-                                            var post:any = new Account();
-                                            post.username = answer.items.username;
-                                            post.type = answer.items.type;
-                                            $scope.progress = true;
-                                            post.$update({id: id}, (result:any):void => {
-                                                if (result) {
-                                                    if (result.code == 0) {
-                                                        List(AccountQuery, {}, (data:any):void => {
-                                                            $scope.accounts = data;
-                                                            $scope.progress = false;
-                                                            $mdToast.show($mdToast.simple().content(result.message));
-                                                        });
-                                                    } else {
-                                                        $mdToast.show($mdToast.simple().content(result.message));
-                                                    }
-                                                } else {
-                                                    $mdToast.show($mdToast.simple().content('account Updated error.'));
-                                                }
-                                            });
-                                        }
+                                $mdToast.show($mdToast.simple().content(result.message));
+                            } else {
+                                $mdToast.show($mdToast.simple().content('Status Updated.'));
+                            }
+                        });
+
+                    }, ():void => {
+                    });
+            };
+
+            $scope.showAccountDeleteDialog = (id:any):void => {
+                $mdDialog.show({
+                    controller: 'AccountDeleteDialogController',
+                    templateUrl: '/backend/partials/account/deletedialog',
+                    targetEvent: id
+                })
+                    .then((answer:any):void => {  // Answer
+                        var resource:any = new Account();
+                        $scope.progress = true;
+                        resource.$remove({id: id}, (result:any):void => {
+                            if (result) {
+                                if (result.code == 0) {
+                                    List(AccountQuery, {}, (data:any):void => {
+                                        $scope.accounts = data;
+                                        $scope.progress = false;
+                                    });
+                                    $mdToast.show($mdToast.simple().content(result.message));
+                                }
+                            } else {
+                                $mdToast.show($mdToast.simple().content('Status Updated.'));
+                            }
+                        });
+                    }, ():void => {
+                    });
+            };
+
+            $scope.showAccountUpdateDialog = (id:any):void => {
+                var resource:any = new Account();
+                resource.$get({id: id}, (data:any):void => {
+                        if (data) {
+                            if (data.code == 0) {
+                                $scope.items = data.value;
+                                $scope.items.password = "";
+                                $mdDialog.show({
+                                    controller: 'AccountUpdateDialogController',
+                                    templateUrl: '/backend/partials/account/accountdialog',
+                                    targetEvent: id,
+                                    locals: {
+                                        items: $scope.items
                                     }
-                                }, ():void => {
-                                });
+                                })
+                                    .then((answer:any):void => {
+                                        switch (answer.a) {
+                                            case 1:
+                                            {
+                                                var post:any = new AccountPassword();
+                                                post.password = answer.items.password;
+                                                post.$update({id: id}, (result:any):void => {
+                                                    if (result) {
+                                                        $mdToast.show($mdToast.simple().content(result.message));
+                                                    } else {
+                                                        $mdToast.show($mdToast.simple().content('Password Updated error.'));
+                                                    }
+                                                });
+                                            }
+                                            case 2:
+                                            {
+                                                var post:any = new Account();
+                                                post.username = answer.items.username;
+                                                post.type = answer.items.type;
+                                                $scope.progress = true;
+                                                post.$update({id: id}, (result:any):void => {
+                                                    if (result) {
+                                                        if (result.code == 0) {
+                                                            List(AccountQuery, {}, (data:any):void => {
+                                                                $scope.accounts = data;
+                                                                $scope.progress = false;
+                                                                $mdToast.show($mdToast.simple().content(result.message));
+                                                            });
+                                                        } else {
+                                                            $mdToast.show($mdToast.simple().content(result.message));
+                                                        }
+                                                    } else {
+                                                        $mdToast.show($mdToast.simple().content('account Updated error.'));
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }, ():void => {
+                                    });
+                            } else {
+                                $mdToast.show($mdToast.simple().content(data.message));
+                            }
                         } else {
-                            $mdToast.show($mdToast.simple().content(data.message));
+
                         }
-                    } else {
-
                     }
-                }
-            );
-        };
+                );
+            };
 
-        $scope.$on('Login', ():void  => {
-            $scope.progress = true;
-            List(AccountQuery, {}, (data:any):void  => {
-                $scope.accounts = data;
-                $scope.progress = false;
+            $scope.$on('Login', ():void  => {
+                $scope.progress = true;
+                List(AccountQuery, {}, (data:any):void  => {
+                    $scope.accounts = data;
+                    $scope.progress = false;
+                });
             });
-        });
 
-        $scope.$on('Logout', ():void  => {
-            $scope.accounts = [];
-        });
-
-        $scope.$on('Update', ():void  => {
-            $scope.progress = true;
-            List(AccountQuery, {}, (data:any):void  => {
-                $scope.accounts = data;
-                $scope.progress = false;
+            $scope.$on('Logout', ():void  => {
+                $scope.accounts = [];
             });
-        });
 
+            $scope.$on('Update', ():void  => {
+                $scope.progress = true;
+                List(AccountQuery, {}, (data:any):void  => {
+                    $scope.accounts = data;
+                    $scope.progress = false;
+                });
+            });
+
+        }
+        else {
+            $state.go('start');
+        }
     }]);
 
 controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog", "$mdToast", "CurrentView", "ViewCreate", "View", "ViewQuery",
@@ -751,8 +798,7 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
         $scope.Pages = CurrentView.Data.Pages;
 
         $scope.up = (index:number) => {
-            if (index > 0)
-            {
+            if (index > 0) {
                 var control = CurrentView.Data.Pages[index];
                 CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index - 1];
                 CurrentView.Data.Pages[index - 1] = control;
@@ -760,8 +806,7 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
         };
 
         $scope.down = (index:number) => {
-            if (index < CurrentView.Data.Pages.length - 1 )
-            {
+            if (index < CurrentView.Data.Pages.length - 1) {
                 var control = CurrentView.Data.Pages[index];
                 CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index + 1];
                 CurrentView.Data.Pages[index + 1] = control;
@@ -801,7 +846,7 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
                     var page:any = {
                         headline: name,
                         items: [],
-                        picture:[]
+                        picture: []
                     };
 
                     /*     var nextbutton = {
@@ -862,8 +907,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
         $scope.Page = CurrentView.Data.Pages[CurrentView.Page];
 
         $scope.up = (index:number) => {
-            if (index > 0)
-            {
+            if (index > 0) {
                 var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
                 CurrentView.Data.Pages[CurrentView.Page].items[index] = CurrentView.Data.Pages[CurrentView.Page].items[index - 1];
                 CurrentView.Data.Pages[CurrentView.Page].items[index - 1] = control;
@@ -871,8 +915,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
         };
 
         $scope.down = (index:number) => {
-            if (index < CurrentView.Data.Pages[CurrentView.Page].items.length - 1 )
-            {
+            if (index < CurrentView.Data.Pages[CurrentView.Page].items.length - 1) {
                 var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
                 CurrentView.Data.Pages[CurrentView.Page].items[index] = CurrentView.Data.Pages[CurrentView.Page].items[index + 1];
                 CurrentView.Data.Pages[CurrentView.Page].items[index + 1] = control;
@@ -1144,7 +1187,6 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 });
         };
 
-
         $scope.showTextDeleteDialog = (index:number):void => {
 
             $mdDialog.show({
@@ -1217,7 +1259,6 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                     CurrentView.Data.Pages[CurrentView.Page].picture = _.compact(CurrentView.Data.Pages[CurrentView.Page].picture);
                 }, ():void => {
                 });
-
         };
 
         $scope.showButtonDeleteDialog = (index:number):void => {
@@ -1353,8 +1394,8 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
 
     }]);
 
-controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet',
-    ($scope:any, $mdBottomSheet:any):void  => {
+controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet', '$location', 'CurrentPatient', 'Pdf',
+    ($scope:any, $mdBottomSheet:any, $location:any, CurrentPatient:any, Pdf:any):void  => {
 
         $scope.items = [
             {name: 'Archive', icon: 'archive'},
@@ -1367,6 +1408,11 @@ controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet',
 
         $scope.ItemClick = ($index:any):void  => {
             $mdBottomSheet.hide($scope.items[$index]);
+            var resource:any = new Pdf();
+            resource.$get({id: CurrentPatient.id}, (data:any):void => {
+                window.location.href = "/output/" + data.value;
+                //$location.path("http://localhost:3000/pdf/" + CurrentPatient.id);
+            });
         };
 
     }]);
@@ -1464,9 +1510,10 @@ controllers.controller('NotificationDialogController', ['$scope', '$mdDialog',
 
     }]);
 
-controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog', 'ViewQuery',
-    ($scope:any, $mdDialog:any, ViewQuery:any):void  => {
+controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog', 'ViewQuery', 'items',
+    ($scope:any, $mdDialog:any, ViewQuery:any, items:any):void  => {
 
+        $scope.items = items;
         $scope.categories = [];
 
         $scope.progress = true;

@@ -24,7 +24,8 @@ var Patient = new Schema({
     'Status': {type:String, default:"Init"},
     'Category' : {type:String, default:"1"},
     'Information' :{},
-    'Input': {}
+    'Input': {},
+    'Sequential': 0
 });
 
 module.exports = mongoose.model('Patient', Patient);

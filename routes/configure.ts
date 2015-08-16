@@ -6,7 +6,7 @@ class Configure {
     public initView:any;
     constructor() {
        this.initView = {Views: [
-            {Name:"内科", Pages:[
+            {Name:"内科", ReadOnly:true, Pages:[
                 {
                     headline: "どのような症状ですか？",
                     items: [
@@ -36,7 +36,8 @@ class Configure {
                             path: "/browse/1",
                             class: "md-accent"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "いつごろ？",
@@ -90,7 +91,8 @@ class Configure {
                             path: "/browse/0",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "この症状で他の医療機関（病院・診療所）を受診されましたか？",
@@ -373,8 +375,9 @@ class Configure {
                     ],
                     picture: []
                 }
+
             ]},
-            {Name:"外科", Pages:[
+            {Name:"外科", ReadOnly:true, Pages:[
                 {
                     headline: "お名前？",
                     items: [
@@ -642,7 +645,7 @@ class Configure {
                     picture: []
                 }
             ]},
-            {Name:"整形外科", Pages:[
+            {Name:"整形外科", ReadOnly:true, Pages:[
                 {
                     headline: "身長を入力して下さい",
                     items: [
@@ -961,7 +964,8 @@ class Configure {
                             path: "/browse/9",
                             class: "md-primary"
                         }
-                    ]
+                    ],
+                    picture: []
                 },
                 {
                     headline: "薬・注射　などでアレルギー症状が出たことがありますか？",
@@ -1063,12 +1067,12 @@ class Configure {
                     picture: []
                 }
             ]},
-            {Name:"耳鼻いんこう科", Pages:[]},
-            {Name:"小児科", Pages:[]}
+            {Name:"耳鼻いんこう科",ReadOnly:true,  Pages:[]},
+            {Name:"小児科", ReadOnly:true, Pages:[]}
         ]};
-
     }
 }
+
 module.exports = Configure;
 
 

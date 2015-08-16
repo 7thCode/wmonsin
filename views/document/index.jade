@@ -1,0 +1,59 @@
+doctype html
+html(lang="ja")
+    head
+        meta(charset="utf-8")
+        title wmonsin
+        link(rel="stylesheet", type="text/css", href="stylesheets/style.css")
+        script(type="text/javascript", src='/bower_components/jquery/dist/jquery.min.js')
+        script(type="text/javascript", src="/bower_components/lodash/lodash.min.js")
+        script(type="text/javascript", src="/bower_components/fabric/dist/fabric.min.js")
+        script.
+            $(window).load(function () {
+
+                var geho = "";
+
+
+                var canvas = new fabric.Canvas('schema');
+                canvas.loadFromJSON(geho, canvas.renderAll.bind(canvas), function (o, object) {
+                });
+
+            });
+
+    body
+        div
+            div
+                div
+                    h1 問診内容
+                    h4 #{patient.Information.time}
+                    h3 #{patient.Information.kana} [ #{patient.Information.name}  -  #{patient.Information.insurance} ]
+
+            div
+
+                canvas#schema(width="300", height="600")
+
+            div
+                div
+                    each item in patient.Input
+                        div
+                            if item.type == 'text'
+                                div
+                                    strong #{item.name} :
+                                    span #{item.value}
+
+                            if item.type == 'select'
+                                div
+                                    strong #{item.name} :
+                                    span #{item.value}
+
+                            if item.type == 'check'
+                                div
+                                    if item.value
+                                        strong #{item.name} :
+                                        span #{item.value}
+
+                            if item.type == 'numeric'
+                                div
+                                    strong #{item.name} :
+                                    span #{item.value}
+
+

@@ -149,6 +149,21 @@ router.get('/', (req:any, res:any):void => {
     res.render('index');
 });
 
+router.get('/document/:id', (req:any, res:any):void => {
+
+    var id = req.params.id;
+    Patient.findById(id, (finderror:any, patient:any):void => {
+        if (!finderror) {
+            if (patient) {
+                res.render('document/index', {patient:patient});
+            } else {
+
+            }
+        } else {
+
+        }
+    });
+});
 
 router.get('/partials/logo', (req:any, res:any, next:Function):void => {
     res.render('partials/logo');
@@ -171,21 +186,7 @@ router.get('/backend/partials/patient/description', (req:any, res:any):void => {
     res.render('backend/partials/patient/description');
 });
 
-router.get('/backend/partials/patient/document/:id', (req:any, res:any):void => {
 
-    var id:string = req.params.id;
-    Patient.findById(id, (finderror:any, patient:any):void => {
-        if (!finderror) {
-            if (patient) {
-                res.render('backend/partials/patient/document', {Information: patient});
-            } else {
-                res.send(JSON.stringify(new result(10, "patient get", {})));
-            }
-        } else {
-            res.send(JSON.stringify(new result(100, "patient get", finderror)));
-        }
-    });
-});
 
 router.get('/backend/partials/patient/patientacceptdialog', (req:any, res:any):void => {
     res.render('backend/partials/patient/patientacceptdialog');
@@ -376,6 +377,7 @@ router.post('/patient/accept', (req:any, res:any):void => {
         patient.Information = req.body.Information;
         patient.Date = new Date();
         patient.Category = req.body.Category;
+        patient.Sequential = req.body.Sequential;
 
         //    var now =  patient.Date;
 
@@ -454,6 +456,7 @@ router.put('/patient/:id', (req:any, res:any):void => {
                             if (patient) {
                                 patient.Status = req.body.Status;
                                 patient.Input = req.body.Input;
+                                patient.Sequential = req.body.Sequential;
                                 patient.save((saveerror:any):void => {
                                     if (!saveerror) {
                                         res.send(JSON.stringify(new result(0, "OK", {})));
@@ -541,6 +544,37 @@ router.get('/patient/query/:query', (req:any, res:any):void => {
         res.send(JSON.stringify(new result(10000, "patient query " + e.message, e)));
     }
 });
+
+
+/*! query */
+router.get('/patient/count/:query', (req:any, res:any):void => {
+    try {
+        res = BasicHeader(res, "");
+        if (req.session) {
+            Authenticate(req.session.key, (type:any):void => {
+                var query = JSON.parse(decodeURIComponent(req.params.query));
+                Patient.count(query, (finderror:any, docs:any):void => {
+                    if (!finderror) {
+                        if (docs) {
+                            res.send(JSON.stringify(new result(0, "OK", docs)));
+                        } else {
+                            res.send(JSON.stringify(new result(0, "OK", 0)));
+                        }
+                    } else {
+                        res.send(JSON.stringify(new result(100, "patient count", finderror)));
+                    }
+                });
+            }, (message:string, error:any):void => {
+                res.send(JSON.stringify(new result(2, "patient count " + message, error)));
+            });
+        } else {
+            res.send(JSON.stringify(new result(2000, "patient count no session", {})));
+        }
+    } catch (e) {
+        res.send(JSON.stringify(new result(10000, "patient query " + e.message, e)));
+    }
+});
+
 
 /*! status */
 router.get('/patient/status/:id', (req:any, res:any):void => {
@@ -1096,18 +1130,19 @@ router.get('/view/query/:query', (req:any, res:any):void => {
 /*! PDF */
 router.get('/pdf/:id', function (request, response, next) {
     try {
+        response.header('Content-type', 'application/pdf');
         var id:string = request.params.id;
         phantom.create(function (ph) {
             ph.createPage(function (page) {
                 page.set('viewportSize', {width: 1200, height: 1200}, function (err) {
-                    page.open("http://localhost:3000/backend/partials/patient/document/" + id, function (error, status) {
-                        page.render("public/output/output.pdf", function (error) {
+                    page.open("http://localhost:3000/document/" + id, function (error, status) {
+                        page.render("public/output/output" + id + ".pdf", function (error) {
                             if (!error) {
                                 ph.exit();
-                                response.redirect(302, "output/output.pdf");
+                                response.send(JSON.stringify(new result(0, "OK", "output" + id + ".pdf")));
                             }
                             else {
-                                response.send(JSON.stringify(new Result(1, "pdf create error", error)));
+                                response.send(JSON.stringify(new result(1, "pdf create error", error)));
                             }
                         });
                     });
@@ -1116,7 +1151,7 @@ router.get('/pdf/:id', function (request, response, next) {
         });
     }
     catch (e) {
-        response.send(JSON.stringify(new Result(10000, "exception " + e.message, e)));
+        response.send(JSON.stringify(new result(10000, "exception " + e.message, e)));
     }
 });
 

@@ -23,7 +23,10 @@ md-content(style="background-color: #A0A0FF;")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="start center", flex)
 
-                    div(flex="20",layout="row", layout-align="start center")
+                    div(flex="5",layout="row", layout-align="start center")
+                        div {{patient.Sequential}}
+
+                    div(flex="15",layout="row", layout-align="start center")
                         md-button.md-fab.md-accent(ng-show="patient.Input != null", ng-click="showPatientDescription(patient._id)", aria-label="Description")
                             ng-md-icon(icon="assignment_ind", style="position:relative;top:6px;fill:#abcdef", size="42")
                             md-tooltip Description...
