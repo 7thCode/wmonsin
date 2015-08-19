@@ -225,3 +225,21 @@ views/backend/partials/patient/document.html
 views/document/index.html
 
 views/backend/partials/patient/document.html
+
+routes/configure.min.js
+
+routes/result.js
+
+views/front/partials/browseS.html
+
+views/layout.html
+
+views/backend/partials/controll/panel.html
+
+views/backend/partials/patient/document.html
+
+routes/result.min.js
+
+routes/result.js
+
+routes/configure.min.js
