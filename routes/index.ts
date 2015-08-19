@@ -1,12 +1,8 @@
 /**
- index.js
-
+ index.ts
  Copyright (c) 2015 7ThCode.
-
  This software is released under the MIT License.
-
  http://opensource.org/licenses/mit-license.php
-
  */
 
 /// <reference path="../../DefinitelyTyped/lib.d.ts"/>
@@ -53,29 +49,33 @@ var result = require('./result');
 
 module.exports = router;
 
-User("root", ():void => {
-    var account = new Account();
-    account.username = "root";
-    account.password = Cipher("root", config.key1);
-    account.type = "Admin";
-    account.key = Cipher("root", config.key2);
-    account.save((saveerror:any):void => {
-    });
-}, (message:string, error:any):void => {
-});
+User(
+    "root",
+    ():void => {
+        var account = new Account();
 
+        var username = config.user;
+        var password = config.password;
+
+        account.username = username;
+        account.password = Cipher(password, config.key1);
+        account.type = "Admin";
+        account.key = Cipher(username, config.key2);
+        account.save((saveerror:any):void => {
+        });
+    },
+    (message:string, error:any):void => {}
+);
 
 View.count({}, (counterror:any, count:number):void => {
     if (!counterror) {
         if (count <= 0) {
             var ev = new emitter;
-
             ev.on("view", function (data) {
                 var view = new View();
                 view.Name = data.Name;
                 view.Pages = data.Pages;
                 view.save(function (error) {
-                    var a = 1;
                 });
             });
 
@@ -155,7 +155,7 @@ router.get('/document/:id', (req:any, res:any):void => {
     Patient.findById(id, (finderror:any, patient:any):void => {
         if (!finderror) {
             if (patient) {
-                res.render('document/index', {patient:patient});
+                res.render('document/index', {patient: patient});
             } else {
 
             }
@@ -185,7 +185,6 @@ router.get('/backend/partials/patient/patients', (req:any, res:any):void => {
 router.get('/backend/partials/patient/description', (req:any, res:any):void => {
     res.render('backend/partials/patient/description');
 });
-
 
 
 router.get('/backend/partials/patient/patientacceptdialog', (req:any, res:any):void => {
@@ -377,7 +376,7 @@ router.post('/patient/accept', (req:any, res:any):void => {
         patient.Information = req.body.Information;
         patient.Date = new Date();
         patient.Category = req.body.Category;
-        patient.Sequential = req.body.Sequential;
+        //patient.Sequential = req.body.Sequential;
 
         //    var now =  patient.Date;
 
@@ -390,9 +389,13 @@ router.post('/patient/accept', (req:any, res:any):void => {
         //t0S　ーーhoke
         //t01 --なまえ
 
+        //同時に同名でないこと（自動Accept対策)
         Patient.find({"$and": [{'Information.name': patient.Information.name}, {'Information.time': patient.Information.time}]}, function (finderror, docs) {
             if (!finderror) {
                 if (docs.length == 0) {
+                    patient.Status = req.body.Status;
+                    patient.Input = req.body.Input;
+                    patient.Sequential = req.body.Sequential;
                     patient.save((saveerror:any):void => {
                         if (!saveerror) {
                             res.send(JSON.stringify(new result(0, "patient accepted.", patient.Status)));
@@ -400,8 +403,7 @@ router.post('/patient/accept', (req:any, res:any):void => {
                             res.send(JSON.stringify(new result(100, "patient status put", saveerror)));
                         }
                     });
-                }
-                else {
+                } else {
                     res.send(JSON.stringify(new result(10, "patient query no item", {})));
                 }
             } else {
@@ -478,8 +480,7 @@ router.put('/patient/:id', (req:any, res:any):void => {
             }, (message:string, error:any):void => {
                 res.send(JSON.stringify(new result(2, "patient put " + message, error)));
             });
-        }
-        else {
+        } else {
             res.send(JSON.stringify(new result(2000, "patient put no session", {})));
         }
     } catch (e) {
@@ -617,6 +618,7 @@ router.put('/patient/status/:id', (req:any, res:any):void => {
                         if (!finderror) {
                             if (patient) {
                                 patient.Status = req.body.Status;
+
                                 patient.save((saveerror:any):void => {
                                     if (!saveerror) {
                                         res.send(JSON.stringify(new result(0, "OK", patient.Status)));

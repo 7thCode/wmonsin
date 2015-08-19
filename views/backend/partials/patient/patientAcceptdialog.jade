@@ -14,34 +14,32 @@ md-dialog(flex)
                     ng-md-icon(icon="clear", style="position:relative;top:4px;fill:#ffffff", size="46")
                     md-tooltip キャンセル
 
-    md-content
-        md-card
-            md-card-content
-                div {{items.count}}
-            md-card-content
-                ng-form(name="validate")
-                    div(layout="row", layout-align="start center")
-                        ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
-                        md-input-container(flex)
-                            label {{'name' | message }}
-                            input(ng-model="items.name", data-ng-required="true", name="username", placeholder='Enter Name', md-maxlength="30", required)
-                            div(ng-messages="validate.username.$error")
-                                div(ng-message="required") {{'required' | message}}
-                                div(ng-message="md-maxlength") {{'maxlength' | message}}
+    md-dialog-content
+        div {{items.count}}
+        ng-form(name="validate")
+            div(layout="row", layout-align="start center")
+                ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
+                md-input-container(flex)
+                    label {{'name' | message }}
+                    input(ng-model="items.name", data-ng-required="true", name="username", placeholder='Enter Name', md-maxlength="30", required)
+                    div(ng-messages="validate.username.$error")
+                        div(ng-message="required") {{'required' | message}}
+                        div(ng-message="md-maxlength") {{'maxlength' | message}}
 
-                    div(layout="row", layout-align="start center")
-                        ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
-                        md-input-container(flex)
-                            label {{'kana' | message }}
-                            input(ng-model="items.kana", ng-pattern="/^[ぁ-んァ-ン]+$/", data-ng-required="true", name="kana", placeholder='Enter Kana', md-maxlength="30", required)
-                            div(ng-messages="validate.kana.$error")
-                                div(ng-message="required") {{'required' | message}}
-                                div(ng-message="md-maxlength") {{'maxlength' | message}}
-                                div(ng-message="pattern") {{'notkana' | message}}
+            div(layout="row", layout-align="start center")
+                ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
+                md-input-container(flex)
+                    label {{'kana' | message }}
+                    input(ng-model="items.kana", ng-pattern="/^[ぁ-んァ-ン]+$/", data-ng-required="true", name="kana", placeholder='Enter Kana', md-maxlength="30", required)
+                    div(ng-messages="validate.kana.$error")
+                        div(ng-message="required") {{'required' | message}}
+                        div(ng-message="md-maxlength") {{'maxlength' | message}}
+                        div(ng-message="pattern") {{'notkana' | message}}
 
-                    md-card-content(layout="row", layout-align="start center", flex)
-                        md-select(placeholder="診療科", ng-model="items.category", required)
-                            md-option(ng-repeat="category in categories", value="{{category}}") {{category}}
+            md-card-content(layout="row", layout-align="start center", flex)
+                md-select(placeholder="診療科", ng-model="items.category", required)
+                    md-option(ng-repeat="category in categories", value="{{category}}") {{category}}
 
-                    div(layout="row" layout-align="space-around center")
-                        md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="Save") {{'accept' | message}}
+            md-divider
+            div.md-actions(layout="row" layout-align="space-around center")
+                md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="Save") {{'accept' | message}}

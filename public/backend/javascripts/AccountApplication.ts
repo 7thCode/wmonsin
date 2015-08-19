@@ -1,10 +1,7 @@
 /**
- AccountApplication.js
-
+ AccountApplication.ts
  Copyright (c) 2015 7ThCode.
-
  This software is released under the MIT License.
-
  http://opensource.org/licenses/mit-license.php
  */
 
@@ -16,7 +13,22 @@
 
 'use strict';
 
-var app:angular.IModule = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers']);
+var app:angular.IModule = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers', 'pascalprecht.translate']);
+
+/*
+app.config(['$translateProvider', function($translateProvider) {
+
+    $translateProvider.useStaticFilesLoader({
+        prefix: '/assets/i18n/locale-',
+        suffix: '.json'
+    });
+
+    $translateProvider.preferredLanguage('ja');
+    $translateProvider.fallbackLanguage('en');
+    $translateProvider.useMissingTranslationHandlerLog();
+    $translateProvider.useLocalStorage();
+}]);
+*/
 
 app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRouterProvider:any):void => {
     $stateProvider
@@ -44,7 +56,7 @@ app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRou
             templateUrl: '/backend/partials/account/accounts',
             controller: 'AccountsController'
         })
-        
+
         .state('controlles', {
             url: '/controlles',
             templateUrl: '/backend/partials/controll/panel',
@@ -125,7 +137,7 @@ app.filter('status', ():(input:string) => string  => {
     }
 );
 
-app.filter('message', ():(input:string) => string =>  {
+app.filter('message', ():(input:string) => string => {
         return (input:string):string => {
             var result:string = "?????";
 

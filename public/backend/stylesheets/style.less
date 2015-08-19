@@ -10,45 +10,116 @@
  */
 @import url(http://fonts.googleapis.com/earlyaccess/notosansjapanese.css);
 
-body *{
- font-family: 'Noto Sans Japanese', sans-serif;
+body * {
+  font-family: 'Noto Sans Japanese', sans-serif;
 }
 
-h1,h2{
- font-family: 'Noto Sans Japanese', sans-serif;
- font-weight: 900;
+h1, h2 {
+  font-family: 'Noto Sans Japanese', sans-serif;
+  font-weight: 900;
 }
 
-h3,h4,h5{
- font-family: 'Noto Sans Japanese', sans-serif;
- font-weight: 700;
+h3, h4, h5 {
+  font-family: 'Noto Sans Japanese', sans-serif;
+  font-weight: 700;
 }
 
 .menu-button {
-top:30px;
+  top: 30px;
 }
 
 .ng-enter,
 .ng-leave,
 .ng-move {
- -webkit-transition: opacity 0.15s linear;
- transition: opacity 0.15s linear;
+  -webkit-transition: opacity 0.15s linear;
+  transition: opacity 0.15s linear;
 }
+
 .ng-enter {
- opacity: 0;
+  opacity: 0;
 }
+
 .ng-enter.ng-enter-active {
- opacity: 1;
+  opacity: 1;
 }
+
 .ng-leave {
- opacity: 1;
+  opacity: 1;
 }
+
 .ng-leave.ng-leave-active {
- opacity: 0;
+  opacity: 0;
 }
+
 .ng-move {
- opacity: .5;
+  opacity: .5;
 }
+
 .ng-move.ng-move-active {
- opacity: 1;
+  opacity: 1;
+}
+
+
+
+
+
+
+
+.department-content {
+  background-color: #A0A0FF;
+}
+
+.department-progress-circular {
+  position:absolute;
+  top:50%;
+  left:50%;
+}
+
+.department-button(@background-color:#FF1744) {
+  background-color:@background-color;
+  z-index:1;
+}
+
+.department-button1 {
+  .department-button(#FF1744);
+}
+
+.department-button2 {
+  .department-button(#FFB300);
+}
+
+.department-button3 {
+  .department-button(#64ffda);
+}
+
+.department-button4 {
+  .department-button(#69F0AE);
+}
+
+.department-button5 {
+  .department-button(#6570cc);
+}
+
+.department-button6 {
+  .department-button(#ff5050);
+}
+
+
+.department-button-icon(@top: 6px, @left: 1px) {
+  position:relative;
+  top:@top;
+  left:@left;
+  fill:#eeeeee;
+}
+
+.department-button1-icon {
+  .department-button-icon;
+}
+
+.department-button2-icon {
+  .department-button-icon(10px,0px);
+}
+
+.background {
+  background-color: #81D4FA;
 }

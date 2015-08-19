@@ -15,9 +15,20 @@
 ///<reference path="../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
 ///<reference path="../../../DefinitelyTyped/lodash/lodash.d.ts" />
 
-var app:any = angular.module('TopApplication', ['ui.router', 'TopControllers']);
-
-app.config(['$stateProvider', '$urlRouterProvider',  ($stateProvider:any, $urlRouterProvider:any):void => {
+var app:any = angular.module('TopApplication', ['ui.router', 'TopControllers','pascalprecht.translate']);
+/*
+app.config(['$translateProvider', function($translateProvider) {
+    $translateProvider.useStaticFilesLoader({
+        prefix: 'assets/i18n/locale-',
+        suffix: '.json'
+    });
+    $translateProvider.preferredLanguage('ja');
+    $translateProvider.fallbackLanguage('en');
+    $translateProvider.useMissingTranslationHandlerLog();
+    $translateProvider.useLocalStorage();
+}]);
+*/
+app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRouterProvider:any):void => {
 
     $stateProvider
 
@@ -31,7 +42,7 @@ app.config(['$stateProvider', '$urlRouterProvider',  ($stateProvider:any, $urlRo
 }]);
 
 app.filter('message', ():Function => {
-        return  (input:string):string => {
+        return (input:string):string => {
             var result = "?????";
 
             switch (input) {

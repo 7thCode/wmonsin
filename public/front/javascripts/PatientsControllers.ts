@@ -1,12 +1,8 @@
 /**
- PatientController.js
-
+ PatientController.ts
  Copyright (c) 2015 7ThCode.
-
  This software is released under the MIT License.
-
  http://opensource.org/licenses/mit-license.php
-
  */
 
 ///<reference path="../../../../DefinitelyTyped/lib.d.ts"/>
@@ -18,7 +14,7 @@
 
 'use strict';
 
-var controllers:angular.IModule = angular.module('PatientsControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate']);
+var controllers:angular.IModule = angular.module('PatientsControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate','pascalprecht.translate']);
 
 class Browser {
     public name:string;
@@ -86,7 +82,8 @@ controllers.value("CurrentPatient", {
     },
     "Status": "",
     "Category": "",
-    'Input': {}
+    'Input': {},
+    'Sequential': 0
 });
 
 function List(resource:any, query:any, success:(value:any) => void):void {
@@ -112,12 +109,6 @@ controllers.factory('Patient', ['$resource', ($resource:any):angular.resource.IR
         update: {method: 'PUT'}
     });
 }]);
-
-//controllers.factory('ViewItem', ['$resource', ($resource:any):angular.resource.IResource<any> => {
-//    return $resource('/view/query/:query', {}, {
-//        //     get: {method: 'GET'}
-//    });
-//}]);
 
 controllers.factory('ViewQuery', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
@@ -163,9 +154,11 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
 
                         CurrentPatient.Category = data.value.Category;
                         CurrentPatient.Information = data.value.Information;
+                        CurrentPatient.Sequential = data.value.Sequential;
 
                         $scope.Information = CurrentPatient.Information;
                         $scope.Input = CurrentPatient.Input;
+                        $scope.Sequential =  CurrentPatient.Sequential;
 
                         $location.path('/browse/0');
                     }
@@ -195,7 +188,9 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
         var page:any = $stateParams.page;
         var color:string = "rgba(200, 20, 30, 0.4)";
 
-        var depertment = _.filter(Views.Data, (data:any):boolean => { return (data.Name == CurrentPatient.Category);});
+        var depertment = _.filter(Views.Data, (data:any):boolean => {
+            return (data.Name == CurrentPatient.Category);
+        });
 
         $scope.contents = depertment[0].Pages[page];
 
@@ -275,8 +270,7 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
                 if (value.type == "check") { //checkboxの場合は、値がfalseならば表示しない方針。よって、modelの値がfalseyならばvalueはfalseとする。trueならば、"name-value"コンベンションに従う。
                     var name_and_value = value.name.split("-");//"name-value"コンベンション。
                     var value1 = name_and_value[1];
-                    if(!value.model)
-                    {
+                    if (!value.model) {
                         value1 = false;
                     }
                     $scope.Input[value.name] = {
@@ -308,10 +302,11 @@ controllers.controller('WriteController', ["$scope", "$stateParams", "$location"
     ($scope, $stateParams:any, $location:any, CurrentPatient:any, Patient:any, Global:any):void => {
         $scope.Input = CurrentPatient.Input;
         $scope.send = true;
-        var post:any = new Patient();
-        post.Input = CurrentPatient.Input;
-        post.Status = "Accepted";
-        post.$update({id: CurrentPatient.id}, (result:any, headers:any):void => {
+        var patient:any = new Patient();
+        patient.Input = CurrentPatient.Input;
+        patient.Sequential =  CurrentPatient.Sequential;
+        patient.Status = "Accepted";
+        patient.$update({id: CurrentPatient.id}, (result:any, headers:any):void => {
             CurrentPatient.Input = {};
             $location.path('/browseS');
             Global.socket.emit('server', {value: "1"});

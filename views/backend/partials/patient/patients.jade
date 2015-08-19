@@ -4,7 +4,7 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
-md-content(style="background-color: #A0A0FF;")
+md-content.background
     md-progress-circular.md-accent(ng-show="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
     md-card
         md-card-header
@@ -15,7 +15,7 @@ md-content(style="background-color: #A0A0FF;")
                 md-tooltip {{'add' | message}}
 
             md-button.md-fab(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'", style="background-color:#fc0c9c;")
-                ng-md-icon(icon="{{icon}}", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42",options='{"rotation": "none"}')
+                ng-md-icon(icon="{{icon}}", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42", options='{"rotation": "none"}')
                 md-tooltip {{'opentools' | message}}
 
     md-list
@@ -23,12 +23,13 @@ md-content(style="background-color: #A0A0FF;")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="start center", flex)
 
-                    div(flex="5",layout="row", layout-align="start center")
-                        div {{patient.Sequential}}
+                    div(flex="10", layout-align="start center")
+                        h4 {{patient.Sequential}}
 
-                    div(flex="15",layout="row", layout-align="start center")
-                        md-button.md-fab.md-accent(ng-show="patient.Input != null", ng-click="showPatientDescription(patient._id)", aria-label="Description")
-                            ng-md-icon(icon="assignment_ind", style="position:relative;top:6px;fill:#abcdef", size="42")
+                    div(flex="10",layout="row", layout-align="start center", ng-show="patient.Input == null")
+                    div(flex="10",layout="row", layout-align="start center", ng-show="patient.Input != null")
+                        md-button.md-fab.md-accent(ng-click="showPatientDescription(patient._id)", aria-label="Description")
+                            ng-md-icon(icon="assignment_ind", style="position:relative;top:6px;fill:#eeeeee", size="42")
                             md-tooltip Description...
 
                     div(layout="column", flex="20") {{patient.Category}}

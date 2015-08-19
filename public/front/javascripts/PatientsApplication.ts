@@ -1,12 +1,8 @@
 /**
- PatientApplication.js
-
+ PatientApplication.ts
  Copyright (c) 2015 7ThCode.
-
  This software is released under the MIT License.
-
  http://opensource.org/licenses/mit-license.php
-
  */
 
 ///<reference path="../../../../DefinitelyTyped/lib.d.ts"/>
@@ -17,8 +13,19 @@
 
 'use strict';
 
-var app:angular.IModule = angular.module('PatientsApplication', ['ui.router', 'PatientsControllers', 'TopControllers']);
-
+var app:angular.IModule = angular.module('PatientsApplication', ['ui.router', 'PatientsControllers', 'TopControllers', 'pascalprecht.translate']);
+/*
+app.config(['$translateProvider', function($translateProvider) {
+    $translateProvider.useStaticFilesLoader({
+        prefix: 'assets/i18n/locale-',
+        suffix: '.json'
+    });
+    $translateProvider.preferredLanguage('ja');
+    $translateProvider.fallbackLanguage('en');
+    $translateProvider.useMissingTranslationHandlerLog();
+    $translateProvider.useLocalStorage();
+}]);
+*/
 app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRouterProvider:any):void => {
     $stateProvider
 
@@ -34,8 +41,8 @@ app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRou
                 var page = $stateParams.page;
 
                 return "/front/partials/browse";
-           //     return "/front/partials/browse2/page2";
-            } ,
+                //     return "/front/partials/browse2/page2";
+            },
             controller: 'BrowseController'
         }).
 

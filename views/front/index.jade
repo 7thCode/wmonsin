@@ -32,7 +32,7 @@ html(lang="ja")
         meta(name="theme-color", content="#ffffff")
         link(rel="stylesheet", type="text/css", href="/bower_components/angular-material/angular-material.min.css")
         link(rel="stylesheet", type="text/css", href="stylesheets/style.css")
-    body(layout="column" ng-app="PatientsApplication",style="background-color: #A0A0FF;")
+    body.background(layout="column" ng-app="PatientsApplication")
         div(ui-view="")
 
 script(type="text/javascript", src='/bower_components/jquery/dist/jquery.min.js')
@@ -46,6 +46,13 @@ script(type="text/javascript", src="/bower_components/angular-material/angular-m
 script(type="text/javascript", src="/bower_components/angular-messages/angular-messages.min.js")
 script(type="text/javascript", src="/bower_components/angular-resource/angular-resource.min.js")
 script(type="text/javascript", src="/bower_components/angular-material-icons/angular-material-icons.min.js")
+
+script(type="text/javascript", src="/bower_components/angular-translate/angular-translate.min.js")
+script(type="text/javascript", src="/bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js")
+script(type="text/javascript", src="/bower_components/angular-translate-storage-local/angular-translate-storage-local.min.js")
+script(type="text/javascript", src="/bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js")
+script(type="text/javascript", src="/bower_components/angular-translate-handler-log/angular-translate-handler-log.min.js")
+
 
 script(type="text/javascript", src="/bower_components/lodash/lodash.min.js")
 script(type="text/javascript", src="/bower_components/fabric/dist/fabric.min.js")

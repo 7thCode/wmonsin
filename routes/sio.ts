@@ -1,11 +1,13 @@
 /**
- * Created by oda on 14/11/06.
+ sio.ts
+ Copyright (c) 2015 7ThCode.
+ This software is released under the MIT License.
+ http://opensource.org/licenses/mit-license.php
  */
 
 //// <reference path="../../DefinitelyTyped/lib.d.ts"/>
 /// <reference path="../../DefinitelyTyped/node/node.d.ts" />
 /// <reference path="../../DefinitelyTyped/express/express.d.ts" />
-/// <reference path="../../DefinitelyTyped/mongoose/mongoose.d.ts" />
 
 'use strict';
 
@@ -21,7 +23,7 @@ function sio(server) {
     sio.sockets.on('connection', function (socket) {
         socket.on('server', function (data) {
             socket.broadcast.emit('client', {
-                value : data.value
+                value: data.value
             });
         });
 

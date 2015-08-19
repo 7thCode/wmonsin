@@ -1,6 +1,14 @@
+/**
+ tohtml.ts
+ Copyright (c) 2015 7ThCode.
+ This software is released under the MIT License.
+ http://opensource.org/licenses/mit-license.php
+ */
+
 /// <reference path="../../DefinitelyTyped/lib.d.ts"/>
 /// <reference path="../../DefinitelyTyped/node/node.d.ts" />
 /// <reference path="../../DefinitelyTyped/express/express.d.ts" />
+
 var _ = require('lodash');
 
 class ElementData {

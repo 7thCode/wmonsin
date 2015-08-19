@@ -4,7 +4,7 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
-md-content(style="background-color: #A0A0FF;")
+md-content.background
     md-progress-circular.md-accent(ng-show="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
     md-card
         md-card-header
@@ -23,7 +23,7 @@ md-content(style="background-color: #A0A0FF;")
                         ng-md-icon(icon="person", style="{{account.type | rgb}}", size="50")
 
                     div(flex="10", ng-if="type != 'Viewer'")
-                        md-button.md-fab.md-primary(ng-click="showAccountUpdateDialog(account._id)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                        md-button.md-fab.md-primary(ng-click="showAccountUpdateDialog(account._id)", aria-label="Update", layout-align="center center",style="background-color:#4527A0;z-index:1;")
                             ng-md-icon(icon="person", style="position:relative;top:4px;left:1px;{{account.type | rgb}}", size="42")
                             md-tooltip 更新...
 

@@ -14,34 +14,30 @@ md-dialog(flex)
                     ng-md-icon(icon="clear", style="position:relative;top:4px;fill:#ffffff", size="46")
                     md-tooltip キャンセル
 
-    md-content
-        md-card
-            md-card-content
-                ng-form(name="validate")
-                  div(layout="column")
-                    div(layout="row", layout-align="start center")
-                        ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
+    md-dialog-content
+        ng-form(name="validate")
+            div(layout="column")
+                div(layout="row", layout-align="start center")
 
-                        md-input-container(flex)
-                            label 質問
-                            input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter title', md-maxlength="30", required)
-                            div(ng-messages="validate.name.$error")
-                                div(ng-message="required") {{'required' | message}}
-                                div(ng-message="md-maxlength") {{'maxlength' | message}}
+                    md-input-container(flex)
+                        label 質問
+                        input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter title', md-maxlength="30", required)
+                        div(ng-messages="validate.name.$error")
+                            div(ng-message="required") {{'required' | message}}
+                            div(ng-message="md-maxlength") {{'maxlength' | message}}
 
-                        md-input-container(flex)
-                            label 答え
-                            input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter title', md-maxlength="30", required)
-                            div(ng-messages="validate.label.$error")
-                                div(ng-message="required") {{'required' | message}}
-                                div(ng-message="md-maxlength") {{'maxlength' | message}}
+                    md-input-container(flex)
+                        label 答え
+                        input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter title', md-maxlength="30", required)
+                        div(ng-messages="validate.label.$error")
+                            div(ng-message="required") {{'required' | message}}
+                            div(ng-message="md-maxlength") {{'maxlength' | message}}
 
+                div
+                    md-chips(ng-model="tags", readonly="false")
+                        md-chip-template
+                            strong {{$chip}}
 
-                    div
-                            md-chips(ng-model="tags", readonly="false")
-                                md-chip-template
-                                    strong {{$chip}}
-
-
-                    div(layout="row", layout-align="space-around center")
-                        md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid && tags.length > 0", aria-label="") 登録
+                md-divider
+                div.md-actions(layout="row", layout-align="space-around center")
+                    md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid && tags.length > 0", aria-label="") 登録

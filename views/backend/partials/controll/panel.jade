@@ -4,7 +4,7 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
-md-content(style="background-color: #A0A0FF;")
+md-content.background
 
     md-card
         md-card-content
@@ -24,6 +24,16 @@ md-content(style="background-color: #A0A0FF;")
             md-input-container
                 label Connection
                 input(ng-model="config.connection",data-ng-required="true", name="connection", placeholder='DB Connecton Uri', type="text", md-maxlength="100")
+
+        md-card-content
+            md-input-container
+                label root user name
+                input(ng-model="config.user",data-ng-required="true", name="user", placeholder='Key', type="text", md-maxlength="50")
+
+        md-card-content
+            md-input-container
+                label root user password
+                input(ng-model="config.password",data-ng-required="true", name="password", placeholder='Key', type="text", md-maxlength="50")
 
         md-card-content
             md-input-container

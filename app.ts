@@ -1,12 +1,8 @@
 /**
- app.js
-
+ app.ts
  Copyright (c) 2015 7ThCode.
-
  This software is released under the MIT License.
-
  http://opensource.org/licenses/mit-license.php
-
  */
 
 /// <reference path="../DefinitelyTyped/lib.d.ts"/>
@@ -71,8 +67,8 @@ app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use(function (req:any, res:any, next:any):void {
-  //  var error = new Error('Not Found');
-  //  error.status = 404;
+    //  var error = new Error('Not Found');
+    //  error.status = 404;
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Pragma", "no-cache");
     res.header("Cache-Control", "no-cache");
@@ -84,7 +80,7 @@ app.use(function (req:any, res:any, next:any):void {
 // production error handler
 // no stacktraces leaked to user
 //app.use(function (err:any, req:any, res:any, next:any):void {
-    //   res.send(JSON.stringify(new Result(2, "create", "auth error")));
+//   res.send(JSON.stringify(new Result(2, "create", "auth error")));
 //});
 
 module.exports = app;

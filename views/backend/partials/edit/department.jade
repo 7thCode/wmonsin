@@ -4,16 +4,16 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
-md-content(style="background-color: #A0A0FF;")
+md-content.background
     md-progress-circular.md-accent(ng-show="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
     md-card
         md-card-header
             h1.md-headline ページリスト
             md-button.md-fab(ng-click="DepartmentUpdate()", ng-if="type != 'Viewer'", aria-label="",style="background-color:#FF1744;z-index:1;")
-                ng-md-icon(icon="save", aria-label="科目保存", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
+                ng-md-icon.department-button1-icon(icon="save", aria-label="科目保存", size="42")
                 md-tooltip 保存
             md-button.md-fab(ng-click="showPageCreateDialog()", ng-if="type != 'Viewer'", aria-label="",style="background-color:#FFB300;z-index:1;")
-                ng-md-icon(icon="note_add", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
+                ng-md-icon.department-button1-icon(icon="note_add", aria-label="問診票科目", size="42")
                 md-tooltip 追加...
     md-list
         md-list-item(ng-repeat="Page in Pages", ng-show="account.type != 'Admin'")
@@ -23,21 +23,21 @@ md-content(style="background-color: #A0A0FF;")
 
                     div(flex="10", ng-show="type != 'Viewer'")
                         md-button.md-fab(ng-click="up($index)", aria-label="Up", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#64ffda;z-index:1;")
-                            ng-md-icon(layout-align="center center", icon="keyboard_arrow_up", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
+                            ng-md-icon.department-button2-icon(layout-align="center center", icon="keyboard_arrow_up", size="42")
                             md-tooltip Up
 
                     div(flex="10", ng-show="type != 'Viewer'")
                         md-button.md-fab(ng-click="down($index)", aria-label="Down", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#69F0AE;z-index:1;")
-                            ng-md-icon(layout-align="center center", icon="keyboard_arrow_down", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
+                            ng-md-icon.department-button2-icon(layout-align="center center", icon="keyboard_arrow_down", size="42")
                             md-tooltip Down
 
                     div(flex="10", ng-show="type != 'Viewer'")
-                        md-button.md-fab.md-primary(ng-click="PageUpdate($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                            ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
+                        md-button.md-fab(ng-click="PageUpdate($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
+                            ng-md-icon.department-button1-icon(layout-align="center center", icon="event_note", size="42")
                             md-tooltip 更新...
 
                     div(flex="10", ng-show="type != 'Viewer'")
-                        md-button.md-fab.md-warn(ng-click="showPageDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
-                            ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
+                        md-button.md-fab(ng-click="showPageDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
+                            ng-md-icon.department-button1-icon(layout-align="center center", icon="remove", size="42")
                             md-tooltip 削除
 
