@@ -192,6 +192,47 @@ function List(resource:any, query:any, success:(value:any) => void):void {
     });
 }
 
+
+
+function fileUpload($scope:any, $timeout:any, Upload:any, fileName:string):void {
+
+    $scope.$watch(fileName, (files:any):void => {
+        $scope.formUpload = false;
+        if (files != null) {
+            for (var i:number = 0; i < files.length; i++) {
+                var d:any = $scope.files;
+                ((file):void => {
+                    upload(file);
+                })(files[i]);
+            }
+        }
+    });
+
+    var upload = (file:any):void  => {
+
+        file.upload = Upload.upload({
+            url: '/upload',
+            method: 'POST',
+            headers: {
+                'my-header': 'my-header-value',
+            },
+            file: file,
+            fileFormDataName: 'myFile'
+        });
+
+        file.upload.then((response:any):void => {
+                $timeout(():void => {
+                    file.result = response.data;
+                });
+            },
+            (response:any):void => {
+                if (response.status > 0) {
+                }
+            });
+    };
+}
+
+
 /*! Controllers  */
 
 controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
@@ -1686,6 +1727,7 @@ controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog',
         $scope.answer = (answer:any):void => {
             $mdDialog.hide($scope);
         };
+
 
     }]);
 

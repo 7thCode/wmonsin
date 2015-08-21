@@ -8,38 +8,38 @@ md-dialog(flex)
     md-toolbar
         .md-toolbar-tools(layout="row", layout-align="end center")
             h3(flex)
-                span(flex) {{'accept' | message}}
+                span(flex, ng-bind="'accept' | message")
             div
                 md-button.md-fab.md-warn(ng-click='cancel()', aria-label="Cancel", style="position:relative;top:20px;")
-                    ng-md-icon(icon="clear", style="position:relative;top:4px;fill:#ffffff", size="46")
+                    ng-md-icon.iconfill(icon="clear", style="position:relative;top:4px;", size="46")
                     md-tooltip キャンセル
 
     md-dialog-content
-        div {{items.count}}
+        div(ng-bind="items.count")
         ng-form(name="validate")
             div(layout="row", layout-align="start center")
-                ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
+                ng-md-icon.iconfill(icon="account_circle", size="46")
                 md-input-container(flex)
-                    label {{'name' | message }}
+                    label(ng-bind="'name' | message")
                     input(ng-model="items.name", data-ng-required="true", name="username", placeholder='Enter Name', md-maxlength="30", required)
                     div(ng-messages="validate.username.$error")
-                        div(ng-message="required") {{'required' | message}}
-                        div(ng-message="md-maxlength") {{'maxlength' | message}}
+                        div(ng-message="required", ng-bind="'required' | message")
+                        div(ng-message="md-maxlength", ng-bind="'maxlength' | message")
 
             div(layout="row", layout-align="start center")
-                ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
+                ng-md-icon.iconfill(icon="account_circle", size="46")
                 md-input-container(flex)
-                    label {{'kana' | message }}
+                    label(ng-bind="'kana' | message")
                     input(ng-model="items.kana", ng-pattern="/^[ぁ-んァ-ン]+$/", data-ng-required="true", name="kana", placeholder='Enter Kana', md-maxlength="30", required)
                     div(ng-messages="validate.kana.$error")
-                        div(ng-message="required") {{'required' | message}}
-                        div(ng-message="md-maxlength") {{'maxlength' | message}}
-                        div(ng-message="pattern") {{'notkana' | message}}
+                        div(ng-message="required", ng-bind="'required' | message")
+                        div(ng-message="md-maxlength", ng-bind="'maxlength' | message")
+                        div(ng-message="pattern", ng-bind="'notkana' | message")
 
             md-card-content(layout="row", layout-align="start center", flex)
                 md-select(placeholder="診療科", ng-model="items.category", required)
-                    md-option(ng-repeat="category in categories", value="{{category}}") {{category}}
+                    md-option(ng-repeat="category in categories", value="{{category}}", ng-bind="category")
 
             md-divider
             div.md-actions(layout="row" layout-align="space-around center")
-                md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="Save") {{'accept' | message}}
+                md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="Save", ng-bind="'accept' | message")

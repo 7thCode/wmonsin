@@ -12,11 +12,11 @@ md-content.background
 
         md-card-content(layout="row")
             md-button.md-fab.md-accent(ng-click='showNotificationDialog()', aria-label="", ng-if="type == 'Admin' || type == 'Editor'")
-                ng-md-icon(icon="save", style="fill:#abcdef", size="46", id="icon")
+                ng-md-icon.iconfill(icon="save", size="46", id="icon")
                 md-tooltip Save
 
             md-button.md-fab.md-warn(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'")
-                ng-md-icon(icon="{{icon}}", style="fill:#ffffff", size="46", options='{"rotation": "none"}')
+                ng-md-icon.iconfill(icon="{{icon}}", size="46", options='{"rotation": "none"}')
                 md-tooltip Open Tools...
 
     md-card

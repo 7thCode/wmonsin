@@ -44,8 +44,8 @@ body(ng-app="TopApplication", layout-fill, style="background-color: #81D4FA;")
             h3(flex)
                 span TOP
             div(layout="row")
-                md-button.md-raised.md-primary(ng-href='/front/#/browseS', aria-label="") {{'front' | message}}
-                md-button.md-raised.md-primary(ng-href='/backend/#/start', aria-label="") {{'stuff' | message}}
+                md-button.md-raised.md-primary(ng-href='/front/#/browseS', aria-label="", ng-bind="'front' | message")
+                md-button.md-raised.md-primary(ng-href='/backend/#/start', aria-label="", ng-bind="'stuff' | message")
     div(ui-view="")
 script(type="text/javascript", src="/bower_components/hammerjs/hammer.min.js")
 script(type="text/javascript", src="/bower_components/angular/angular.min.js")

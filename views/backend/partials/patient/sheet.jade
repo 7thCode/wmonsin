@@ -12,5 +12,5 @@ md-bottom-sheet.md-grid
     md-list
         md-item(ng-repeat="item in items")
             md-button(ng-click="ItemClick($index)", class="md-grid-item-content")
-                ng-md-icon(icon="{{item.icon}}", style="fill:#abcdef", size="46")
-                .md-grid-text {{ item.name }}
+                ng-md-icon.iconfill(icon="{{item.icon}}", size="46")
+                .md-grid-text(ng-bind="item.name")

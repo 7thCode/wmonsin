@@ -4,7 +4,7 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
-- var debug = true;
+- var debug = false;
 doctype html
 html(lang="ja")
     head
@@ -39,37 +39,37 @@ html(lang="ja")
                 h3.md-display-1(flex="50", ng-bind="username + '-' + type")
 
                 div(flex="10")
-                    md-button.md-fab.menu-button(class="lock-size", ng-click="goTop()", aria-label="", style="background-color:#26969a;z-index:10;")
+                    md-button.md-fab.menu-button.lock-size(ng-click="goTop()", aria-label="", style="background-color:#26969a;z-index:10;")
                         ng-md-icon(icon="home", aria-label="Top", style="position:relative;top:5px;fill:#a0ffff", size="42")
                         md-tooltip(ng-bind="'top' | message")
 
                 div(flex="10", ng-show="type == 'Admin'")
-                    md-button.md-fab.menu-button(class="lock-size", ng-click="goConfig()", aria-label="", style="background-color:#EC407A;z-index:10;")
+                    md-button.md-fab.menu-button.lock-size(ng-click="goConfig()", aria-label="", style="background-color:#EC407A;z-index:10;")
                         ng-md-icon(icon="settings", aria-label="Config", style="position:relative;top:5px;fill:#F8BBD0", size="42")
                         md-tooltip(ng-bind="'config' | message")
 
                 div(flex="10", ng-show="type != 'Viewer'")
-                    md-button.md-fab.menu-button(class="lock-size", ng-click="goEdit()", aria-label="", style="background-color:#B2EBF2;z-index:10;")
+                    md-button.md-fab.menu-button.lock-size(ng-click="goEdit()", aria-label="", style="background-color:#B2EBF2;z-index:10;")
                         ng-md-icon(icon="edit", aria-label="Edit", style="position:relative;top:5px;fill:#0097A7", size="42")
                         md-tooltip(ng-bind="'config' | message")
 
                 div(flex="10", ng-show="mode == 'Patient'")
-                    md-button.md-fab.menu-button(class="lock-size", ng-click="goAccount()", aria-label="", style="background-color:#B3E5FC;z-index:10;")
+                    md-button.md-fab.menu-button.lock-size(ng-click="goAccount()", aria-label="", style="background-color:#B3E5FC;z-index:10;")
                         ng-md-icon(icon="face", aria-label="Account", style="position:relative;top:6px;fill:#039BE5", size="42")
                         md-tooltip(ng-bind="'stuff' | message")
 
                 div(flex="10", ng-show="mode == 'Account'")
-                    md-button.md-fab.menu-button(class="lock-size", ng-click="goPatient()", aria-label="", style="background-color:#039BE5;z-index:10;")
+                    md-button.md-fab.menu-button.lock-size(ng-click="goPatient()", aria-label="", style="background-color:#039BE5;z-index:10;")
                         ng-md-icon(icon="perm_identity", aria-label="Patients", style="position:relative;top:6px;fill:#B3E5FC", size="42")
                         md-tooltip(ng-bind="'patient' | message")
 
                 div(flex, ng-show="type == ''")
-                    md-button.md-fab.menu-button(ng-click="showLoginDialog()", aria-label="", style="background-color:#FFCDD2;z-index:10;")
+                    md-button.md-fab.menu-button.lock-size(ng-click="showLoginDialog()", aria-label="", style="background-color:#FFCDD2;z-index:10;")
                         ng-md-icon(icon="check_box_outline_blank", aria-label="Account", style="position:relative;top:5px;fill:#D50000", size="42")
                         md-tooltip(ng-bind="'login' | message")
 
                 div(flex, ng-show="type != ''")
-                    md-button.md-fab.menu-button(ng-click="Logout()", aria-label="", style="background-color:#D50000;z-index:10;")
+                    md-button.md-fab.menu-button.lock-size(ng-click="Logout()", aria-label="", style="background-color:#D50000;z-index:10;")
                         ng-md-icon(icon="check_box", aria-label="Account", style="position:relative;top:5px;fill:#FFCDD2", size="42")
                         md-tooltip(ng-bind="'logout' | message")
 
@@ -93,8 +93,8 @@ script(type="text/javascript", src="/bower_components/angular-translate-storage-
 script(type="text/javascript", src="/bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js")
 script(type="text/javascript", src="/bower_components/angular-translate-handler-log/angular-translate-handler-log.min.js")
 
-script(type="text/javascript", src="javascripts/canvas2image/canvas2image.js")
-script(type="text/javascript", src="javascripts/svg-morpheus/svg-morpheus.js")
+script(type="text/javascript", src="/javascripts/canvas2image/canvas2image.js")
+script(type="text/javascript", src="/jaascripts/svg-morpheus/svg-morpheus.js")
 
 script(type="text/javascript", src="/bower_components/lodash/lodash.min.js")
 script(type="text/javascript", src="/bower_components/fabric/dist/fabric.min.js")

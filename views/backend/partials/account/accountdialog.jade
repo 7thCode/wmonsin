@@ -11,28 +11,28 @@ md-dialog(flex)
                 span(flex) 更新
             div
                 md-button.md-fab.md-warn(ng-click='cancel()', aria-label="Cancel", style="position:relative;top:20px;", ng-mouseenter="onEnter()", ng-mouseleave="onLeave()")
-                    ng-md-icon(icon="clear", style="position:relative;top:4px;fill:#ffffff", size="42")
+                    ng-md-icon.iconfill(icon="clear", style="position:relative;top:4px;", size="42")
                     md-tooltip キャンセル
 
     md-dialog-content
         ng-form(name="validate")
             div(layout="row", layout-align="start center")
-                ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
+                ng-md-icon.iconfill(icon="account_circle", size="46")
                 md-input-container(flex)
-                    label {{ 'name' | message }}
+                    label(ng-bind="'name' | message")
                     input(ng-model="items.username", data-ng-required="true", name="username", placeholder='Enter Username', md-maxlength="30", required)
                     div(ng-messages="validate.username.$error")
-                        div(ng-message="required") {{'required' | message}}
-                        div(ng-message="md-maxlength") {{'maxlength' | message}}
+                        div(ng-message="required", ng-bind="'required' | message")
+                        div(ng-message="md-maxlength", ng-bind="'maxlength' | message")
 
             div(layout="row", layout-align="start center")
-                ng-md-icon(icon="vpn_key", style="fill:#ffcdef",size="46")
+                ng-md-icon.iconfill(icon="vpn_key", size="46")
                 md-input-container(flex)
-                    label {{'password' | message }}
+                    label(ng-bind="'password' | message")
                     input(ng-model="items.password", data-ng-required="true", name="password", placeholder='Enter New Password', md-maxlength="30", required)
                     div(ng-messages="validate.password.$error")
-                        div(ng-message="required") {{'required' | message}}
-                        div(ng-message="md-maxlength") {{'maxlength' | message}}
+                        div(ng-message="required", ng-bind="'required' | message")
+                        div(ng-message="md-maxlength", ng-bind="'maxlength' | message")
 
             md-radio-group(ng-model="items.type", aria-label="")
                 md-radio-button(value="Editor", aria-label="Editor") ドクター(編集権限)
@@ -40,5 +40,5 @@ md-dialog(flex)
 
             md-divider
             div.md-actions(layout="row", layout-align="space-around center")
-                md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.username.$invalid", aria-label="Save") {{'save' | message}}
-                md-button.md-raised.md-warn(ng-click='changePassword()', ng-disabled="validate.password.$invalid", aria-label="Password") {{'changepass' | message}}
+                md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.username.$invalid", aria-label="Save", ng-bind="'save' | message")
+                md-button.md-raised.md-warn(ng-click='changePassword()', ng-disabled="validate.password.$invalid", aria-label="Password", ng-bind="'changepass' | message")

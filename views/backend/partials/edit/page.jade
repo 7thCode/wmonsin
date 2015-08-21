@@ -4,6 +4,8 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
+- var content = {headline:"ページタイトル", save:"保存", add:"追加...", update:"更新...", delete:"削除", up:"Up", down:"Down" }
+
 md-content.background
     md-progress-circular.md-accent(ng-show="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
     md-card
@@ -11,7 +13,7 @@ md-content.background
             md-card-header
 
                 md-input-container(flex)
-                    label ページタイトル
+                    label #{content.headline}
                     input(ng-model="Page.headline", data-ng-required="true", name="title", placeholder='Enter Username', md-maxlength="30", required)
                     div(ng-messages="validate.title.$error")
                         div(ng-message="required") {{'required' | message}}
@@ -21,31 +23,31 @@ md-content.background
                     md-fab-speed-dial.md-fling(md-open="false", md-direction="right")
                         md-fab-trigger
                             md-button.md-fab.md-warn(aria-label="menu")
-                                ng-md-icon(icon="menu", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
+                                ng-md-icon.iconfill(icon="menu", aria-label="問診票科目", style="position:relative;top:6px;left:1px;", size="42")
                         md-fab-actions
 
                             md-button.md-fab(aria-label="",ng-click="showTextCreateDialog()", style="background-color:#ffffff;z-index:10;")
-                                ng-md-icon(icon="edit", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
+                                ng-md-icon(icon="edit", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#90A4AE", size="42")
                                 md-tooltip テキスト
 
                             md-button.md-fab(aria-label="",ng-click="showCheckCreateDialog()", style="background-color:#eeeeff;z-index:10;")
-                                ng-md-icon(icon="check_circle", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#9abcde", size="42")
+                                ng-md-icon(icon="check_circle", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#78909C", size="42")
                                 md-tooltip チェックボックス
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showSelectCreateDialog()", style="background-color:#ddddff;z-index:10;")
-                                ng-md-icon(icon="list", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#789abc", size="42")
+                                ng-md-icon(icon="list", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#607D8B", size="42")
                                 md-tooltip ラジオ
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showNumericCreateDialog()", style="background-color:#ccccff;z-index:10;")
-                                ng-md-icon(icon="dialpad", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#56789a", size="42")
+                                ng-md-icon(icon="dialpad", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#546E7A", size="42")
                                 md-tooltip 数値
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showButtonCreateDialog()", style="background-color:#bbbbff;z-index:10;")
-                                ng-md-icon(icon="crop_5_4", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#345678", size="42")
+                                ng-md-icon(icon="crop_5_4", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#455A64", size="42")
                                 md-tooltip ボタン
 
                             md-button.md-fab.md-primary(aria-label="",ng-click="showPictureCreateDialog()", style="background-color:#bbbbff;z-index:10;", ng-show="Page.picture.length <= 0")
-                                ng-md-icon(icon="picture_in_picture", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#345678", size="42")
+                                ng-md-icon(icon="picture_in_picture", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#37474F", size="42")
                                 md-tooltip シェーマ
 
     md-list
@@ -53,68 +55,68 @@ md-content.background
             md-card(layout="row", flex)
 
                 md-card-content(layout="row", layout-align="center center", flex)
-                    h3.md-title(flex="30") {{item.type}}
-                    h4(flex="30") {{item.name}}
+                    h3.md-title(flex) {{item.type}}
+                    h4(flex) {{item.name}}
 
                     div(layout="row", ng-if="type != 'Viewer'")
                         md-button.md-fab(ng-click="up($index)", aria-label="Up", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#64ffda;z-index:1;")
-                            ng-md-icon(layout-align="center center", icon="keyboard_arrow_up", style="position:relative;top:10px;left:1px;fill:#eeeeee", size="42")
-                            md-tooltip Up
+                            ng-md-icon.iconfill(layout-align="center center", icon="keyboard_arrow_up", style="position:relative;top:10px;left:1px;", size="42")
+                            md-tooltip #{content.up}
 
                     div(layout="row", ng-if="type != 'Viewer'")
                         md-button.md-fab(ng-click="down($index)", aria-label="Down", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#69F0AE;z-index:1;")
-                            ng-md-icon(layout-align="center center", icon="keyboard_arrow_down", style="position:relative;top:10px;left:1px;fill:#eeeeee", size="42")
-                            md-tooltip Down
+                            ng-md-icon.iconfill(layout-align="center center", icon="keyboard_arrow_down", style="position:relative;top:10px;left:1px;", size="42")
+                            md-tooltip #{content.down}
 
                     div(layout="row", ng-if="item.type == 'text'")
                         div(flex, ng-if="type != 'Viewer'")
                             md-button.md-fab(ng-click="showCheckUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 更新...
+                                ng-md-icon.iconfill(icon="event_note",style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.update}
                         div(flex)
                             md-button.md-fab(ng-click="showCheckDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 削除
+                                ng-md-icon.iconfill(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.delete}
 
                     div(layout="row", ng-if="item.type == 'check'")
                         div(flex, ng-if="type != 'Viewer'")
                             md-button.md-fab(ng-click="showCheckUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 更新...
+                                ng-md-icon.iconfill(icon="event_note",style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.update}
                         div(flex)
                             md-button.md-fab(ng-click="showCheckDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 削除
+                                ng-md-icon.iconfill(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.delete}
 
                     div(layout="row", ng-if="item.type == 'select'")
                         div(flex, ng-if="type != 'Viewer'")
                             md-button.md-fab(ng-click="showSelectUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 更新...
+                                ng-md-icon.iconfill(icon="event_note",style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.update}
                         div(flex)
                             md-button.md-fab(ng-click="showSelectDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 削除
+                                ng-md-icon.iconfill(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.delete}
 
                     div(layout="row", ng-if="item.type == 'numeric'")
                         div(flex, ng-if="type != 'Viewer'")
                             md-button.md-fab(ng-click="showNumericUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 更新...
+                                ng-md-icon.iconfill(icon="event_note",style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.update}
                         div(flex)
                             md-button.md-fab(ng-click="showNumericDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 削除
+                                ng-md-icon.iconfill(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.delete}
 
                     div(layout="row", ng-if="item.type == 'button'")
                         div(flex, ng-if="type != 'Viewer'")
                             md-button.md-fab(ng-click="showButtonUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 更新...
+                                ng-md-icon.iconfill(icon="event_note",style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.update}
                         div(flex)
                             md-button.md-fab(ng-click="showButtonDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 削除
+                                ng-md-icon.iconfill(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.delete}
 
     md-list
         md-list-item(ng-repeat="picture in Page.picture", ng-show="account.type != 'Admin'")
@@ -125,9 +127,9 @@ md-content.background
                     div(layout="row", ng-if="picture.type == 'picture'")
                         div(flex, ng-if="type != 'Viewer'")
                             md-button.md-fab(ng-click="showPictureUpdateDialog($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                                ng-md-icon(icon="event_note",style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 更新...
+                                ng-md-icon.iconfill(icon="event_note",style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.update}
                         div(flex)
                             md-button.md-fab(ng-click="showPictureDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;fill:#eeeeee", size="42")
-                                md-tooltip 削除
+                                ng-md-icon.iconfill(layout-align="center center", icon="remove", style="position:relative;top:6px;left:1px;", size="42")
+                                md-tooltip #{content.delete}

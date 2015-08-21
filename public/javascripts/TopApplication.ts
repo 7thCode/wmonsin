@@ -15,7 +15,7 @@
 ///<reference path="../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
 ///<reference path="../../../DefinitelyTyped/lodash/lodash.d.ts" />
 
-var app:any = angular.module('TopApplication', ['ui.router', 'TopControllers','pascalprecht.translate']);
+var app:any = angular.module('TopApplication', ['ui.router', 'TopControllers']);
 /*
 app.config(['$translateProvider', function($translateProvider) {
     $translateProvider.useStaticFilesLoader({

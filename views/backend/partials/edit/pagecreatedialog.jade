@@ -11,13 +11,13 @@ md-dialog(flex)
                 span(flex) 問診票ページ登録
             div
                 md-button.md-fab.md-warn(ng-click='cancel()', aria-label="Cancel", style="position:relative;top:20px;")
-                    ng-md-icon(icon="clear", style="position:relative;top:4px;fill:#ffffff", size="46")
+                    ng-md-icon.iconfill(icon="clear", style="position:relative;top:4px;", size="46")
                     md-tooltip キャンセル
 
     md-dialog-content
         ng-form(name="validate")
             div(layout="row", layout-align="start center")
-                ng-md-icon(icon="account_circle", style="fill:#abcdef", size="46")
+                ng-md-icon.iconfill(icon="account_circle", size="46")
                 md-input-container(flex)
                     label ページタイトル
                     input(ng-model="items.title", data-ng-required="true", name="title", placeholder='Enter title', md-maxlength="30", required)

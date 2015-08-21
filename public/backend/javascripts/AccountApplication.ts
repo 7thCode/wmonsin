@@ -97,8 +97,8 @@ app.config(['$mdThemingProvider', ($mdThemingProvider:any):void => {
         .warnPalette('red');
 }]);
 
-app.filter('rgb', ():Function => {
-        return (input:string):(input:string) => string  => {
+app.filter('rgb', ():(input:string) => string  => {
+        return (input:string):string  => {
             var result = "fill:#000000";
 
             switch (input) {

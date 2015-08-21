@@ -1,4 +1,15 @@
 doctype html
+
+-var patient = {
+-    Information:{
+-       time :"",
+-       kana:"",
+-       name :"",
+-       insurance:""
+-    },
+-    Input: []
+-   };
+
 html(lang="ja")
     head
         meta(charset="utf-8")
@@ -8,15 +19,15 @@ html(lang="ja")
         script(type="text/javascript", src="/bower_components/lodash/lodash.min.js")
         script(type="text/javascript", src="/bower_components/fabric/dist/fabric.min.js")
         script.
-            $(window).load(function () {
 
+            $(window).load(function () {
                 var geho = "";
 
                 var canvas = new fabric.Canvas('schema');
                 canvas.loadFromJSON(geho, canvas.renderAll.bind(canvas), function (o, object) {
                 });
 
-            });
+                });
 
     body
         div
