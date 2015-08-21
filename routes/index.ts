@@ -27,6 +27,8 @@ var ToHtml = require('./tohtml');
 var csurf = require('csurf');
 var crypto = require("crypto");
 
+var passport = require('passport');
+
 var router = express.Router();
 
 var fs = require('fs');
@@ -64,7 +66,8 @@ User(
         account.save((saveerror:any):void => {
         });
     },
-    (message:string, error:any):void => {}
+    (message:string, error:any):void => {
+    }
 );
 
 View.count({}, (counterror:any, count:number):void => {
@@ -92,6 +95,13 @@ function Cipher(name:any, pass:any):any {
     var cipher:any = crypto.createCipher('aes192', pass);
     cipher.update(name, 'utf8', 'hex');
     return cipher.final('hex');
+}
+
+function DeCipher(name:any, password:any):any {
+    var decipher:any = crypto.createDecipher('aes192', password);
+    var decrypted = decipher.update(name, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
 }
 
 function Authenticate(key:any, success:any, error:any):void {
@@ -146,7 +156,7 @@ function BasicHeader(response:any, session:any):any {
 }
 
 router.get('/', (req:any, res:any):void => {
-    res.render('index');
+    res.render('index', {debug: config.debug});
 });
 
 router.get('/document/:id', (req:any, res:any):void => {
@@ -169,9 +179,8 @@ router.get('/partials/logo', (req:any, res:any, next:Function):void => {
     res.render('partials/logo');
 });
 
-
 router.get('/backend/', (req:any, res:any):void => {
-    res.render('backend/index');
+    res.render('backend/index', {debug: config.debug});
 });
 
 router.get('/backend/partials/patient/start', (req:any, res:any):void => {
@@ -350,7 +359,7 @@ router.get('/backend/partials/error', (req:any, res:any):void => {
 
 
 router.get('/front/', (req:any, res:any):void => {
-    res.render('front/index');
+    res.render('front/index', {debug: config.debug});
 });
 
 router.get('/front/partials/browseS', (req:any, res:any):void => {
@@ -685,6 +694,47 @@ router.post('/account/create', (req:any, res:any):void => {
     }
 });
 
+
+
+
+
+
+
+router.post('/account/createpassport', (request:any, response:any):void => {
+    try {
+        var username = request.body.username;
+        var password = request.body.password;
+        var type = request.body.type;
+        if (request.session) {
+         //   Authenticate(request.session.key, (type:any):void => {
+                if (type != "Viewer") {
+                    User(request.body.username.toLowerCase(), ():void => {
+                        Account.register(new Account({username: username, type:type}),
+                            password,
+                            function (error, account) {
+                                if (!error) {
+                                    response.send(JSON.stringify(new result(0, "account create ", account)));
+                                }
+                            });
+                    }, (message:string, error:any):void => {
+                        response.send(JSON.stringify(new result(3, "account create " + message, error)));
+                    })
+                }
+         //   }, (message:string, error:any):void => {
+         //       response.send(JSON.stringify(new result(2, "account create " + message, error)));
+         //   });
+        }
+    } catch (e) {
+        response.send(JSON.stringify(new result(10000, "account logout " + e.message, e)));
+    }
+});
+
+
+
+
+
+
+
 /*! logout */
 router.post('/account/logout', (req:any, res:any):void => {
     try {
@@ -723,6 +773,40 @@ router.post('/account/login', (req:any, res:any):void => {
         res.send(JSON.stringify(new result(10000, "account login fail." + e.message, e)));
     }
 });
+
+
+
+
+
+
+
+
+router.post('/account/loginpassport', function (request, response) {
+    passport.authenticate('local', function (error, user, info) {
+        if (!error) {
+            if (user) {
+                request.login(user, function (error) {
+                    if (!error) {
+                          response.send(JSON.stringify(new result(0, "login ok ", {})));
+                    } else {
+                        response.send(JSON.stringify(new result(0, "login ng ", {})));
+                    }
+                });
+            } else {
+                response.send(JSON.stringify(new result(0, "login ng ", {})));
+            }
+        } else {
+            response.send(JSON.stringify(new result(0, "login ng ", {})));
+        }
+    })(request, response);
+});
+
+
+
+
+
+
+
 
 /*! get */
 router.get('/account/:id', (req:any, res:any):void => {

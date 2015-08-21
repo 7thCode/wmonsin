@@ -1,5 +1,8 @@
 var gulp = require('gulp');
 
+var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
+
 gulp.task('copy', function () {
     return gulp.src(
         [
@@ -14,14 +17,30 @@ gulp.task('copy', function () {
             'public/**/*.css',
             'public/**/*.svg',
             'public/**/*.png',
-            'public/javascripts/*.min.js',
             'public/stylesheets/*.css',
-            'public/backend/javascripts/*.min.js',
             'public/backend/stylesheets/*.css',
-            'public/front/javascripts/*.min.js',
-            'public/front/stylesheets/*.css'
+            'public/front/stylesheets/*.css',
+            'public/font/*'
         ],
         {base: '..'}
     )
         .pipe(gulp.dest('dest'));
+});
+
+gulp.task('concat', function () {
+    return gulp.src(
+        [
+            'public/javascripts/*.js',
+            'public/backend/javascripts/*.js',
+            'public/front/javascripts/*.js'
+        ],
+        {base: '..'}
+    )
+        .pipe(uglify())
+        .pipe(concat('all.min.js'))
+        .pipe(gulp.dest('dest/wmonsin/public/javascript'));
+});
+
+gulp.task('default', ['copy'], function() {
+    console.log('done');
 });

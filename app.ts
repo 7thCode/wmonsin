@@ -17,8 +17,13 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session');
 
+//passport
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+//passport
+
+var session = require('express-session');
 var routes = require('./routes/index');
 
 var app = express();
@@ -32,8 +37,6 @@ app.set('view engine', 'jade');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-//app.use(cookieParser());
-
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -48,6 +51,7 @@ var MongoStore = require('connect-mongo')(session);
 var options = {server: {socketOptions: {connectTimeoutMS: 1000000}}};
 mongoose.connect(config.connection, options);
 
+/*
 app.use(session(
     {
         secret: config.key0,
@@ -62,8 +66,38 @@ app.use(session(
             maxAge: new Date(Date.now() + (365 * 24 * 60 * 60 * 1000))
         }
     }));
+*/
+
+app.use(session({
+    secret: config.key0,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 365 * 24 * 60 * 60
+    },
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection
+    })
+}));
+
+//passport
+app.use(passport.initialize());
+app.use(passport.session());
+//passport
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+
+//passport
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function (obj, done) {
+    done(null, obj);
+});
+//passport
 
 // catch 404 and forward to error handler
 app.use(function (req:any, res:any, next:any):void {

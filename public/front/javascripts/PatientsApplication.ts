@@ -26,7 +26,10 @@ app.config(['$translateProvider', function($translateProvider) {
     $translateProvider.useLocalStorage();
 }]);
 */
-app.config(['$stateProvider', '$urlRouterProvider', ($stateProvider:any, $urlRouterProvider:any):void => {
+app.config(['$stateProvider', '$urlRouterProvider','$compileProvider', ($stateProvider:any, $urlRouterProvider:any, $compileProvider:any):void => {
+
+    $compileProvider.debugInfoEnabled(false);
+
     $stateProvider
 
         .state('browseS', {
