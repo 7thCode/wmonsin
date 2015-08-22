@@ -33,6 +33,7 @@
     "angular-translate-storage-cookie": "~2.7.2",
     "angular-translate-storage-local": "~2.7.2",
     "angular-translate-loader-static-files": "~2.7.2",
-    "angular-translate-handler-log": "~2.7.2"
+    "angular-translate-handler-log": "~2.7.2",
+    "angular-cookies": "~1.4.4"
   }
 }

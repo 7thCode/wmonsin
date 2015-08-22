@@ -5,7 +5,6 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-///<reference path="../../../../DefinitelyTyped/lib.d.ts"/>
 ///<reference path="../../../../DefinitelyTyped/angularjs/angular.d.ts"/>
 ///<reference path="../../../../DefinitelyTyped/angularjs/angular-resource.d.ts"/>
 ///<reference path="../../../../DefinitelyTyped/socket.io/socket.io.d.ts" />
@@ -237,7 +236,8 @@ function fileUpload($scope:any, $timeout:any, Upload:any, fileName:string):void 
 
 controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
     ($scope:any, $state:any, CurrentAccount:any):void => {
-        if (CurrentAccount) {
+
+        if (CurrentAccount.username != "") {
             $scope.username = CurrentAccount.username;
             $scope.type = CurrentAccount.type;
         } else {
@@ -260,7 +260,7 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
         $scope.username = CurrentAccount.username;
         $scope.type = CurrentAccount.type;
 
-        $scope.mode = "Patient";
+        $scope.mode = "Account";
 
         $scope.goTop = ():void => {
             $state.go('start');
@@ -339,10 +339,10 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
 
     }]);
 
-controllers.controller('PatientsController', ['$scope', '$state', "$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
+controllers.controller('PatientsController', ['$scope', '$state',"$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
     ($scope:any, $state:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientAccept:any, PatientQuery:any, PatientCount:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
 
-        if (CurrentAccount) {
+        if (CurrentAccount.username != "") {
             $scope.username = CurrentAccount.username;
             $scope.type = CurrentAccount.type;
 
@@ -441,6 +441,8 @@ controllers.controller('PatientsController', ['$scope', '$state', "$mdDialog", '
             });
 
             $scope.$on('Logout', ():void => {
+                CurrentAccount.username = "";
+                CurrentAccount.type ="";
                 $scope.patients = [];
             });
 
@@ -591,7 +593,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
 controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '$mdToast', 'Account', 'AccountQuery', 'AccountCreate', 'AccountPassword', 'CurrentAccount',
     ($scope:any, $state:any, $mdDialog:any, $mdToast:any, Account:any, AccountQuery:any, AccountCreate:any, AccountPassword:any, CurrentAccount:any):void => {
 
-        if (CurrentAccount) {
+        if (CurrentAccount.username != "") {
             $scope.username = CurrentAccount.username;
             $scope.type = CurrentAccount.type;
 

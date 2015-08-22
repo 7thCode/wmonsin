@@ -1,13 +1,17 @@
 var gulp = require('gulp');
 
+var ts = require('gulp-typescript');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
+var rimraf = require('rimraf');
+var less = require('gulp-less');
+var minifycss = require('gulp-minify-css');
 
-gulp.task('copy', function () {
+gulp.task('copy',['clean'], function () {
     return gulp.src(
         [
             'bin/www',
-            '*.js',
+            'app.js',
             'package.json',
             'config/config.json',
             'views/**/*.jade',
@@ -17,9 +21,6 @@ gulp.task('copy', function () {
             'public/**/*.css',
             'public/**/*.svg',
             'public/**/*.png',
-            'public/stylesheets/*.css',
-            'public/backend/stylesheets/*.css',
-            'public/front/stylesheets/*.css',
             'public/font/*'
         ],
         {base: '..'}
@@ -27,7 +28,14 @@ gulp.task('copy', function () {
         .pipe(gulp.dest('dest'));
 });
 
-gulp.task('concat', function () {
+gulp.task('css', function () {
+   return gulp.src('public/**/stylesheets/*.less')
+       .pipe(less())
+       .pipe(minifycss())
+       .pipe(gulp.dest('dest/wmonsin/public'));
+});
+
+gulp.task('js', function () {
     return gulp.src(
         [
             'public/javascripts/*.js',
@@ -36,12 +44,17 @@ gulp.task('concat', function () {
         ],
         {base: '..'}
     )
+
         .pipe(uglify())
         .pipe(concat('client.min.js'))
         .pipe(gulp.dest('dest/wmonsin/public/javascripts'))
         .pipe(gulp.dest('public/javascripts'));
 });
 
-gulp.task('default', ['copy'], function() {
+gulp.task('clean', function (cb) {
+    rimraf('dest', cb);
+});
+
+gulp.task('default', ['copy','css','js'], function() {
     console.log('done');
 });

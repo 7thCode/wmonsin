@@ -20,7 +20,7 @@ md-content.background
                 md-card-content(layout="row", layout-align="center center", flex)
                     h3.md-title(flex="80") {{Department.Name}}
                     div(flex="10", ng-if="type == 'Viewer'")
-                        ng-md-icon(icon="person", size="50")
+                        ng-md-icon.iconfill(icon="person", size="50")
                     div(flex="10", ng-if="type != 'Viewer'")
                         md-button.md-fab(ng-click="DepartmentUpdate(Department._id)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
                             ng-md-icon.iconfill(icon="pages",style="position:relative;top:6px;left:1px;", size="42")

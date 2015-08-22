@@ -23,11 +23,11 @@ md-content.background
                         ng-md-icon.iconfill(icon="person", style="{{account.type | rgb}}", size="50")
 
                     div(flex="10", ng-if="type != 'Viewer'")
-                        md-button.md-fab.md-primary(ng-click="showAccountUpdateDialog(account._id)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
+                        md-button.md-fab(ng-click="showAccountUpdateDialog(account._id)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
                             ng-md-icon.iconfill(icon="person", style="position:relative;top:4px;left:1px;{{account.type | rgb}}", size="42")
                             md-tooltip 更新...
 
                     div(flex="10")
-                        md-button.md-fab.md-warn(ng-click="showAccountDeleteDialog(account._id)", aria-label="Delete", ng-if="type != 'Viewer'",style="background-color:#ff5050;z-index:1;")
+                        md-button.md-fab(ng-click="showAccountDeleteDialog(account._id)", aria-label="Delete", ng-if="type != 'Viewer'",style="background-color:#ff5050;z-index:1;")
                             ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="42")
                             md-tooltip 削除

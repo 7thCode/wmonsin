@@ -22,15 +22,15 @@ block content
                         ng-md-icon(icon="edit", aria-label="Edit", style="position:relative;top:5px;fill:#0097A7", size="42")
                         md-tooltip(ng-bind="'config' | message")
 
-                div(flex="10", ng-show="mode == 'Patient'")
-                    md-button.md-fab.menu-button.lock-size(ng-click="goAccount()", aria-label="", style="background-color:#B3E5FC;z-index:10;")
-                        ng-md-icon(icon="face", aria-label="Account", style="position:relative;top:6px;fill:#039BE5", size="42")
-                        md-tooltip(ng-bind="'stuff' | message")
-
                 div(flex="10", ng-show="mode == 'Account'")
                     md-button.md-fab.menu-button.lock-size(ng-click="goPatient()", aria-label="", style="background-color:#039BE5;z-index:10;")
                         ng-md-icon(icon="perm_identity", aria-label="Patients", style="position:relative;top:6px;fill:#B3E5FC", size="42")
                         md-tooltip(ng-bind="'patient' | message")
+
+                div(flex="10", ng-show="mode == 'Patient'")
+                    md-button.md-fab.menu-button.lock-size(ng-click="goAccount()", aria-label="", style="background-color:#B3E5FC;z-index:10;")
+                        ng-md-icon(icon="face", aria-label="Account", style="position:relative;top:6px;fill:#039BE5", size="42")
+                        md-tooltip(ng-bind="'stuff' | message")
 
                 div(flex, ng-show="type == ''")
                     md-button.md-fab.menu-button.lock-size(ng-click="showLoginDialog()", aria-label="", style="background-color:#FFCDD2;z-index:10;")
@@ -47,7 +47,7 @@ block content
 
 block include
 
-    if status == "debug"
+    if state == "debug"
         script(type="text/javascript", src="javascripts/AccountApplication.js")
         script(type="text/javascript", src="javascripts/AccountControllers.js")
         script(type="text/javascript", src="../javascripts/TopControllers.js")
