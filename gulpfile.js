@@ -37,8 +37,9 @@ gulp.task('concat', function () {
         {base: '..'}
     )
         .pipe(uglify())
-        .pipe(concat('all.min.js'))
-        .pipe(gulp.dest('dest/wmonsin/public/javascript'));
+        .pipe(concat('client.min.js'))
+        .pipe(gulp.dest('dest/wmonsin/public/javascripts'))
+        .pipe(gulp.dest('public/javascripts'));
 });
 
 gulp.task('default', ['copy'], function() {

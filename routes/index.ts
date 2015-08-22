@@ -181,7 +181,7 @@ function BasicHeader(response:any, session:any):any {
 }
 
 router.get('/', (req:any, res:any):void => {
-    res.render('index', {debug: config.debug});
+    res.render('index', {state: config.state});
 });
 
 router.get('/document/:id', (req:any, res:any):void => {
@@ -204,7 +204,7 @@ router.get('/partials/logo', (req:any, res:any, next:Function):void => {
 });
 
 router.get('/backend/', (req:any, res:any):void => {
-    res.render('backend/index', {debug: config.debug});
+    res.render('backend/index', {state: config.state});
 });
 
 router.get('/backend/partials/patient/start', (req:any, res:any):void => {
@@ -370,7 +370,7 @@ router.get('/backend/partials/error', (req:any, res:any):void => {
 
 
 router.get('/front/', (req:any, res:any):void => {
-    res.render('front/index', {debug: config.debug});
+    res.render('front/index', {state: config.state});
 });
 
 router.get('/front/partials/browseS', (req:any, res:any):void => {
