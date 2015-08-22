@@ -40,25 +40,25 @@ md-content.background
                         md-card(flex)
                             md-card-content(layout="row", layout-align="start center", flex)
                                 label.md-subhead(ng-bind="item.name")
-                                    .md-title(ng-bind="item.value")
+                                .md-title(ng-bind="item.value")
 
                     div(layout="row",ng-show="item.type == 'select'", flex)
                         md-card(flex)
                             md-card-content(layout="row", layout-align="start center", flex)
                                 label.md-subhead(ng-bind="item.name")
-                                    .md-title(ng-bind="item.value")
+                                .md-title(ng-bind="item.value")
 
                     div(layout="row",ng-show="item.type == 'check'", flex)
                         md-card(flex, ng-show="item.value")
                             md-card-content(layout="row", layout-align="start center", flex)
                                 label.md-subhead(ng-bind="item.name")
-                                    .md-title(ng-bind="item.value")
+                                .md-title(ng-bind="item.value")
 
                     div(layout="row",ng-show="item.type == 'numeric'", flex)
                         md-card(flex)
                             md-card-content(layout="row", layout-align="start center", flex)
                                 label.md-subhead(ng-bind="item.name")
-                                    .md-title(ng-bind="item.value")
+                                .md-title(ng-bind="item.value")
 
         md-tab(label="copyable")
             md-card

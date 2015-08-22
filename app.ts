@@ -97,6 +97,9 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(function (obj, done) {
     done(null, obj);
 });
+
+var Account = require('./account');
+passport.use(new LocalStrategy(Account.authenticate()));
 //passport
 
 // catch 404 and forward to error handler

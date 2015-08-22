@@ -484,6 +484,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                         canvas.loadFromJSON(JSON.stringify(value.value), canvas.renderAll.bind(canvas), (o:any, object:any):void => {
                                         });
                                     }
+
                                     $scope.Input.push(value);
                                     $scope.Information = data.value.Information;
                                 });
