@@ -55,27 +55,27 @@ module.exports = router;
 User(
     "root",
     ():void => {
-        Account.register(new Account({username: config.user, type:"Admin"}),
+        Account.register(new Account({username: config.user, type: "Admin"}),
             config.password,
             function (error, account) {
                 if (!error) {
-                  var a = 1;
+                    var a = 1;
                 }
             });
 
         /*
-        var account = new Account();
+         var account = new Account();
 
-        var username = config.user;
-        var password = config.password;
+         var username = config.user;
+         var password = config.password;
 
-        account.username = username;
-        account.password = Cipher(password, config.key1);
-        account.type = "Admin";
-        account.key = Cipher(username, config.key2);
-        account.save((saveerror:any):void => {
-        });
-        */
+         account.username = username;
+         account.password = Cipher(password, config.key1);
+         account.type = "Admin";
+         account.key = Cipher(username, config.key2);
+         account.save((saveerror:any):void => {
+         });
+         */
     },
     (message:string, error:any):void => {
     }
@@ -119,32 +119,31 @@ function Authenticate(req:any, success:any, error:any):void {
     if (req.user) {
         success(req.user.type);
     }
-    else
-    {
+    else {
         error("No Auth", {});
     }
 }
 /*
-function Authenticate(req:any, success:any, error:any):void {
-    if (req.session) {
-        Account.findOne({key: req.session.key}, (finderror:any, doc:any):void => {
-            if (!finderror) {
-                if (doc) {
-                    success(doc.type);
-                } else {
-                    error("No Account", {});
-                }
-            } else {
-                error("No Auth", finderror);
-            }
-        });
-    }
-    else
-    {
-        error("No Auth", {});
-    }
-}
-*/
+ function Authenticate(req:any, success:any, error:any):void {
+ if (req.session) {
+ Account.findOne({key: req.session.key}, (finderror:any, doc:any):void => {
+ if (!finderror) {
+ if (doc) {
+ success(doc.type);
+ } else {
+ error("No Account", {});
+ }
+ } else {
+ error("No Auth", finderror);
+ }
+ });
+ }
+ else
+ {
+ error("No Auth", {});
+ }
+ }
+ */
 function User(name:any, success:any, error:any):void {
     Account.findOne({username: name}, (finderror:any, doc:any):void => {
         if (!finderror) {
@@ -177,7 +176,6 @@ function BasicHeader(response:any, session:any):any {
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Pragma", "no-cache");
     response.header("Cache-Control", "no-cache");
-    //  response.header('x-session', session);
     response.contentType('application/json');
     return response;
 }
@@ -187,7 +185,6 @@ router.get('/', (req:any, res:any):void => {
 });
 
 router.get('/document/:id', (req:any, res:any):void => {
-
     var id = req.params.id;
     Patient.findById(id, (finderror:any, patient:any):void => {
         if (!finderror) {
@@ -343,19 +340,6 @@ router.get('/backend/partials/edit/item/button/buttondeletedialog', (req:any, re
     res.render('backend/partials/edit/item/button/buttondeletedialog');
 });
 
-/*
- router.get('/backend/partials/edit/itemcreatedialog', (req:any, res:any):void => {
- res.render('backend/partials/edit/itemcreatedialog');
- });
-
- router.get('/backend/partials/edit/itemupdatedialog', (req:any, res:any):void => {
- res.render('backend/partials/edit/itemupdatedialog');
- });
-
- router.get('/backend/partials/edit/itemdeletedialog', (req:any, res:any):void => {
- res.render('backend/partials/edit/itemdeletedialog');
- });
- */
 
 router.get('/backend/partials/edit/departments', (req:any, res:any):void => {
     res.render('backend/partials/edit/departments');
@@ -455,24 +439,22 @@ router.post('/patient/accept', (req:any, res:any):void => {
 router.get('/patient/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                var id:string = req.params.id;
-                Patient.findById(id, (finderror:any, patient:any):void => {
-                    if (!finderror) {
-                        if (patient) {
-                            res.send(JSON.stringify(new result(0, "OK", patient)));
-                        } else {
-                            res.send(JSON.stringify(new result(10, "patient get", {})));
-                        }
+        Authenticate(req, (type:any):void => {
+            var id:string = req.params.id;
+            Patient.findById(id, (finderror:any, patient:any):void => {
+                if (!finderror) {
+                    if (patient) {
+                        res.send(JSON.stringify(new result(0, "OK", patient)));
                     } else {
-                        res.send(JSON.stringify(new result(100, "patient get", finderror)));
+                        res.send(JSON.stringify(new result(10, "patient get", {})));
                     }
-                });
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "patient get auth " + message, error)));
+                } else {
+                    res.send(JSON.stringify(new result(100, "patient get", finderror)));
+                }
             });
-
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "patient get auth " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new Result(10000, "patient get e.message", e)));
     }
@@ -482,39 +464,31 @@ router.get('/patient/:id', (req:any, res:any):void => {
 router.put('/patient/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                // if (type != "Viewer")
-                {
-                    var id:string = req.params.id;
-                    Patient.findById(id, (finderror:any, patient:any):void => {
-                        if (!finderror) {
-                            if (patient) {
-                                patient.Status = req.body.Status;
-                                patient.Input = req.body.Input;
-                                patient.Sequential = req.body.Sequential;
-                                patient.save((saveerror:any):void => {
-                                    if (!saveerror) {
-                                        res.send(JSON.stringify(new result(0, "OK", {})));
-                                    } else {
-                                        res.send(JSON.stringify(new result(100, "patient put", saveerror)));
-                                    }
-                                });
+        Authenticate(req, (type:any):void => {
+            var id:string = req.params.id;
+            Patient.findById(id, (finderror:any, patient:any):void => {
+                if (!finderror) {
+                    if (patient) {
+                        patient.Status = req.body.Status;
+                        patient.Input = req.body.Input;
+                        patient.Sequential = req.body.Sequential;
+                        patient.save((saveerror:any):void => {
+                            if (!saveerror) {
+                                res.send(JSON.stringify(new result(0, "OK", {})));
                             } else {
-                                res.send(JSON.stringify(new result(10, "patient put", {})));
+                                res.send(JSON.stringify(new result(100, "patient put", saveerror)));
                             }
-                        } else {
-                            res.send(JSON.stringify(new result(100, "patient put", finderror)));
-                        }
-                    });
+                        });
+                    } else {
+                        res.send(JSON.stringify(new result(10, "patient put", {})));
+                    }
+                } else {
+                    res.send(JSON.stringify(new result(100, "patient put", finderror)));
                 }
-                //      else {
-                //        res.send(JSON.stringify(new result(1, "patient put", "no rights")));
-                //      }
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "patient put " + message, error)));
             });
-
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "patient put " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "patient put " + e.message, e)));
     }
@@ -524,24 +498,22 @@ router.put('/patient/:id', (req:any, res:any):void => {
 router.delete('/patient/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                if (type != "Viewer") {
-                    var id:string = req.params.id;
-                    Patient.remove({_id: id}, (finderror:any):void => {
-                        if (!finderror) {
-                            res.send(JSON.stringify(new result(0, "OK", {})));
-                        } else {
-                            res.send(JSON.stringify(new result(100, "patient delete", finderror)));
-                        }
-                    });
-                } else {
-                    res.send(JSON.stringify(new result(1, "patient delete no rights", {})));
-                }
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "patient delete " + message, error)));
-            });
-
+        Authenticate(req, (type:any):void => {
+            if (type != "Viewer") {
+                var id:string = req.params.id;
+                Patient.remove({_id: id}, (finderror:any):void => {
+                    if (!finderror) {
+                        res.send(JSON.stringify(new result(0, "OK", {})));
+                    } else {
+                        res.send(JSON.stringify(new result(100, "patient delete", finderror)));
+                    }
+                });
+            } else {
+                res.send(JSON.stringify(new result(1, "patient delete no rights", {})));
+            }
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "patient delete " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "patient delete " + e.message, e)));
     }
@@ -551,24 +523,22 @@ router.delete('/patient/:id', (req:any, res:any):void => {
 router.get('/patient/query/:query', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                var query = JSON.parse(decodeURIComponent(req.params.query));
-                Patient.find(query, {}, {sort: {Date: -1}}, (finderror:any, docs:any):void => {
-                    if (!finderror) {
-                        if (docs) {
-                            res.send(JSON.stringify(new result(0, "OK", docs)));
-                        } else {
-                            res.send(JSON.stringify(new result(10, "patient query", {})));
-                        }
+        Authenticate(req, (type:any):void => {
+            var query = JSON.parse(decodeURIComponent(req.params.query));
+            Patient.find(query, {}, {sort: {Date: -1}}, (finderror:any, docs:any):void => {
+                if (!finderror) {
+                    if (docs) {
+                        res.send(JSON.stringify(new result(0, "OK", docs)));
                     } else {
-                        res.send(JSON.stringify(new result(100, "patient query", finderror)));
+                        res.send(JSON.stringify(new result(10, "patient query", {})));
                     }
-                });
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "patient query " + message, error)));
+                } else {
+                    res.send(JSON.stringify(new result(100, "patient query", finderror)));
+                }
             });
-
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "patient query " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "patient query " + e.message, e)));
     }
@@ -579,24 +549,22 @@ router.get('/patient/query/:query', (req:any, res:any):void => {
 router.get('/patient/count/:query', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                var query = JSON.parse(decodeURIComponent(req.params.query));
-                Patient.count(query, (finderror:any, docs:any):void => {
-                    if (!finderror) {
-                        if (docs) {
-                            res.send(JSON.stringify(new result(0, "OK", docs)));
-                        } else {
-                            res.send(JSON.stringify(new result(0, "OK", 0)));
-                        }
+        Authenticate(req, (type:any):void => {
+            var query = JSON.parse(decodeURIComponent(req.params.query));
+            Patient.count(query, (finderror:any, docs:any):void => {
+                if (!finderror) {
+                    if (docs) {
+                        res.send(JSON.stringify(new result(0, "OK", docs)));
                     } else {
-                        res.send(JSON.stringify(new result(100, "patient count", finderror)));
+                        res.send(JSON.stringify(new result(0, "OK", 0)));
                     }
-                });
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "patient count " + message, error)));
+                } else {
+                    res.send(JSON.stringify(new result(100, "patient count", finderror)));
+                }
             });
-
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "patient count " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "patient query " + e.message, e)));
     }
@@ -607,25 +575,22 @@ router.get('/patient/count/:query', (req:any, res:any):void => {
 router.get('/patient/status/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                var id:string = req.params.id;
-                Patient.findById(id, (finderror:any, patient:any):void => {
-                    if (!finderror) {
-                        if (patient) {
-                            res.send(JSON.stringify(new result(0, "OK", patient.Status)));
-                        } else {
-                            res.send(JSON.stringify(new result(10, "patient status get id error", {})));
-                        }
+        Authenticate(req, (type:any):void => {
+            var id:string = req.params.id;
+            Patient.findById(id, (finderror:any, patient:any):void => {
+                if (!finderror) {
+                    if (patient) {
+                        res.send(JSON.stringify(new result(0, "OK", patient.Status)));
                     } else {
-                        res.send(JSON.stringify(new result(100, "patient status get", finderror)));
+                        res.send(JSON.stringify(new result(10, "patient status get id error", {})));
                     }
-                });
-
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "patient status " + message, error)));
+                } else {
+                    res.send(JSON.stringify(new result(100, "patient status get", finderror)));
+                }
             });
-
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "patient status " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "patient status get " + e.message, e)));
     }
@@ -634,36 +599,33 @@ router.get('/patient/status/:id', (req:any, res:any):void => {
 router.put('/patient/status/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                if (type != "Viewer") {
-                    var id:string = req.params.id;
-                    Patient.findById(id, (finderror:any, patient:any):void => {
-                        if (!finderror) {
-                            if (patient) {
-                                patient.Status = req.body.Status;
-
-                                patient.save((saveerror:any):void => {
-                                    if (!saveerror) {
-                                        res.send(JSON.stringify(new result(0, "OK", patient.Status)));
-                                    } else {
-                                        res.send(JSON.stringify(new result(100, "patient status put", saveerror)));
-                                    }
-                                });
-                            } else {
-                                res.send(JSON.stringify(new result(10, "patient status put", {})));
-                            }
+        Authenticate(req, (type:any):void => {
+            if (type != "Viewer") {
+                var id:string = req.params.id;
+                Patient.findById(id, (finderror:any, patient:any):void => {
+                    if (!finderror) {
+                        if (patient) {
+                            patient.Status = req.body.Status;
+                            patient.save((saveerror:any):void => {
+                                if (!saveerror) {
+                                    res.send(JSON.stringify(new result(0, "OK", patient.Status)));
+                                } else {
+                                    res.send(JSON.stringify(new result(100, "patient status put", saveerror)));
+                                }
+                            });
                         } else {
-                            res.send(JSON.stringify(new result(100, "patient status put", finderror)));
+                            res.send(JSON.stringify(new result(10, "patient status put", {})));
                         }
-                    });
-                } else {
-                    res.send(JSON.stringify(new result(1, "patient status put no rights", {})));
-                }
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "patient status " + message, error)));
-            });
-
+                    } else {
+                        res.send(JSON.stringify(new result(100, "patient status put", finderror)));
+                    }
+                });
+            } else {
+                res.send(JSON.stringify(new result(1, "patient status put no rights", {})));
+            }
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "patient status " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "patient status put " + e.message, e)));
     }
@@ -672,44 +634,40 @@ router.put('/patient/status/:id', (req:any, res:any):void => {
 /*! account */
 /*! create */
 /*
-router.post('/account/create', (req:any, res:any):void => {
-    try {
-        res = BasicHeader(res, "");
+ router.post('/account/create', (req:any, res:any):void => {
+ try {
+ res = BasicHeader(res, "");
 
-            Authenticate(req, (type:any):void => {
-                if (type != "Viewer") {
-                    User(req.body.username.toLowerCase(), ():void => {
-                        var account:any = new Account();
-                        account.username = req.body.username.toLowerCase();
-                        account.password = Cipher(req.body.password, config.key1);
-                        account.type = req.body.type;
-                        account.key = Cipher(req.body.username, config.key2);
-                        account.save((saveerror:any):void => {
-                            if (!saveerror) {
-                                res.send(JSON.stringify(new result(0, "OK", {})));
-                            } else {
-                                res.send(JSON.stringify(new result(100, "account create", saveerror)));
-                            }
-                        });
-                    }, (message:string, error:any):void => {
-                        res.send(JSON.stringify(new result(3, "account create " + message, error)));
-                    });
-                } else {
-                    res.send(JSON.stringify(new result(1, "account create no rights", {})));
-                }
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "account create " + message, error)));
-            });
+ Authenticate(req, (type:any):void => {
+ if (type != "Viewer") {
+ User(req.body.username.toLowerCase(), ():void => {
+ var account:any = new Account();
+ account.username = req.body.username.toLowerCase();
+ account.password = Cipher(req.body.password, config.key1);
+ account.type = req.body.type;
+ account.key = Cipher(req.body.username, config.key2);
+ account.save((saveerror:any):void => {
+ if (!saveerror) {
+ res.send(JSON.stringify(new result(0, "OK", {})));
+ } else {
+ res.send(JSON.stringify(new result(100, "account create", saveerror)));
+ }
+ });
+ }, (message:string, error:any):void => {
+ res.send(JSON.stringify(new result(3, "account create " + message, error)));
+ });
+ } else {
+ res.send(JSON.stringify(new result(1, "account create no rights", {})));
+ }
+ }, (message:string, error:any):void => {
+ res.send(JSON.stringify(new result(2, "account create " + message, error)));
+ });
 
-    } catch (e) {
-        res.send(JSON.stringify(new result(10000, "account create " + e.message, e)));
-    }
-});
-*/
-
-
-
-
+ } catch (e) {
+ res.send(JSON.stringify(new result(10000, "account create " + e.message, e)));
+ }
+ });
+ */
 
 
 router.post('/account/create', (request:any, response:any):void => {
@@ -717,34 +675,29 @@ router.post('/account/create', (request:any, response:any):void => {
         var username = request.body.username;
         var password = request.body.password;
         var type = request.body.type;
-        if (request.session) {
-         //   Authenticate(request.session.key, (type:any):void => {
-                if (type != "Viewer") {
-                    User(request.body.username.toLowerCase(), ():void => {
-                        Account.register(new Account({username: username, type:type}),
-                            password,
-                            function (error, account) {
-                                if (!error) {
-                                    response.send(JSON.stringify(new result(0, "account create ", account)));
-                                }
-                            });
-                    }, (message:string, error:any):void => {
-                        response.send(JSON.stringify(new result(3, "account create " + message, error)));
-                    })
-                }
-         //   }, (message:string, error:any):void => {
-         //       response.send(JSON.stringify(new result(2, "account create " + message, error)));
-         //   });
-        }
+
+        Authenticate(request, (type:any):void => {
+            if (type != "Viewer") {
+                User(request.body.username.toLowerCase(), ():void => {
+                    Account.register(new Account({username: username, type: request.body.type}),
+                        password,
+                        function (error, account) {
+                            if (!error) {
+                                response.send(JSON.stringify(new result(0, "account create ", account)));
+                            }
+                        });
+                }, (message:string, error:any):void => {
+                    response.send(JSON.stringify(new result(3, "account create " + message, error)));
+                })
+            }
+        }, (message:string, error:any):void => {
+            response.send(JSON.stringify(new result(2, "account create " + message, error)));
+        });
+
     } catch (e) {
         response.send(JSON.stringify(new result(10000, "account logout " + e.message, e)));
     }
 });
-
-
-
-
-
 
 
 /*! logout */
@@ -760,35 +713,35 @@ router.post('/account/logout', (req:any, res:any):void => {
 
 /*! login */
 /*
-router.post('/account/login', (req:any, res:any):void => {
-    try {
-        res = BasicHeader(res, "");
-        var username:any = req.body.username;
-        var password:any = Cipher(req.body.password, config.key1);
-        var auth:any = {$and: [{username: username}, {password: password}]};
-        Account.findOne(auth, (finderror:any, account:any):void => {
-            if (!finderror) {
-                if (account) {
-                    if (req.session) {
-                        if (req.session.key == null) {
-                            req.session.key = account.key;
-                        }
-                        res.send(JSON.stringify(new result(0, "logged in success.", account)));
-                    }
-                } else {
-                    res.send(JSON.stringify(new result(10, "unknown user or wrong password.", {})));
-                }
-            } else {
-                res.send(JSON.stringify(new result(100, "unknown user or wrong password.", finderror)));
-            }
-        });
-    } catch (e) {
-        res.send(JSON.stringify(new result(10000, "account login fail." + e.message, e)));
-    }
-});
+ router.post('/account/login', (req:any, res:any):void => {
+ try {
+ res = BasicHeader(res, "");
+ var username:any = req.body.username;
+ var password:any = Cipher(req.body.password, config.key1);
+ var auth:any = {$and: [{username: username}, {password: password}]};
+ Account.findOne(auth, (finderror:any, account:any):void => {
+ if (!finderror) {
+ if (account) {
+ if (req.session) {
+ if (req.session.key == null) {
+ req.session.key = account.key;
+ }
+ res.send(JSON.stringify(new result(0, "logged in success.", account)));
+ }
+ } else {
+ res.send(JSON.stringify(new result(10, "unknown user or wrong password.", {})));
+ }
+ } else {
+ res.send(JSON.stringify(new result(100, "unknown user or wrong password.", finderror)));
+ }
+ });
+ } catch (e) {
+ res.send(JSON.stringify(new result(10000, "account login fail." + e.message, e)));
+ }
+ });
 
 
-*/
+ */
 
 router.post('/account/login', function (request, response, next) {
     passport.authenticate('local', function (error, user, info) {
@@ -796,7 +749,7 @@ router.post('/account/login', function (request, response, next) {
             if (user) {
                 request.login(user, function (error) {
                     if (!error) {
-                          response.send(JSON.stringify(new result(0, "login ok ", user)));
+                        response.send(JSON.stringify(new result(0, "login ok ", user)));
                     } else {
                         response.send(JSON.stringify(new result(1, "login ng ", {})));
                     }
@@ -811,34 +764,26 @@ router.post('/account/login', function (request, response, next) {
 });
 
 
-
-
-
-
-
-
 /*! get */
 router.get('/account/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                var id:string = req.params.id;
-                Account.findById(id, (geterror:any, account:any):void => {
-                    if (!geterror) {
-                        if (account) {
-                            res.send(JSON.stringify(new result(0, "OK", account)));
-                        } else {
-                            res.send(JSON.stringify(new result(10, "account get", {})));
-                        }
+        Authenticate(req, (type:any):void => {
+            var id:string = req.params.id;
+            Account.findById(id, (geterror:any, account:any):void => {
+                if (!geterror) {
+                    if (account) {
+                        res.send(JSON.stringify(new result(0, "OK", account)));
                     } else {
-                        res.send(JSON.stringify(new result(100, "account get", geterror)));
+                        res.send(JSON.stringify(new result(10, "account get", {})));
                     }
-                });
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "account get " + message, error)));
+                } else {
+                    res.send(JSON.stringify(new result(100, "account get", geterror)));
+                }
             });
-
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "account get " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "account get " + e.message, e)));
     }
@@ -848,37 +793,35 @@ router.get('/account/:id', (req:any, res:any):void => {
 router.put('/account/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                if (type != "Viewer") {
-                    var id:string = req.params.id;
-                    Account.findById(id, (finderror:any, account:any):void => {
-                        if (!finderror) {
-                            if (account) {
-                                var account2 = account;
-                                account2.username = req.body.username;
-                                account2.type = req.body.type;
-                                account2.save((saveerror:any):void => {
-                                    if (!saveerror) {
-                                        res.send(JSON.stringify(new result(0, "OK", {})));
-                                    } else {
-                                        res.send(JSON.stringify(new result(100, "account put", saveerror)));
-                                    }
-                                });
-                            } else {
-                                res.send(JSON.stringify(new result(3, "account put find error", {})));
-                            }
+        Authenticate(req, (type:any):void => {
+            if (type != "Viewer") {
+                var id:string = req.params.id;
+                Account.findById(id, (finderror:any, account:any):void => {
+                    if (!finderror) {
+                        if (account) {
+                            var account2 = account;
+                            account2.username = req.body.username;
+                            account2.type = req.body.type;
+                            account2.save((saveerror:any):void => {
+                                if (!saveerror) {
+                                    res.send(JSON.stringify(new result(0, "OK", {})));
+                                } else {
+                                    res.send(JSON.stringify(new result(100, "account put", saveerror)));
+                                }
+                            });
                         } else {
-                            res.send(JSON.stringify(new result(100, "account put find error", finderror)));
+                            res.send(JSON.stringify(new result(3, "account put find error", {})));
                         }
-                    });
-                } else {
-                    res.send(JSON.stringify(new result(1, "account put no rights", {})));
-                }
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "account put " + message, error)));
-            });
-
+                    } else {
+                        res.send(JSON.stringify(new result(100, "account put find error", finderror)));
+                    }
+                });
+            } else {
+                res.send(JSON.stringify(new result(1, "account put no rights", {})));
+            }
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "account put " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "account put " + e.message, e)));
     }
@@ -888,24 +831,22 @@ router.put('/account/:id', (req:any, res:any):void => {
 router.delete('/account/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                if (type != "Viewer") {
-                    var id:string = req.params.id;
-                    Account.remove({_id: id}, (removeerror:any):void => {
-                        if (!removeerror) {
-                            res.send(JSON.stringify(new result(0, "OK", {})));
-                        } else {
-                            res.send(JSON.stringify(new result(100, "account delete", removeerror)));
-                        }
-                    });
-                } else {
-                    res.send(JSON.stringify(new result(1, "account delete no rights", {})));
-                }
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "account delete " + message, error)));
-            });
-
+        Authenticate(req, (type:any):void => {
+            if (type != "Viewer") {
+                var id:string = req.params.id;
+                Account.remove({_id: id}, (removeerror:any):void => {
+                    if (!removeerror) {
+                        res.send(JSON.stringify(new result(0, "OK", {})));
+                    } else {
+                        res.send(JSON.stringify(new result(100, "account delete", removeerror)));
+                    }
+                });
+            } else {
+                res.send(JSON.stringify(new result(1, "account delete no rights", {})));
+            }
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "account delete " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "account delete " + e.message, e)));
     }
@@ -915,24 +856,22 @@ router.delete('/account/:id', (req:any, res:any):void => {
 router.get('/account/query/:query', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                var query:any = JSON.parse(decodeURIComponent(req.params.query));
-                Account.find({}, (finderror:any, docs:any):void => {
-                    if (!finderror) {
-                        if (docs) {
-                            res.send(JSON.stringify(new result(0, "OK", docs)));
-                        } else {
-                            res.send(JSON.stringify(new result(10, "account query", {})));
-                        }
+        Authenticate(req, (type:any):void => {
+            var query:any = JSON.parse(decodeURIComponent(req.params.query));
+            Account.find({}, (finderror:any, docs:any):void => {
+                if (!finderror) {
+                    if (docs) {
+                        res.send(JSON.stringify(new result(0, "OK", docs)));
                     } else {
-                        res.send(JSON.stringify(new result(100, "account query", finderror)));
+                        res.send(JSON.stringify(new result(10, "account query", {})));
                     }
-                });
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "account query " + message, error)));
+                } else {
+                    res.send(JSON.stringify(new result(100, "account query", finderror)));
+                }
             });
-
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "account query " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "account query " + e.message, e)));
     }
@@ -942,36 +881,38 @@ router.get('/account/query/:query', (req:any, res:any):void => {
 router.put('/account/password/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                if (type != "Viewer") {
-                    var id:string = req.params.id;
-                    Account.findById(id, (finderror:any, account:any):void => {
-                        if (!finderror) {
-                            if (account) {
-                                var account2:any = account;
-                                account2.password = Cipher(req.body.password, config.key1);
-                                account2.save((saveerror:any):void => {
-                                    if (!saveerror) {
-                                        res.send(JSON.stringify(new result(0, "OK", {})));
-                                    } else {
-                                        res.send(JSON.stringify(new result(100, "account password", saveerror)));
-                                    }
-                                });
-                            } else {
-                                res.send(JSON.stringify(new result(3, "account password find error", {})));
-                            }
+        Authenticate(req, (type:any):void => {
+            if (type != "Viewer") {
+                var id:string = req.params.id;
+                Account.findById(id, (finderror:any, account:any):void => {
+                    if (!finderror) {
+                        if (account != null) {
+                            account.setPassword(req.body.password, function (changeerror) {
+                                if (!changeerror) {
+                                    account.save((saveerror:any):void => {
+                                        if (!saveerror) {
+                                            res.send(JSON.stringify(new result(0, "OK", {})));
+                                        } else {
+                                            res.send(JSON.stringify(new result(100, "account password", saveerror)));
+                                        }
+                                    });
+                                } else {
+                                    res.send(JSON.stringify(new result(3, "account password change error", changeerror)));
+                                }
+                            });
                         } else {
-                            res.send(JSON.stringify(new result(100, "account password find error", finderror)));
+                            res.send(JSON.stringify(new result(3, "account password find error", {})));
                         }
-                    });
-                } else {
-                    res.send(JSON.stringify(new result(1, "account password no rights", {})));
-                }
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "account password " + message, error)));
-            });
-
+                    } else {
+                        res.send(JSON.stringify(new result(3, "account password find error", finderror)));
+                    }
+                });
+            } else {
+                res.send(JSON.stringify(new result(1, "account password no rights", {})));
+            }
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "account password " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "account password " + e.message, e)));
     }
@@ -982,13 +923,11 @@ router.put('/account/password/:id', (req:any, res:any):void => {
 router.get('/config', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                res.send(JSON.stringify(new result(0, "config get", config)));
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "config get auth error", {})));
-            });
-
+        Authenticate(req, (type:any):void => {
+            res.send(JSON.stringify(new result(0, "config get", config)));
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "config get auth error", {})));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "config get " + e.message, e)));
     }
@@ -997,25 +936,23 @@ router.get('/config', (req:any, res:any):void => {
 /*! update */
 router.put('/config', (req:any, res:any):void => {
     try {
-
-            res = BasicHeader(res, "");
-            Authenticate(req, (type:any):void => {
-                if (type != "Viewer") {
-                    config = req.body.body;
-                    fs.writeFile('config/config.json', JSON.stringify(config), (error:any):void => {
-                        if (!error) {
-                            res.send(JSON.stringify(new result(0, "config put", config)));
-                        } else {
-                            res.send(JSON.stringify(new result(1, "config put write error.", error)));
-                        }
-                    });
-                } else {
-                    res.send(JSON.stringify(new result(1, "config put no rights", {})));
-                }
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "config put " + message, error)));
-            });
-
+        res = BasicHeader(res, "");
+        Authenticate(req, (type:any):void => {
+            if (type != "Viewer") {
+                config = req.body.body;
+                fs.writeFile('config/config.json', JSON.stringify(config), (error:any):void => {
+                    if (!error) {
+                        res.send(JSON.stringify(new result(0, "config put", config)));
+                    } else {
+                        res.send(JSON.stringify(new result(1, "config put write error.", error)));
+                    }
+                });
+            } else {
+                res.send(JSON.stringify(new result(1, "config put no rights", {})));
+            }
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "config put " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "config put " + e.message, e)));
     }
@@ -1050,36 +987,34 @@ router.post('/view', (req:any, res:any):void => {
 router.post('/view/create', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                if (type != "Viewer") {
-                    View.count({Name: req.body.Name}, (counterror:any, count:number):void => {
-                        if (!counterror) {
-                            if (count == 0) {
-                                var view:any = new View();
-                                view.Name = req.body.Name;
-                                view.Pages = [];
-                                view.save((saveerror:any):void => {
-                                    if (!saveerror) {
-                                        res.send(JSON.stringify(new result(0, "OK", {})));
-                                    } else {
-                                        res.send(JSON.stringify(new result(100, "account create", saveerror)));
-                                    }
-                                });
-                            } else {
-                                res.send(JSON.stringify(new result(1, "view already exist", {})));
-                            }
+        Authenticate(req, (type:any):void => {
+            if (type != "Viewer") {
+                View.count({Name: req.body.Name}, (counterror:any, count:number):void => {
+                    if (!counterror) {
+                        if (count == 0) {
+                            var view:any = new View();
+                            view.Name = req.body.Name;
+                            view.Pages = [];
+                            view.save((saveerror:any):void => {
+                                if (!saveerror) {
+                                    res.send(JSON.stringify(new result(0, "OK", {})));
+                                } else {
+                                    res.send(JSON.stringify(new result(100, "account create", saveerror)));
+                                }
+                            });
                         } else {
-                            res.send(JSON.stringify(new result(1, "view error", counterror)));
+                            res.send(JSON.stringify(new result(1, "view already exist", {})));
                         }
-                    });
-                } else {
-                    res.send(JSON.stringify(new result(1, "view create no rights", {})));
-                }
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "view create " + message, error)));
-            });
-
+                    } else {
+                        res.send(JSON.stringify(new result(1, "view error", counterror)));
+                    }
+                });
+            } else {
+                res.send(JSON.stringify(new result(1, "view create no rights", {})));
+            }
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "view create " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "account create " + e.message, e)));
     }
@@ -1089,7 +1024,6 @@ router.post('/view/create', (req:any, res:any):void => {
 router.get('/view/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
         var id:string = req.params.id;
         View.findById(id, (finderror:any, doc:any):void => {
             if (!finderror) {
@@ -1111,36 +1045,34 @@ router.get('/view/:id', (req:any, res:any):void => {
 router.put('/view/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                if (type != "Viewer") {
-                    var id:string = req.params.id;
-                    View.findById(id, (finderror:any, view:any):void => {
-                        if (!finderror) {
-                            if (view) {
-                                view.Name = req.body.Name;
-                                view.Pages = req.body.Pages;
-                                view.save((saveerror:any):void => {
-                                    if (!saveerror) {
-                                        res.send(JSON.stringify(new result(0, "OK", {})));
-                                    } else {
-                                        res.send(JSON.stringify(new result(100, "view put", saveerror)));
-                                    }
-                                });
-                            } else {
-                                res.send(JSON.stringify(new result(3, "view put find error", {})));
-                            }
+        Authenticate(req, (type:any):void => {
+            if (type != "Viewer") {
+                var id:string = req.params.id;
+                View.findById(id, (finderror:any, view:any):void => {
+                    if (!finderror) {
+                        if (view) {
+                            view.Name = req.body.Name;
+                            view.Pages = req.body.Pages;
+                            view.save((saveerror:any):void => {
+                                if (!saveerror) {
+                                    res.send(JSON.stringify(new result(0, "OK", {})));
+                                } else {
+                                    res.send(JSON.stringify(new result(100, "view put", saveerror)));
+                                }
+                            });
                         } else {
-                            res.send(JSON.stringify(new result(100, "view put find error", finderror)));
+                            res.send(JSON.stringify(new result(3, "view put find error", {})));
                         }
-                    });
-                } else {
-                    res.send(JSON.stringify(new result(1, "view put no rights", {})));
-                }
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "view put " + message, error)));
-            });
-
+                    } else {
+                        res.send(JSON.stringify(new result(100, "view put find error", finderror)));
+                    }
+                });
+            } else {
+                res.send(JSON.stringify(new result(1, "view put no rights", {})));
+            }
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "view put " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "view put " + e.message, e)));
     }
@@ -1150,24 +1082,22 @@ router.put('/view/:id', (req:any, res:any):void => {
 router.delete('/view/:id', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                if (type != "Viewer") {
-                    var id:string = req.params.id;
-                    View.remove({_id: id}, (error:any):void => {
-                        if (!error) {
-                            res.send(JSON.stringify(new result(0, "OK", {})));
-                        } else {
-                            res.send(JSON.stringify(new result(100, "view delete", error)));
-                        }
-                    });
-                } else {
-                    res.send(JSON.stringify(new result(1, "view delete no rights", {})));
-                }
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "view delete " + message, error)));
-            });
-
+        Authenticate(req, (type:any):void => {
+            if (type != "Viewer") {
+                var id:string = req.params.id;
+                View.remove({_id: id}, (error:any):void => {
+                    if (!error) {
+                        res.send(JSON.stringify(new result(0, "OK", {})));
+                    } else {
+                        res.send(JSON.stringify(new result(100, "view delete", error)));
+                    }
+                });
+            } else {
+                res.send(JSON.stringify(new result(1, "view delete no rights", {})));
+            }
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "view delete " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "patient delete " + e.message, e)));
     }
@@ -1177,24 +1107,22 @@ router.delete('/view/:id', (req:any, res:any):void => {
 router.get('/view/query/:query', (req:any, res:any):void => {
     try {
         res = BasicHeader(res, "");
-
-            Authenticate(req, (type:any):void => {
-                var query:any = JSON.parse(decodeURIComponent(req.params.query));
-                View.find({}, (finderror:any, views:any):void => {
-                    if (!finderror) {
-                        if (views) {
-                            res.send(JSON.stringify(new result(0, "OK", views)));
-                        } else {
-                            res.send(JSON.stringify(new result(10, "account query", {})));
-                        }
+        Authenticate(req, (type:any):void => {
+            var query:any = JSON.parse(decodeURIComponent(req.params.query));
+            View.find({}, (finderror:any, views:any):void => {
+                if (!finderror) {
+                    if (views) {
+                        res.send(JSON.stringify(new result(0, "OK", views)));
                     } else {
-                        res.send(JSON.stringify(new result(100, "account query", finderror)));
+                        res.send(JSON.stringify(new result(10, "account query", {})));
                     }
-                });
-            }, (message:string, error:any):void => {
-                res.send(JSON.stringify(new result(2, "account query " + message, error)));
+                } else {
+                    res.send(JSON.stringify(new result(100, "account query", finderror)));
+                }
             });
-
+        }, (message:string, error:any):void => {
+            res.send(JSON.stringify(new result(2, "account query " + message, error)));
+        });
     } catch (e) {
         res.send(JSON.stringify(new result(10000, "account query " + e.message, e)));
     }
