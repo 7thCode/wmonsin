@@ -98,7 +98,7 @@ passport.deserializeUser(function (obj, done) {
     done(null, obj);
 });
 
-var Account = require('./account');
+var Account = require('./routes/account');
 passport.use(new LocalStrategy(Account.authenticate()));
 //passport
 
