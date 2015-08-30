@@ -5,11 +5,6 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-///<reference path="../../../../DefinitelyTyped/angularjs/angular.d.ts"/>
-///<reference path="../../../../DefinitelyTyped/angularjs/angular-resource.d.ts"/>
-///<reference path="../../../../DefinitelyTyped/socket.io/socket.io.d.ts" />
-///<reference path="../../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
-///<reference path="../../../../DefinitelyTyped/lodash/lodash.d.ts" />
 
 /**
  0 - ok
@@ -28,7 +23,7 @@
 
 'use strict';
 
-var controllers:angular.IModule = angular.module('AccountControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate', 'pascalprecht.translate']);
+var controllers:angular.IModule = angular.module('AccountControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate','ngFileUpload']);
 
 controllers.value('Global', {
         socket: null
@@ -210,11 +205,8 @@ function fileUpload($scope:any, $timeout:any, Upload:any, fileName:string):void 
     var upload = (file:any):void  => {
 
         file.upload = Upload.upload({
-            url: '/upload',
+            url: '/image/upload',
             method: 'POST',
-            headers: {
-                'my-header': 'my-header-value',
-            },
             file: file,
             fileFormDataName: 'myFile'
         });
@@ -248,19 +240,9 @@ controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
 controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state', "$mdDialog", '$mdToast', 'Login', 'Logout', 'CurrentAccount', 'Global',
     ($scope:any, $rootScope:any, $state:any, $mdDialog:any, $mdToast:any, Login:any, Logout:any, CurrentAccount:any, Global:any):void => {
 
-        if (localStorage.getItem("account") != null) {
-            var account:any = JSON.parse(localStorage.getItem("account"));
-            CurrentAccount.username = account.username;
-            CurrentAccount.type = account.type;
-        } else {
-            CurrentAccount.username = "";
-            CurrentAccount.type = "";
-        }
-
-        $scope.username = CurrentAccount.username;
-        $scope.type = CurrentAccount.type;
-
-        $scope.mode = "Account";
+        $scope.goBack = ():void => {
+            window.history.back();
+        };
 
         $scope.goTop = ():void => {
             $state.go('start');
@@ -284,11 +266,11 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
             $state.go('accounts');
         };
 
-        $scope.showLoginDialog = (id:any):void => {
+        $scope.showLoginDialog = ():void => {
             $mdDialog.show({
                 controller: 'LoginDialogController',
                 templateUrl: '/backend/partials/account/logindialog',
-                targetEvent: id
+                targetEvent: null
             })
                 .then((answer:any):void => { // Answer
                     var account:any = new Login();
@@ -313,7 +295,7 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
                 });
         };
 
-        $scope.Logout = (id:any):void => {
+        $scope.Logout = ():void => {
             var account:any = new Logout();
             account.$logout((account:any):void => {
                 if (account) {
@@ -336,6 +318,20 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
         if (Global.socket == null) {
             Global.socket = io.connect();
         }
+
+
+        if (localStorage.getItem("account") != null) {
+            var account:any = JSON.parse(localStorage.getItem("account"));
+            CurrentAccount.username = account.username;
+            CurrentAccount.type = account.type;
+        } else {
+            $scope.showLoginDialog();
+        }
+
+        $scope.username = CurrentAccount.username;
+        $scope.type = CurrentAccount.type;
+
+        $scope.mode = "Account";
 
     }]);
 
@@ -603,12 +599,12 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                 $scope.accounts = data;
             });
 
-            $scope.showRegisterDialog = (id:any):void => {
+            $scope.showRegisterDialog = ():void => {
 
                 $mdDialog.show({
                     controller: 'RegisterDialogController',
                     templateUrl: '/backend/partials/account/registerdialog',
-                    targetEvent: id
+                    targetEvent: null
                 }).then((answer:any):void => {
                         var account:any = new AccountCreate();
                         account.username = answer.items.username;
@@ -755,6 +751,10 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
             $scope.progress = false;
         });
 
+        $scope.back = () => {
+            window.history.back();
+        };
+
         $scope.showDepartmentCreateDialog = ():void => { // Register Dialog
             $mdDialog.show({
                 controller: 'DepartmentCreateDialogController',
@@ -762,6 +762,41 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                 targetEvent: null
             }).then((answer:any):void => { // Answer
                     var view:any = new ViewCreate();
+                    view.Name = answer.items.department;
+                    view.$save({}, (result:any):void => {
+                        if (result) {
+                            if (result.code == 0) {
+                                $scope.progress = true;
+                                List(ViewQuery, {}, (data:any):void  => {
+                                    $scope.Departments = data;
+                                    $scope.progress = false;
+                                    $mdToast.show($mdToast.simple().content(result.message));
+
+                                });
+                            } else {
+                                $mdToast.show($mdToast.simple().content(result.message));
+                            }
+                        } else {
+                            $mdToast.show($mdToast.simple().content("save error"));
+                        }
+                    });
+                }, ():void => { // Cancel
+                });
+        };
+
+        $scope.showDepartmentCopyDialog = (id:any):void => {
+            var view:any = new View();
+            view.$get({id: id}, (data:any):void => {
+                $mdDialog.show({
+                    controller: 'DepartmentCopyDialogController',
+                    templateUrl: '/backend/partials/edit/departmentcopydialog',
+                    targetEvent: null,
+                    locals: {
+                        items: view
+                    }
+                }).then((answer:any):void => { // Answer
+                    var view:any = new ViewCreate();
+                    view.Pages = data.value.Pages;
                     view.Name = answer.items.department;
                     view.$save({}, (result:any):void => {
                         if (result) {
@@ -781,6 +816,7 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                     });
                 }, ():void => { // Cancel
                 });
+            });
         };
 
         $scope.DepartmentUpdate = (id:any):void => {
@@ -826,6 +862,10 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
     ($scope:any, $state:any, $mdDialog:any, $mdToast:any, CurrentView:any, View:any):void  => {
 
         $scope.Pages = CurrentView.Data.Pages;
+
+        $scope.back = () => {
+            window.history.back();
+        };
 
         $scope.up = (index:number) => {
             if (index > 0) {
@@ -878,31 +918,6 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
                         picture: []
                     };
 
-                    /*     var nextbutton = {
-                     label: "次へ",
-                     name: "次へ",
-                     model: "",
-                     type: "button",
-                     validate: true,
-                     path: "/browse/" + next,
-                     class: "md-accent"
-                     };
-                     page.items.push(nextbutton);
-
-                     if (prev >= 0) {
-                     var prevbutton = {
-                     label: "戻る",
-                     name: "戻る",
-                     model: "",
-                     type: "button",
-                     validate: false,
-                     path: "/browse/" + prev,
-                     class: "md-primary"
-                     };
-                     page.items.push(prevbutton);
-                     }
-                     */
-
                     CurrentView.Data.Pages.push(page);
 
                 }, ():void => { // Cancel
@@ -933,6 +948,10 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
     ($scope:any, $state:any, $mdDialog:any, CurrentView:any, View:any):void  => {
 
         $scope.Page = CurrentView.Data.Pages[CurrentView.Page];
+
+        $scope.back = () => {
+                window.history.back();
+        };
 
         $scope.up = (index:number) => {
             if (index > 0) {
@@ -1565,13 +1584,22 @@ controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog', 
 controllers.controller('DepartmentCreateDialogController', ['$scope', '$mdDialog', 'ViewQuery',
     ($scope:any, $mdDialog:any, ViewQuery:any):void  => {
 
-        //  $scope.categories = [];
+        $scope.hide = ():void => {
+            $mdDialog.hide();
+        };
 
-        /*List(ViewQuery, {}, (data:any):void  => {
-         _.each(data,(item, index):void => {
-         $scope.categories.push(item.Name);
-         });
-         });*/
+        $scope.cancel = ():void => {
+            $mdDialog.cancel();
+        };
+
+        $scope.answer = (answer:any):void => {
+            $mdDialog.hide($scope);
+        };
+
+    }]);
+
+controllers.controller('DepartmentCopyDialogController', ['$scope', '$mdDialog', 'ViewQuery', 'items',
+    ($scope:any, $mdDialog:any, ViewQuery:any, items:any):void  => {
 
         $scope.hide = ():void => {
             $mdDialog.hide();
@@ -1715,9 +1743,12 @@ controllers.controller('NumericCreateDialogController', ['$scope', '$mdDialog',
 
     }]);
 
-controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog',
-    ($scope:any, $mdDialog:any):void  => {
+controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog',"$timeout", 'Upload',
+    ($scope:any, $timeout:any, Upload:any, $mdDialog:any):void  => {
 
+        $scope.showUpload = ():void => {
+           fileUpload($scope, $timeout, Upload, "a");
+        };
 
         $scope.hide = ():void => {
             $mdDialog.hide();

@@ -2,19 +2,19 @@ extends layout.jade
 
 block content
 
-    body(ng-app="TopApplication", layout-fill, style="background-color: #81D4FA;")
+    body.background(ng-app="TopApplication")
         md-toolbar(md-scroll-shrink)
             .md-toolbar-tools(layout="row", layout-align="end center")
                 h3(flex)
-                    span TOP
+                    span wmonsin
                 div(layout="row")
-                    md-button.md-raised.md-primary(ng-href='/front/#/browseS', aria-label="", ng-bind="'front' | message")
-                    md-button.md-raised.md-primary(ng-href='/backend/#/start', aria-label="", ng-bind="'stuff' | message")
+                    md-button.md-raised.md-accent(ng-href='/front/#/browseS', aria-label="", ng-bind="'front' | message")
+                    md-button.md-raised.md-accent(ng-href='/backend/#/start', aria-label="", ng-bind="'stuff' | message")
         div(ui-view="")
 
 block include
 
-    if state == "debug"
+    if (state === "deveropment")
         script(type="text/javascript", src="javascripts/TopApplication.js")
         script(type="text/javascript", src="javascripts/TopControllers.js")
     else

@@ -1,12 +1,12 @@
-extends layout.jade
+extends ../layout.jade
 block content
 
-    body.background(layout="column" ng-app="PatientsApplication")
+    body.background(ng-app="PatientsApplication")
         div(ui-view="")
 
 block include
 
-    if state == "debug"
+    if (state === "deveropment")
         script(type="text/javascript", src="javascripts/PatientsApplication.js")
         script(type="text/javascript", src="javascripts/PatientsControllers.js")
         script(type="text/javascript", src="../javascripts/TopControllers.js")

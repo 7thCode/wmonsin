@@ -40,6 +40,16 @@ md-dialog(flex)
                             div(ng-message="required") {{'required' | message}}
                             div(ng-message="md-maxlength") {{'maxlength' | message}}
 
+
+                md-button.md-primary.md-raised(ngf-select="", ngf-multiple="false",ng-click="showUpload()") ファイルを参照
+
+
+
+
+
+
                 md-divider
                 div.md-actions(layout="row", layout-align="space-around center")
                     md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") 登録
+
+

@@ -27,4 +27,4 @@ md-dialog(flex)
 
             md-divider
             div.md-actions(layout="row", layout-align="space-around center")
-                md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") 登録
+                md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid && hasname()", aria-label="") 登録

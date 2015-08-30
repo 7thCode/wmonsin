@@ -5,16 +5,10 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-///<reference path="../../../../DefinitelyTyped/lib.d.ts"/>
-///<reference path="../../../../DefinitelyTyped/angularjs/angular.d.ts"/>
-///<reference path="../../../../DefinitelyTyped/angularjs/angular-resource.d.ts"/>
-///<reference path="../../../../DefinitelyTyped/socket.io/socket.io.d.ts" />
-///<reference path="../../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
-///<reference path="../../../../DefinitelyTyped/lodash/lodash.d.ts" />
 
 'use strict';
 
-var controllers:angular.IModule = angular.module('PatientsControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate','pascalprecht.translate']);
+var controllers:angular.IModule = angular.module('PatientsControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate']);
 
 class Browser {
     public name:string;

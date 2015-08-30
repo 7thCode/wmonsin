@@ -1,9 +1,4 @@
-@import url(http://fonts.googleapis.com/earlyaccess/notosansjapanese.css);
-
-body, html {
-  height: 100%;
-}
-
+//font
 body * {
   font-family: 'Noto Sans Japanese', sans-serif;
 }
@@ -18,25 +13,8 @@ h3, h4, h5 {
   font-weight: 700;
 }
 
-#container {
-  width: 100%;
-  position: relative;
-  height: auto !important;
-  height: 100%;
-  min-height: 100%;
-}
 
-#contents {
-  padding-bottom: 100px;
-}
-
-#footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 100px;
-}
-
+//rainbow
 .child {
   background: rgba(98, 135, 167, .5);
   position: absolute;
@@ -153,6 +131,29 @@ h3, h4, h5 {
   }
 }
 
+body {
+  -webkit-transform: perspective(1400px) matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  -webkit-transform-style: preserve-3d;
+  background-color: transparent;
+}
+
+body .gwd-gen-2efjgwdanimation {
+  -webkit-animation: gwd-gen-2efjgwdanimation_gwd-keyframes 0.5s linear 0s 1 normal forwards;
+}
+
+@-webkit-keyframes gwd-gen-2efjgwdanimation_gwd-keyframes {
+  0% {
+    -webkit-transform: matrix3d(-0.263937797, 0, -0.9645397033, 0, 0, 1, 0, 0, 0.9645397033, 0, -0.263937797, 0, 0, 0, 0, 1);
+    -webkit-animation-timing-function: linear;
+  }
+  100% {
+    -webkit-transform: matrix3d(0.9999627356, 0, -0.0086329221, 0, 0, 1, 0, 0, 0.0086329221, 0, 0.9999627356, 0, 0, 0, 0, 1);
+    -webkit-animation-timing-function: linear;
+  }
+}
+
+
+//angular-animate
 .ng-enter,
 .ng-leave,
 .ng-move {
@@ -184,31 +185,63 @@ h3, h4, h5 {
   opacity: 1;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0px;
+
+
+
+//customize
+.department-content {
+  background-color: #A0A0FF;
 }
 
-body {
-  -webkit-transform: perspective(1400px) matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-  -webkit-transform-style: preserve-3d;
-  background-color: transparent;
+.department-progress-circular {
+  position:absolute;
+  top:50%;
+  left:50%;
 }
 
-body .gwd-gen-2efjgwdanimation {
-  -webkit-animation: gwd-gen-2efjgwdanimation_gwd-keyframes 0.5s linear 0s 1 normal forwards;
+.department-button(@background-color:#FF1744) {
+  background-color:@background-color;
+  z-index:1;
 }
 
-@-webkit-keyframes gwd-gen-2efjgwdanimation_gwd-keyframes {
-  0% {
-    -webkit-transform: matrix3d(-0.263937797, 0, -0.9645397033, 0, 0, 1, 0, 0, 0.9645397033, 0, -0.263937797, 0, 0, 0, 0, 1);
-    -webkit-animation-timing-function: linear;
-  }
-  100% {
-    -webkit-transform: matrix3d(0.9999627356, 0, -0.0086329221, 0, 0, 1, 0, 0, 0.0086329221, 0, 0.9999627356, 0, 0, 0, 0, 1);
-    -webkit-animation-timing-function: linear;
-  }
+.department-button1 {
+  .department-button(#FF1744);
+}
+
+.department-button2 {
+  .department-button(#FFB300);
+}
+
+.department-button3 {
+  .department-button(#64ffda);
+}
+
+.department-button4 {
+  .department-button(#69F0AE);
+}
+
+.department-button5 {
+  .department-button(#6570cc);
+}
+
+.department-button6 {
+  .department-button(#ff5050);
+}
+
+
+.department-button-icon(@top: 6px, @left: 1px) {
+  position:relative;
+  top:@top;
+  left:@left;
+  fill:#eeeeee;
+}
+
+.department-button1-icon {
+  .department-button-icon;
+}
+
+.department-button2-icon {
+  .department-button-icon(10px,0px);
 }
 
 .background {
@@ -217,4 +250,16 @@ body .gwd-gen-2efjgwdanimation {
 
 .iconfill {
   fill: #eeeeee;
+}
+
+.iconfill-blue {
+  fill: #4DD0E1;
+}
+
+.iconfill-pink {
+  fill: #F06292;
+}
+
+.menu-button {
+  top: 30px;
 }

@@ -5,15 +5,10 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-///<reference path="../../../../DefinitelyTyped/lib.d.ts"/>
-///<reference path="../../../../DefinitelyTyped/angularjs/angular.d.ts"/>
-///<reference path="../../../../DefinitelyTyped/socket.io/socket.io.d.ts" />
-///<reference path="../../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
-///<reference path="../../../../DefinitelyTyped/lodash/lodash.d.ts" />
 
 'use strict';
 
-var app:angular.IModule = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers', 'pascalprecht.translate']);
+var app:angular.IModule = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers']);
 
 /*
 app.config(['$translateProvider', function($translateProvider) {
@@ -30,9 +25,11 @@ app.config(['$translateProvider', function($translateProvider) {
 }]);
 */
 
-app.config(['$stateProvider', '$urlRouterProvider','$compileProvider', ($stateProvider:any, $urlRouterProvider:any, $compileProvider:any):void => {
+app.config(['$stateProvider', '$urlRouterProvider','$compileProvider','$httpProvider', ($stateProvider:any, $urlRouterProvider:any, $compileProvider:any, $httpProvider:any):void => {
 
     $compileProvider.debugInfoEnabled(false);
+
+    $httpProvider.defaults.headers.common = {'x-requested-with': 'XMLHttpRequest'};
 
     $stateProvider
 

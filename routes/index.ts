@@ -5,17 +5,18 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-/// <reference path="../../DefinitelyTyped/lib.d.ts"/>
-/// <reference path="../../DefinitelyTyped/node/node.d.ts" />
-/// <reference path="../../DefinitelyTyped/express/express.d.ts" />
-/// <reference path="../../DefinitelyTyped/mongoose/mongoose.d.ts" />
-/// <reference path="result.d.ts" />
 
 'use strict';
 
 var express = require('express');
 var emitter = require('events').EventEmitter;
 var _ = require('lodash');
+
+var mongoose = require('mongoose');
+var grid = require('gridfs-stream');
+var multiparty = require('connect-multiparty');
+var multipart = multiparty();
+
 var phantom = require('phantom');
 
 var Patient = require('./patient');
@@ -36,7 +37,7 @@ var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
 
-var onfigure = require('./configure');
+var configure = require('./configure');
 
 var result = require('./result');
 
@@ -52,20 +53,21 @@ var result = require('./result');
 
 module.exports = router;
 
-User(
-    "root",
-    ():void => {
+// root user
+FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any) => {
+    if (!account) {
         Account.register(new Account({username: config.user, type: "Admin"}),
             config.password,
             function (error, account) {
                 if (!error) {
+
                 }
             });
-    },
-    (message:string, error:any):void => {
+    } else {
     }
-);
+});
 
+// view 初期化
 View.count({}, (counterror:any, count:number):void => {
     if (!counterror) {
         if (count <= 0) {
@@ -78,7 +80,7 @@ View.count({}, (counterror:any, count:number):void => {
                 });
             });
 
-            var config = new onfigure;
+            var config = new configure;
             var views = config.initView.Views;
             _.each(views, function (data, index) {
                 ev.emit("view", data);
@@ -99,7 +101,6 @@ function DeCipher(name:any, password:any):any {
     decrypted += decipher.final('utf8');
     return decrypted;
 }
-
 
 
 function GetView(name:string, success:any, notfound:any, error:any):void {
@@ -124,20 +125,25 @@ function BasicHeader(response:any, session:any):any {
     return response;
 }
 
-function Guard(req:any, res:any, callback:(req:any, res:any) => void, message:string):void {
+function Guard(req:any, res:any, callback:(req:any, res:any) => void):void {
     try {
-        res = BasicHeader(res, "");
-        callback(req, res);
+        if (req.headers["x-requested-with"] === 'XMLHttpRequest')
+        {
+            res = BasicHeader(res, "");
+            callback(req, res);
+        } else {
+            SendResult(res, 1, '', {});
+        }
     } catch (e) {
-        SendResult(res, 100000, message, e);
+        SendResult(res, 100000, e.message, e);
     }
 }
 
-function Authenticate(req:any, res:any, code:number, callback:(user:any, res:any) => void, message:string):void {
+function Authenticate(req:any, res:any, code:number, callback:(user:any, res:any) => void):void {
     if (req.user) {
         callback(req.user, res);
     } else {
-        SendResult(res, code + 2, message, {});
+        SendResult(res, code + 2, "Unacceptable", {});
     }
 }
 
@@ -151,20 +157,6 @@ function FindById(res:any, code:number, model:any, id:any, callback:(res:any, ob
             }
         } else {
             SendResult(res, code + 100, "", error);
-        }
-    });
-}
-
-function User(name:any, success:any, error:any):void {
-    Account.findOne({username: name}, (finderror:any, doc:any):void => {
-        if (!finderror) {
-            if (doc == null) {
-                success();
-            } else { //already
-                error("Already Found", {});
-            }
-        } else {
-            error("Find Error", finderror);
         }
     });
 }
@@ -295,6 +287,10 @@ router.get('/backend/partials/account/accountdialog', (req:any, res:any):void =>
 
 router.get('/backend/partials/edit/departmentcreatedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/departmentcreatedialog');
+});
+
+router.get('/backend/partials/edit/departmentcopydialog', (req:any, res:any):void => {
+    res.render('backend/partials/edit/departmentcopydialog');
 });
 
 router.get('/backend/partials/edit/departmentdeletedialog', (req:any, res:any):void => {
@@ -434,96 +430,89 @@ router.get('/front/partials/write', (req:any, res:any):void => {
 /*! create */
 router.post('/patient/accept', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any):void => {
-        var patient:any = new Patient();
-        patient.Information = req.body.Information;
-        patient.Date = new Date();
-        patient.Category = req.body.Category;
-        //patient.Sequential = req.body.Sequential;
-
-        //    var now =  patient.Date;
-
-        //    var hour =  ("0"+ now.getHours()).slice(-2); // 時
-        //    var min = ("0"+ now.getMinutes()).slice(-2); // 時 ;
-        //    var sec = ("0"+ now.getSeconds()).slice(-2); // 時 ;
-
-        //    patient.Information.time = hour + ":" + min + ":" + sec;
-
-        //t0S　ーーhoke
-        //t01 --なまえ
-
+        var number:number = 1000;
         //同時に同名でないこと（自動Accept対策)
-        var query = {"$and": [{'Information.name': patient.Information.name}, {'Information.time': patient.Information.time}]};
-        Find(res, 1000, Patient, query, {}, {}, (res:any, docs:any) => {
+        var query = {"$and": [{'Information.name': req.body.Information.name}, {'Information.time': req.body.Information.time}]};
+        Find(res, number, Patient, query, {}, {}, (res:any, docs:any) => {
             if (docs.length == 0) {
+                var patient:any = new Patient();
+                patient.Information = req.body.Information;
+                patient.Date = new Date();
+                patient.Category = req.body.Category;
                 patient.Status = req.body.Status;
                 patient.Input = req.body.Input;
                 patient.Sequential = req.body.Sequential;
-                Save(res, 1000, patient, (res:any, patient:any) => {
+                Save(res, number, patient, (res:any, patient:any) => {
                     SendResult(res, 0, "OK", patient.Status);
                 });
             } else {
-                SendResult(res, 1000+10, "", {});
+                SendResult(res, number + 10, "", {});
             }
         });
-    }, "patient accept ");
+    });
 });
 
 /*! get */
 router.get('/patient/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 2000, (user:any, res:any) => {
-            FindById(res, 2000, Patient, req.params.id, (res, patient) => {
+        var number:number = 2000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            FindById(res, number, Patient, req.params.id, (res, patient) => {
                 SendResult(res, 0, "OK", patient);
             });
-        }, "");
-    }, "patient get e.message");
+        });
+    });
 });
 
 /*! update */
 router.put('/patient/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 2000, (user:any, res:any) => {
-            FindById(res, 3000, Patient, req.params.id, (res, patient) => {
+        var number:number = 3000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            FindById(res, number, Patient, req.params.id, (res, patient) => {
                 patient.Status = req.body.Status;
                 patient.Input = req.body.Input;
                 patient.Sequential = req.body.Sequential;
-                Save(res, 3000, patient, (res:any, patient:any) => {
+                Save(res, number, patient, (res:any, patient:any) => {
                     SendResult(res, 0, "OK", patient);
                 });
             });
-        }, "");
-    }, "atient put");
+        });
+    });
 });
 
 /*! delete */
 router.delete('/patient/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 4000, (user:any, res:any) => {
-            If(res, 4000, (user.type != "Viewer"), (res:any) => {
-                Remove(res, 4000, Patient, req.params.id, (res:any) => {
+        var number:number = 4000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            If(res, number, (user.type != "Viewer"), (res:any) => {
+                Remove(res, number, Patient, req.params.id, (res:any) => {
                     SendResult(res, 0, "OK", {});
                 });
             });
-        }, "");
-    }, "atient delete");
+        });
+    });
 });
 
 /*! query */
 router.get('/patient/query/:query', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 5000, (user:any, res:any) => {
+        var number:number = 5000;
+        Authenticate(req, res, number, (user:any, res:any) => {
             var query = JSON.parse(decodeURIComponent(req.params.query));
-            Find(res, 5000, Patient, query, {}, {sort: {Date: -1}}, (res:any, docs:any):any => {
+            Find(res, number, Patient, query, {}, {sort: {Date: -1}}, (res:any, docs:any):any => {
                 SendResult(res, 0, "OK", docs);
             });
-        }, "");
-    }, "patient query");
+        });
+    });
 });
 
 /*! query */
 router.get('/patient/count/:query', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 2000, (user:any, res:any) => {
+        var number:number = 6000;
+        Authenticate(req, res, number, (user:any, res:any) => {
             var query = JSON.parse(decodeURIComponent(req.params.query));
             Patient.count(query, (error:any, docs:any):void => {
                 if (!error) {
@@ -533,52 +522,52 @@ router.get('/patient/count/:query', (req:any, res:any):void => {
                         SendResult(res, 0, "OK", 0);
                     }
                 } else {
-                    SendResult(res, 6000 + 100, "", error);
+                    SendResult(res, number + 100, "", error);
                 }
             });
-        }, "");
-    }, "patient query");
+        });
+    });
 });
 
 /*! status */
 router.get('/patient/status/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 2000, (user:any, res:any) => {
-            FindById(res, 7000, Patient, req.params.id, (res, patient) => {
+        var number:number = 7000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            FindById(res, number, Patient, req.params.id, (res, patient) => {
                 SendResult(res, 0, "OK", patient.Status);
             });
-        }, "");
-    }, "patient status get");
+        });
+    });
 });
 
 router.put('/patient/status/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 8000, (user:any, res:any) => {
-            If(res, 8000, (user.type != "Viewer"), (res:any) => {
-                FindById(res, 8000, Patient, req.params.id, (res, patient) => {
+        var number:number = 8000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            If(res, number, (user.type != "Viewer"), (res:any) => {
+                FindById(res, number, Patient, req.params.id, (res, patient) => {
                     patient.Status = req.body.Status;
-                    Save(res, 8000, patient, (res:any, patient:any) => {
+                    Save(res, number, patient, (res:any, patient:any) => {
                         SendResult(res, 0, "OK", patient.Status);
                     });
                 });
             });
-        }, "");
-    }, "patient status put");
+        });
+    });
 });
 
 /*! account */
 /*! create */
 router.post('/account/create', (request:any, response:any):void => {
     Guard(request, response, (request:any, response:any) => {
-        var username = request.body.username;
-        var password = request.body.password;
-        var type = request.body.type;
-        Authenticate(request, response, 2000, (user:any, res:any) => {
-            If(res, 9000, (user.type != "Viewer"), (res:any) => {
-                FindOne(res, 9000, Account, {username: request.body.username.toLowerCase()}, (res:any, account:any) => {
+        var number:number = 9000;
+        Authenticate(request, response, number, (user:any, res:any) => {
+            If(res, number, (user.type != "Viewer"), (res:any) => {
+                FindOne(res, number, Account, {username: request.body.username.toLowerCase()}, (res:any, account:any) => {
                     if (!account) {
-                        Account.register(new Account({username: username, type: request.body.type}),
-                            password,
+                        Account.register(new Account({username: request.body.username, type: request.body.type}),
+                            request.body.password,
                             function (error, account) {
                                 if (!error) {
                                     SendResult(res, 0, "OK", account);
@@ -589,8 +578,8 @@ router.post('/account/create', (request:any, response:any):void => {
                     }
                 });
             });
-        }, "");
-    }, "account create");
+        });
+    });
 });
 
 /*! logout */
@@ -598,12 +587,13 @@ router.post('/account/logout', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
         req.logout();
         SendResult(res, 0, "OK", {});
-    }, "account logout");
+    });
 });
 
 /*! login */
 router.post('/account/login', function (request, response, next) {
     passport.authenticate('local', function (error, user, info) {
+        var number:number = 10000;
         try {
             if (!error) {
                 if (user) {
@@ -611,14 +601,14 @@ router.post('/account/login', function (request, response, next) {
                         if (!error) {
                             SendResult(response, 0, "OK", user);
                         } else {
-                            SendResult(response, 10000 + 1, "", {});
+                            SendResult(response, number + 1, "", {});
                         }
                     });
                 } else {
-                    SendResult(response, 10000 + 2, "", {});
+                    SendResult(response, number + 2, "", {});
                 }
             } else {
-                SendResult(response, 10000 + 3, "", {});
+                SendResult(response, number + 3, "", {});
             }
         } catch (e) {
             SendResult(response, 100000, e.message, e);
@@ -629,200 +619,213 @@ router.post('/account/login', function (request, response, next) {
 /*! get */
 router.get('/account/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 11000, (user:any, res:any) => {
-            FindById(res, 11000, Account, req.params.id, (res, account) => {
+        var number:number = 11000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            FindById(res, number, Account, req.params.id, (res, account) => {
                 SendResult(res, 0, "OK", account);
             });
-        }, "");
-    }, "account get");
+        });
+    });
 });
 
 /*! update */
 router.put('/account/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 12000, (user:any, res:any) => {
-            If(res, 12000, (user.type != "Viewer"), (res:any) => {
-                FindById(res, 12000, Account, req.params.id, (res, account) => {
-                    var account2 = account;
-                    account2.username = req.body.username;
-                    account2.type = req.body.type;
-                    Save(res, 12000, account2, (res:any, account:any) => {
+        var number:number = 12000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            If(res, number, (user.type != "Viewer"), (res:any) => {
+                FindById(res, number, Account, req.params.id, (res, account) => {
+                    account.username = req.body.username;
+                    account.type = req.body.type;
+                    Save(res, number, account, (res:any, account:any) => {
                         SendResult(res, 0, "OK", account);
                     });
                 });
             });
-        }, "");
-    }, "account put");
+        });
+    });
 });
 
 /*! delete */
 router.delete('/account/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 13000, (user:any, res:any) => {
-            If(res, 13000, (user.type != "Viewer"), (res:any) => {
-                Remove(res, 13000, Account, req.params.id, (res:any) => {
+        var number:number = 13000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            If(res, number, (user.type != "Viewer"), (res:any) => {
+                Remove(res, number, Account, req.params.id, (res:any) => {
                     SendResult(res, 0, "OK", {});
                 });
             });
-        }, "");
-    }, "account delete");
+        });
+    });
 });
 
 /*! query */
 router.get('/account/query/:query', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 14000, (user:any, res:any) => {
+        var number:number = 14000;
+        Authenticate(req, res, number, (user:any, res:any) => {
             var query:any = JSON.parse(decodeURIComponent(req.params.query));
-            Find(res, 14000, Account, query, {}, {}, (res:any, docs:any) => {
+            Find(res, number, Account, query, {}, {}, (res:any, docs:any) => {
                 SendResult(res, 0, "OK", docs);
             });
-        }, "");
-    }, "account query");
+        });
+    });
 });
 
 /*! update */
 router.put('/account/password/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 15000, (user:any, res:any) => {
-            If(res, 15000, (user.type != "Viewer"), (res:any) => {
-                FindById(res, 15000, Account, req.params.id, (res, account) => {
+        var number:number = 15000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+          //  If(res, number, (user.type != "Viewer"), (res:any) => {
+                FindById(res, number, Account, req.params.id, (res, account) => {
                     account.setPassword(req.body.password, function (error) {
                         if (!error) {
-                            Save(res, 15000, account, (res:any, account:any) => {
+                            Save(res, number, account, (res:any, account:any) => {
                                 SendResult(res, 0, "OK", account);
                             });
                         } else {
-                            SendResult(res, 15000 + 200, "", error);
+                            SendResult(res, number + 200, "", error);
                         }
                     });
                 });
-            });
-        }, "");
-    }, "account password");
+          //  });
+        });
+    });
 });
 
 /*! config */
 /*! get */
 router.get('/config', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 2000, (user:any, res:any) => {
+        var number:number = 16000;
+        Authenticate(req, res, number, (user:any, res:any) => {
             SendResult(res, 0, "OK", config);
-        }, "");
-    }, "config get");
+        });
+    });
 });
 
 /*! update */
 router.put('/config', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 17000, (user:any, res:any) => {
-            If(res, 17000, (user.type != "Viewer"), (res:any) => {
+        var number:number = 17000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            If(res, number, (user.type != "Viewer"), (res:any) => {
                 config = req.body.body;
                 fs.writeFile('config/config.json', JSON.stringify(config), (error:any):void => {
                     if (!error) {
                         SendResult(res, 0, "OK", config);
                     } else {
-                        SendResult(res, 17000 + 1, "", error);
+                        SendResult(res, number + 1, "", error);
                     }
                 });
             });
-        }, "");
-    }, "config put");
+        });
+    });
 });
 
 /*! views */
 /*! create view */
 router.post('/view', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
+        var number:number = 18000;
         var view:any = new View();
         var data:any = req.body.data;
         var viewdata:any = JSON.parse(data);
         view.Pages = viewdata.Pages;
         view.Name = viewdata.Name;
-        Save(res, 18000, view, (res:any, view:any) => {
+        Save(res, number, view, (res:any, view:any) => {
             SendResult(res, 0, "OK", view);
         });
-    }, "config create");
+    });
 });
 
 router.post('/view/create', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 19000, (user:any, res:any) => {
-            If(res, 19000, (user.type != "Viewer"), (res:any) => {
+        var number:number = 19000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            If(res, number, (user.type != "Viewer"), (res:any) => {
                 View.count({Name: req.body.Name}, (error:any, count:number):void => {
                     if (!error) {
                         if (count == 0) {
                             var view:any = new View();
                             view.Name = req.body.Name;
-                            view.Pages = [];
-                            Save(res, 19000, view, (res:any, view:any) => {
+                            view.Pages = req.body.Pages;
+                            Save(res, number, view, (res:any, view:any) => {
                                 SendResult(res, 0, "OK", view);
                             });
                         } else {
-                            SendResult(res, 19000 + 1, "", {});
+                            SendResult(res, number + 1, "Already Found.", {});
                         }
                     } else {
-                        SendResult(res, 19000 + 20, "", error);
+                        SendResult(res, number + 20, "", error);
                     }
                 });
             });
-        }, "");
-    }, "view create");
+        });
+    });
 });
 
 /*! get view */
 router.get('/view/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        FindById(res, 20000, View, req.params.id, (res, view) => {
+        var number:number = 20000;
+        FindById(res, number, View, req.params.id, (res, view) => {
             SendResult(res, 0, "OK", view);
         });
-    }, "view get");
+    });
 });
 
 /*! update */
 router.put('/view/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 21000, (user:any, res:any) => {
-            If(res, 21000, (user.type != "Viewer"), (res:any) => {
-                FindById(res, 21000, View, req.params.id, (res, view) => {
+        var number:number = 21000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            If(res, number, (user.type != "Viewer"), (res:any) => {
+                FindById(res, number, View, req.params.id, (res, view) => {
                     view.Name = req.body.Name;
                     view.Pages = req.body.Pages;
-                    Save(res, 21000, view, (res:any, object:any) => {
+                    Save(res, number, view, (res:any, object:any) => {
                         SendResult(res, 0, "OK", view);
                     });
                 });
             });
-        }, "");
-    }, "view put");
+        });
+    });
 });
 
 /*! delete */
 router.delete('/view/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 22000, (user:any, res:any) => {
-            If(res, 22000, (user.type != "Viewer"), (res:any) => {
-                Remove(res, 22000, View, req.params.id, (res:any) => {
+        var number:number = 22000;
+        Authenticate(req, res, number, (user:any, res:any) => {
+            If(res, number, (user.type != "Viewer"), (res:any) => {
+                Remove(res, number, View, req.params.id, (res:any) => {
                     SendResult(res, 0, "OK", {});
                 });
             });
-        }, "");
-    }, "view delete");
+        });
+    });
 });
 
 /*! query */
 router.get('/view/query/:query', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
-        Authenticate(req, res, 23000, (user:any, res:any) => {
+        var number:number = 23000;
+        Authenticate(req, res, number, (user:any, res:any) => {
             var query:any = JSON.parse(decodeURIComponent(req.params.query));
-            Find(res, 23000, View, {}, {}, {}, (res:any, views:any) => {
+            Find(res, number, View, {}, {}, {}, (res:any, views:any) => {
                 SendResult(res, 0, "OK", views);
             });
-        }, "");
-    }, "view query");
+        });
+    });
 });
 
 /*! PDF */
 router.get('/pdf/:id', function (request, response, next) {
     try {
+        var number:number = 24000;
         response.header('Content-type', 'application/pdf');
         var id:string = request.params.id;
         phantom.create(function (ph) {
@@ -835,7 +838,7 @@ router.get('/pdf/:id', function (request, response, next) {
                                 SendResult(response, 0, "OK", "output" + id + ".pdf");
                             }
                             else {
-                                SendResult(response, 24000 + 1, "", error);
+                                SendResult(response, number + 1, "", error);
                             }
                         });
                     });
@@ -844,9 +847,55 @@ router.get('/pdf/:id', function (request, response, next) {
         });
     }
     catch (e) {
-        response.send(JSON.stringify(new result(100000, "exception " + e.message, e)));
+        SendResult(response, 100000, e.message, e);
     }
 });
+
+router.get('/image/:id', function (request, response) {
+    try {
+        var conn = mongoose.createConnection(config.connection);
+        conn.once('open', function (error) {
+            if (!error) {
+                var gfs = grid(conn.db, mongoose.mongo); //missing parameter
+                var object_id = mongoose.Types.ObjectId(request.params.id);
+                var readstream = gfs.createReadStream({_id: object_id});
+                if (readstream) {
+                    readstream.pipe(response);
+                    readstream.on('close', function (file) {
+                        conn.db.close();
+                    });
+                }
+            }
+        });
+    } catch (e) {
+        SendResult(response, 100000, e.message, e);
+    }
+});
+
+router.post('/image/upload', multipart, function (request, response) {
+    try {
+        var conn = mongoose.createConnection(config.connection);
+        conn.once('open', function (error) {
+            if (!error) {
+                var gfs = grid(conn.db, mongoose.mongo); //missing parameter
+                var writestream = gfs.createWriteStream({filename: request.files.myFile.name});
+                fs.createReadStream(request.files.myFile.path).pipe(writestream);
+                writestream.on('close', function (file) {
+                    conn.db.close();
+                    SendResult(response, 0, "OK", file);
+                });
+            } else {
+                SendResult(response, 150, "upload error", error);
+            }
+        });
+    } catch (e) {
+        SendResult(response, 100000, e.message, e);
+    }
+});
+
+
+
+
 
 
 //Test area

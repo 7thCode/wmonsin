@@ -4,10 +4,7 @@
  This software is released under the MIT License.
  http://opensource.org/licenses/mit-license.php
  */
-
-/// <reference path="../../DefinitelyTyped/lib.d.ts"/>
-/// <reference path="../../DefinitelyTyped/node/node.d.ts" />
-/// <reference path="../../DefinitelyTyped/express/express.d.ts" />
+'use strict';
 
 class Result {
     private code:number;

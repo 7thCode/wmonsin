@@ -5,11 +5,6 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-/// <reference path="../DefinitelyTyped/lib.d.ts"/>
-/// <reference path="../DefinitelyTyped/node/node.d.ts" />
-/// <reference path="../DefinitelyTyped/express/express.d.ts" />
-/// <reference path="../DefinitelyTyped/mongoose/mongoose.d.ts" />
-
 'use strict';
 
 var express = require('express');
@@ -46,34 +41,19 @@ var mongoose = require('mongoose');
 var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
+config.state = app.get('env');
+
 
 var MongoStore = require('connect-mongo')(session);
 var options = {server: {socketOptions: {connectTimeoutMS: 1000000}}};
 mongoose.connect(config.connection, options);
-
-/*
-app.use(session(
-    {
-        secret: config.key0,
-        store: new MongoStore(
-            {
-                url: config.connection,
-                ttl: 365 * 24 * 60 * 60
-            }
-        ),
-        cookie: {
-            httpOnly: false,
-            maxAge: new Date(Date.now() + (365 * 24 * 60 * 60 * 1000))
-        }
-    }));
-*/
 
 app.use(session({
     secret: config.key0,
     resave: false,
     saveUninitialized: true,
     cookie: {
-        maxAge: 365 * 24 * 60 * 60
+        maxAge: 365 * 24 * 60 * 60 *1000
     },
     store: new MongoStore({
         mongooseConnection: mongoose.connection
@@ -103,21 +83,28 @@ passport.use(new LocalStrategy(Account.authenticate()));
 //passport
 
 // catch 404 and forward to error handler
-app.use(function (req:any, res:any, next:any):void {
-    //  var error = new Error('Not Found');
-    //  error.status = 404;
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Pragma", "no-cache");
-    res.header("Cache-Control", "no-cache");
-    res.contentType('application/json');
-    res.send("code:404, message:'not found',value:{}, token:''");
-    next();
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
-// production error handler
-// no stacktraces leaked to user
-//app.use(function (err:any, req:any, res:any, next:any):void {
-//   res.send(JSON.stringify(new Result(2, "create", "auth error")));
-//});
+if (app.get('env') === 'development') {
+    app.use((err:any, req:any, res:any, next:any):void => {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: err
+        });
+    });
+}
+
+app.use((err:any, req:any, res:any, next:any):void => {
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
+});
 
 module.exports = app;

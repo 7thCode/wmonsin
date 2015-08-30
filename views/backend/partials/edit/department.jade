@@ -12,10 +12,10 @@ md-content.background
     md-card
         md-card-header
             h1.md-headline #{content.headline}
-            md-button.md-fab(ng-click="DepartmentUpdate()", ng-if="type != 'Viewer'", aria-label="",style="background-color:#FF1744;z-index:1;")
+            md-button.md-fab(ng-click="DepartmentUpdate()", aria-label="", style="background-color:#FF1744;z-index:1;", ng-if="type != 'Viewer'")
                 ng-md-icon.department-button1-icon(icon="save", aria-label="", size="42")
                 md-tooltip #{content.save}
-            md-button.md-fab(ng-click="showPageCreateDialog()", ng-if="type != 'Viewer'", aria-label="",style="background-color:#FFB300;z-index:1;")
+            md-button.md-fab(ng-click="showPageCreateDialog()", aria-label="", style="background-color:#FFB300;z-index:1;", ng-if="type != 'Viewer'")
                 ng-md-icon.department-button1-icon(icon="note_add", aria-label="", size="42")
                 md-tooltip #{content.add}
     md-list
@@ -25,22 +25,22 @@ md-content.background
                     div(flex) {{Page.headline}}
 
                     div(layout="row", ng-show="type != 'Viewer'")
-                        md-button.md-fab(ng-click="up($index)", aria-label="Up", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#64ffda;z-index:1;")
-                            ng-md-icon.department-button2-icon(layout-align="center center", icon="keyboard_arrow_up", size="42")
+                        md-button.md-fab(ng-click="up($index)", aria-label="Up", style="background-color:#64ffda;z-index:1;", ng-if="type != 'Viewer'")
+                            ng-md-icon.department-button2-icon(icon="keyboard_arrow_up", size="42")
                             md-tooltip #{content.up}
 
                     div(layout="row", ng-show="type != 'Viewer'")
-                        md-button.md-fab(ng-click="down($index)", aria-label="Down", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#69F0AE;z-index:1;")
-                            ng-md-icon.department-button2-icon(layout-align="center center", icon="keyboard_arrow_down", size="42")
+                        md-button.md-fab(ng-click="down($index)", aria-label="Down", style="background-color:#69F0AE;z-index:1;", ng-if="type != 'Viewer'")
+                            ng-md-icon.department-button2-icon(icon="keyboard_arrow_down", size="42")
                             md-tooltip #{content.down}
 
                     div(layout="row", ng-show="type != 'Viewer'")
-                        md-button.md-fab(ng-click="PageUpdate($index)", aria-label="Update", layout-align="center center",style="background-color:#6570cc;z-index:1;")
-                            ng-md-icon.department-button1-icon(layout-align="center center", icon="event_note", size="42")
+                        md-button.md-fab(ng-click="PageUpdate($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
+                            ng-md-icon.department-button1-icon(icon="mode_edit", size="42")
                             md-tooltip #{content.update}
 
                     div(layout="row", ng-show="type != 'Viewer'")
-                        md-button.md-fab(ng-click="showPageDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", layout-align="center center" ,style="background-color:#ff5050;z-index:1;")
-                            ng-md-icon.department-button1-icon(layout-align="center center", icon="remove", size="42")
+                        md-button.md-fab(ng-click="showPageDeleteDialog($index)", aria-label="Delete", style="background-color:#ff5050;z-index:1;", ng-if="type != 'Viewer'")
+                            ng-md-icon.department-button1-icon(icon="remove", size="42")
                             md-tooltip #{content.delete}
 

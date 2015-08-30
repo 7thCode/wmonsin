@@ -9,11 +9,6 @@
 
  */
 
-///<reference path="../../../DefinitelyTyped/lib.d.ts"/>
-///<reference path="../../../DefinitelyTyped/angularjs/angular.d.ts"/>
-///<reference path="../../../DefinitelyTyped/socket.io/socket.io.d.ts" />
-///<reference path="../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
-///<reference path="../../../DefinitelyTyped/lodash/lodash.d.ts" />
 
 var app:any = angular.module('TopApplication', ['ui.router', 'TopControllers']);
 /*
@@ -28,10 +23,12 @@ app.config(['$translateProvider', function($translateProvider) {
     $translateProvider.useLocalStorage();
 }]);
 */
-app.config(['$stateProvider', '$urlRouterProvider','$compileProvider', ($stateProvider:any, $urlRouterProvider:any, $compileProvider:any):void => {
+app.config(['$stateProvider', '$urlRouterProvider','$compileProvider','$httpProvider', ($stateProvider:any, $urlRouterProvider:any, $compileProvider:any, $httpProvider:any):void => {
 
     $compileProvider.debugInfoEnabled(false);
-    
+
+    $httpProvider.defaults.headers.common = {'x-requested-with': 'XMLHttpRequest'};
+
     $stateProvider
 
         .state('start', {
@@ -41,6 +38,7 @@ app.config(['$stateProvider', '$urlRouterProvider','$compileProvider', ($statePr
         });
 
     $urlRouterProvider.otherwise('/');
+
 }]);
 
 app.filter('message', ():Function => {

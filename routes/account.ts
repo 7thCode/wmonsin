@@ -5,11 +5,6 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-/// <reference path="../../DefinitelyTyped/lib.d.ts"/>
-/// <reference path="../../DefinitelyTyped/node/node.d.ts" />
-/// <reference path="../../DefinitelyTyped/express/express.d.ts" />
-/// <reference path="../../DefinitelyTyped/mongoose/mongoose.d.ts" />
-
 'use strict';
 
 var mongoose = require('mongoose');
