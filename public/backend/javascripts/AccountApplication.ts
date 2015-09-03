@@ -8,7 +8,7 @@
 
 'use strict';
 
-var app:angular.IModule = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers']);
+var app:angular.IModule = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers', 'ngFileUpload']);
 
 /*
 app.config(['$translateProvider', function($translateProvider) {

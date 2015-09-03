@@ -23,7 +23,7 @@
 
 'use strict';
 
-var controllers:angular.IModule = angular.module('AccountControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate','ngFileUpload']);
+var controllers:angular.IModule = angular.module('AccountControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate', 'ngFileUpload']);
 
 controllers.value('Global', {
         socket: null
@@ -186,7 +186,7 @@ function List(resource:any, query:any, success:(value:any) => void):void {
     });
 }
 
-
+/*
 
 function fileUpload($scope:any, $timeout:any, Upload:any, fileName:string):void {
 
@@ -223,7 +223,7 @@ function fileUpload($scope:any, $timeout:any, Upload:any, fileName:string):void 
     };
 }
 
-
+*/
 /*! Controllers  */
 
 controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
@@ -1743,12 +1743,25 @@ controllers.controller('NumericCreateDialogController', ['$scope', '$mdDialog',
 
     }]);
 
-controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog',"$timeout", 'Upload',
-    ($scope:any, $timeout:any, Upload:any, $mdDialog:any):void  => {
+controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog','Upload',
+    ($scope:any, $mdDialog:any, Upload:any):void  => {
 
-        $scope.showUpload = ():void => {
-           fileUpload($scope, $timeout, Upload, "a");
+        // upload on file select or drop
+        $scope.upload = function (file) {
+            Upload.upload({
+                url: 'upload/url',
+                fields: {'username': $scope.username},
+                file: file
+            }).progress(function (evt) {
+                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+            }).success(function (data, status, headers, config) {
+                console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+            }).error(function (data, status, headers, config) {
+                console.log('error status: ' + status);
+            })
         };
+
 
         $scope.hide = ():void => {
             $mdDialog.hide();

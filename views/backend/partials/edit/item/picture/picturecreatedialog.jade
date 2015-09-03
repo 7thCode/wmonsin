@@ -41,11 +41,10 @@ md-dialog(flex)
                             div(ng-message="md-maxlength") {{'maxlength' | message}}
 
 
-                md-button.md-primary.md-raised(ngf-select="", ngf-multiple="false",ng-click="showUpload()") ファイルを参照
-
-
-
-
+                //md-button.md-primary.md-raised(ngf-select="", ngf-multiple="false",ng-click="showUpload()") ファイルを参照
+                //md-button.md-primary.md-raised(ngf-select="", ng-model="FileArchPicture1", ngf-multiple="false",ng-click="openUploadPicture('ArchPicture1','FileArchPicture1')") ファイルを参照
+                //md-button.md-primary.md-raised(ngf-select="upload($file)") ファイルを参照
+                div(class="button" ngf-select="upload($file)") Upload on file select
 
 
                 md-divider

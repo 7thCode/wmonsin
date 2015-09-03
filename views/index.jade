@@ -10,11 +10,12 @@ block content
                 div(layout="row")
                     md-button.md-raised.md-accent(ng-href='/front/#/browseS', aria-label="", ng-bind="'front' | message")
                     md-button.md-raised.md-accent(ng-href='/backend/#/start', aria-label="", ng-bind="'stuff' | message")
+
         div(ui-view="")
 
 block include
 
-    if (state === "deveropment")
+    if deveropment
         script(type="text/javascript", src="javascripts/TopApplication.js")
         script(type="text/javascript", src="javascripts/TopControllers.js")
     else

@@ -3,47 +3,68 @@ block content
 
     body.background(ng-app="AccountApplication", ng-controller="ApplicationController")
 
-        md-toolbar(style="z-index:10;")
-            .md-toolbar-tools(layout-align="start center")
+        md-toolbar(style="z-index:10;", hide-gt-sm)
+            .md-toolbar-tools(layout-align="end center")
                 h3.md-display-1(flex="30", ng-bind="username + '-' + type")
+                div(flex="60")
+                div(flex="10")
+                    md-fab-speed-dial.md-fling(md-open="false", md-direction="down", style="position:relative;")
+                        md-fab-trigger
+                            md-button.md-fab(aria-label="menu")
+                                ng-md-icon(icon="menu", aria-label="", style="position:relative;top:6px;left:1px;", size="42")
+                        md-fab-actions
+                            md-button.md-fab(ng-click="goBack()", aria-label="", style="background-color:#00BCD4;z-index:10;")
+                                ng-md-icon(icon="reply", aria-label="return",style="position:relative;top:5px;fill:#009688", size="42")
+                            md-button.md-fab(ng-click="goTop()", aria-label="", style="background-color:#26969a;z-index:10;")
+                                ng-md-icon(icon="home", aria-label="Top", style="position:relative;top:5px;fill:#a0ffff", size="42")
+                            md-button.md-fab(ng-show="type == 'Admin'", ng-click="goConfig()", aria-label="", style="background-color:#EC407A;z-index:10;")
+                                ng-md-icon(icon="settings", aria-label="Config", style="position:relative;top:5px;fill:#F8BBD0", size="42")
+                            md-button.md-fab(ng-show="type != 'Viewer'", ng-click="goEdit()", aria-label="", style="background-color:#B2EBF2;z-index:10;")
+                                ng-md-icon(icon="edit", aria-label="Edit", style="position:relative;top:5px;fill:#0097A7", size="42")
+                            md-button.md-fab(ng-show="mode == 'Account'", ng-click="goPatient()", aria-label="", style="background-color:#039BE5;z-index:10;")
+                                ng-md-icon(icon="perm_identity", aria-label="Patients", style="position:relative;top:6px;fill:#B3E5FC", size="42")
+                            md-button.md-fab(ng-show="mode == 'Patient'", ng-click="goAccount()", aria-label="", style="background-color:#B3E5FC;z-index:10;")
+                                ng-md-icon(icon="face", aria-label="Account", style="position:relative;top:6px;fill:#039BE5", size="42")
+                            md-button.md-fab(ng-show="type == ''", ng-click="showLoginDialog()", aria-label="", style="background-color:#FF1744;z-index:10;")
+                                ng-md-icon(icon="check_box_outline_blank", aria-label="Account", style="position:relative;top:5px;fill:#B3E5FC", size="42")
+                            md-button.md-fab(ng-show="type != ''", ng-click="Logout()", aria-label="", style="background-color:#FF1744;z-index:10;")
+                                ng-md-icon(icon="check_box", aria-label="Account", style="position:relative;top:5px;fill:#B3E5FC", size="42")
 
-                div
+        md-toolbar(style="z-index:10;", hide-sm)
+            .md-toolbar-tools(layout="row", layout-align="end center")
+                h3.md-display-1(flex)
+                    span(ng-bind="username + '-' + type")
+                div(layout="row")
+
                     md-button.md-fab.menu-button(ng-click="goBack()", aria-label="", style="background-color:#00BCD4;z-index:10;")
                         ng-md-icon(icon="reply", aria-label="return",style="position:relative;top:5px;fill:#009688", size="42")
                         md-tooltip(ng-bind="back")
 
-                div
                     md-button.md-fab.menu-button(ng-click="goTop()", aria-label="", style="background-color:#26969a;z-index:10;")
                         ng-md-icon(icon="home", aria-label="Top", style="position:relative;top:5px;fill:#a0ffff", size="42")
                         md-tooltip(ng-bind="'top' | message")
 
-                div(ng-show="type == 'Admin'")
-                    md-button.md-fab.menu-button(ng-click="goConfig()", aria-label="", style="background-color:#EC407A;z-index:10;")
+                    md-button.md-fab.menu-button(ng-show="type == 'Admin'", ng-click="goConfig()", aria-label="", style="background-color:#EC407A;z-index:10;")
                         ng-md-icon(icon="settings", aria-label="Config", style="position:relative;top:5px;fill:#F8BBD0", size="42")
                         md-tooltip(ng-bind="'config' | message")
 
-                div(ng-show="type != 'Viewer'")
-                    md-button.md-fab.menu-button(ng-click="goEdit()", aria-label="", style="background-color:#B2EBF2;z-index:10;")
+                    md-button.md-fab.menu-button(ng-show="type != 'Viewer'", ng-click="goEdit()", aria-label="", style="background-color:#B2EBF2;z-index:10;")
                         ng-md-icon(icon="edit", aria-label="Edit", style="position:relative;top:5px;fill:#0097A7", size="42")
                         md-tooltip(ng-bind="'config' | message")
 
-                div(ng-show="mode == 'Account'")
-                    md-button.md-fab.menu-button(ng-click="goPatient()", aria-label="", style="background-color:#039BE5;z-index:10;")
+                    md-button.md-fab.menu-button(ng-show="mode == 'Account'",ng-click="goPatient()", aria-label="", style="background-color:#039BE5;z-index:10;")
                         ng-md-icon(icon="perm_identity", aria-label="Patients", style="position:relative;top:6px;fill:#B3E5FC", size="42")
                         md-tooltip(ng-bind="'patient' | message")
 
-                div(ng-show="mode == 'Patient'")
-                    md-button.md-fab.menu-button(ng-click="goAccount()", aria-label="", style="background-color:#B3E5FC;z-index:10;")
+                    md-button.md-fab.menu-button(ng-show="mode == 'Patient'", ng-click="goAccount()", aria-label="", style="background-color:#B3E5FC;z-index:10;")
                         ng-md-icon(icon="face", aria-label="Account", style="position:relative;top:6px;fill:#039BE5", size="42")
                         md-tooltip(ng-bind="'stuff' | message")
 
-                div(ng-show="type == ''")
-                    md-button.md-fab.menu-button(ng-click="showLoginDialog()", aria-label="", style="background-color:#FF1744;z-index:10;")
+                    md-button.md-fab.menu-button(ng-show="type == ''", ng-click="showLoginDialog()", aria-label="", style="background-color:#FF1744;z-index:10;")
                         ng-md-icon(icon="check_box_outline_blank", aria-label="Account", style="position:relative;top:5px;fill:#B3E5FC", size="42")
                         md-tooltip(ng-bind="'login' | message")
 
-                div(ng-show="type != ''")
-                    md-button.md-fab.menu-button(ng-click="Logout()", aria-label="", style="background-color:#FF1744;z-index:10;")
+                    md-button.md-fab.menu-button(ng-show="type != ''", ng-click="Logout()", aria-label="", style="background-color:#FF1744;z-index:10;")
                         ng-md-icon(icon="check_box", aria-label="Account", style="position:relative;top:5px;fill:#B3E5FC", size="42")
                         md-tooltip(ng-bind="'logout' | message")
 
@@ -51,7 +72,7 @@ block content
 
 block include
 
-    if (state === "deveropment")
+    if deveropment
         script(type="text/javascript", src="javascripts/AccountApplication.js")
         script(type="text/javascript", src="javascripts/AccountControllers.js")
         script(type="text/javascript", src="../javascripts/TopControllers.js")

@@ -8,16 +8,40 @@
 
 'use strict';
 
+var fs = require('fs');
+var text = fs.readFileSync('config/config.json', 'utf-8');
+var config = JSON.parse(text);
+
+var log4js = require('log4js');
+
+log4js.configure({
+    appenders: [
+        {
+            "type": "dateFile",
+            "category": "request",
+            "filename": "request.log",
+            "pattern": "-yyyy-MM-dd"
+        },
+    ]
+});
+
+var logger = log4js.getLogger('request');
+
+logger.setLevel(config.loglevel);
+
 var express = require('express');
 var emitter = require('events').EventEmitter;
 var _ = require('lodash');
 
 var mongoose = require('mongoose');
 var grid = require('gridfs-stream');
-var multiparty = require('connect-multiparty');
-var multipart = multiparty();
 
-var phantom = require('phantom');
+
+
+//var multiparty = require('connect-multiparty');
+//var multipart = multiparty();
+
+//var phantom = require('phantom');
 
 var Patient = require('./patient');
 var Account = require('./account');
@@ -32,10 +56,6 @@ var crypto = require("crypto");
 var passport = require('passport');
 
 var router = express.Router();
-
-var fs = require('fs');
-var text = fs.readFileSync('config/config.json', 'utf-8');
-var config = JSON.parse(text);
 
 var configure = require('./configure');
 
@@ -61,9 +81,10 @@ FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any) => {
             function (error, account) {
                 if (!error) {
 
+                } else {
+
                 }
             });
-    } else {
     }
 });
 
@@ -214,11 +235,18 @@ function If(res:any, code:number, condition:boolean, callback:(res:any) => void)
 }
 
 function SendResult(res:any, code:number, message:any, object:any):void {
+    if (code == 0)
+    {
+        logger.info(message + " " + code);
+    } else {
+        logger.error(message + " " + code);
+    }
+
     res.send(JSON.stringify(new result(code, message, object)));
 }
 
 router.get('/', (req:any, res:any):void => {
-    res.render('index', {state: config.state});
+    res.render('index', {deveropment: (config.state == "deveropment")});
 });
 
 router.get('/document/:id', (req:any, res:any):void => {
@@ -240,7 +268,7 @@ router.get('/partials/logo', (req:any, res:any, next:Function):void => {
 });
 
 router.get('/backend/', (req:any, res:any):void => {
-    res.render('backend/index', {state: config.state});
+    res.render('backend/index', {deveropment: (config.state == "deveropment")});
 });
 
 router.get('/backend/partials/patient/start', (req:any, res:any):void => {
@@ -410,7 +438,7 @@ router.get('/backend/partials/error', (req:any, res:any):void => {
 
 
 router.get('/front/', (req:any, res:any):void => {
-    res.render('front/index', {state: config.state});
+    res.render('front/index', {deveropment: (config.state == "deveropment")});
 });
 
 router.get('/front/partials/browseS', (req:any, res:any):void => {
@@ -823,6 +851,7 @@ router.get('/view/query/:query', (req:any, res:any):void => {
 });
 
 /*! PDF */
+/*
 router.get('/pdf/:id', function (request, response, next) {
     try {
         var number:number = 24000;
@@ -850,6 +879,7 @@ router.get('/pdf/:id', function (request, response, next) {
         SendResult(response, 100000, e.message, e);
     }
 });
+*/
 
 router.get('/image/:id', function (request, response) {
     try {
@@ -872,6 +902,7 @@ router.get('/image/:id', function (request, response) {
     }
 });
 
+/*
 router.post('/image/upload', multipart, function (request, response) {
     try {
         var conn = mongoose.createConnection(config.connection);
@@ -892,7 +923,7 @@ router.post('/image/upload', multipart, function (request, response) {
         SendResult(response, 100000, e.message, e);
     }
 });
-
+*/
 
 
 
