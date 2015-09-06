@@ -956,6 +956,68 @@ router.post('/file/:name', function (request, response) {
     });
 });
 
+router.put('/file/:name', function (request, response) {
+
+    var parseDataURL = function (dataURL) {
+        var rslt = {
+            mediaType: null,
+            encoding: null,
+            isBase64: null,
+            data: null
+        };
+
+        if (/^data:([^;]+)(;charset=([^,;]+))?(;base64)?,(.*)/.test(dataURL)) {
+            rslt.mediaType = RegExp.$1 || 'text/plain';
+            rslt.encoding = RegExp.$3 || 'US-ASCII';
+            rslt.isBase64 = String(RegExp.$4) === ';base64';
+            rslt.data = RegExp.$5;
+        }
+        return rslt;
+    };
+
+    var conn = mongoose.createConnection(config.connection);
+    var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
+    conn.once('open', function (error) {
+        if (!error) {
+            conn.db.collection('fs.files', function (error, collection) {
+                if (!error) {
+                    collection.remove({filename: request.params.name}, () => {
+                        var info = parseDataURL(request.body.url);
+                        var chunk = info.isBase64 ? new Buffer(info.data, 'base64') : new Buffer(unescape(info.data), 'binary');
+                        var writestream = gfs.createWriteStream({
+                            filename: request.params.name,
+                        });
+
+                        writestream.write(chunk);
+                        writestream.end();
+
+                        writestream.on('close', function (file) {
+                            conn.db.close();
+                            response.send(JSON.stringify(new result(0, "file ok", {})));
+                        });
+                    });
+                }
+            });
+        }
+    });
+});
+
+router.delete('/file/:name', function (request, response) {
+
+    var conn = mongoose.createConnection(config.connection);
+    var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
+    conn.once('open', function (error) {
+        if (!error) {
+            conn.db.collection('fs.files', function (error, collection) {
+                if (!error) {
+                    collection.remove({filename: request.params.name}, () => {
+
+                    });
+                }
+            });
+        }
+    });
+});
 
 //Test area
 

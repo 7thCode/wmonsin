@@ -1090,11 +1090,11 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                     var control = {
                         "height": 600,
                         "width": 300,
-                        "path": "images/schema.png",
+                        "path": answer.items.path,
                         "type": "picture",
                         "model": "",
-                        "name": "痛いところ",
-                        "label": ""
+                        "name": answer.items.name,
+                        "label": answer.items.label
                     };
 
                     CurrentView.Data.Pages[CurrentView.Page].picture[0] = control;
@@ -1796,17 +1796,14 @@ controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 
                 var uri = event.target.result;
                 image.src = uri;
                 image.onload = function () {
+                    var file = new File();
+                    file.url = uri;
+                    file.$send({name: $scope.items.path});
                     $scope.$apply();
                 };
-                var file = new File();
-                file.url = uri;
-
-
-                file.$send({name: name});
             };
             fileReader.readAsDataURL(files[0].file);
         };
-
 
         $scope.hide = ():void => {
             $mdDialog.hide();
@@ -1903,6 +1900,7 @@ controllers.controller('NumericUpdateDialogController', ['$scope', '$mdDialog', 
 
     }]);
 
+/*
 controllers.controller('PictureUpdateDialogController', ['$scope', '$mdDialog', 'items',
     ($scope:any, $mdDialog:any, items:any):void  => {
 
@@ -1919,6 +1917,45 @@ controllers.controller('PictureUpdateDialogController', ['$scope', '$mdDialog', 
         $scope.answer = (answer:any):void => {
             $mdDialog.hide($scope);
         };
+
+    }]);
+*/
+
+controllers.controller('PictureUpdateDialogController', ['$scope', '$mdDialog', 'File', 'items',
+    ($scope:any, $mdDialog:any, File:any, items:any):void  => {
+        $scope.images = [];
+
+        $scope.items = items;
+
+        $scope.processFiles = function (files) {
+            $scope.images[0] = {};
+            var fileReader = new FileReader();
+            var image = new Image();
+            fileReader.onload = function (event) {
+                var uri = event.target.result;
+                image.src = uri;
+                image.onload = function () {
+                    var file = new File();
+                    file.url = uri;
+                    file.$send({name: $scope.items.path});
+                    $scope.$apply();
+                };
+            };
+            fileReader.readAsDataURL(files[0].file);
+        };
+
+        $scope.hide = ():void => {
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = ():void => {
+            $mdDialog.cancel();
+        };
+
+        $scope.answer = (answer:any):void => {
+            $mdDialog.hide($scope);
+        };
+
 
     }]);
 

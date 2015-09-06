@@ -193,13 +193,13 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
 
             _.map<any,any>($scope.contents.picture, (value:any, key:any):void => {
 
-                canvas.setBackgroundImage(value.path, canvas.renderAll.bind(canvas), {
+                canvas.setBackgroundImage("/file/" + value.path, canvas.renderAll.bind(canvas), {
                     backgroundImageOpacity: 1.0,
                     backgroundImageStretch: false
                 });
 
                 if ($scope.Input[value.name] == null) {
-                    fabric.Image.fromURL(value.path, (image:any):void => {
+                    fabric.Image.fromURL("/file/" + value.path, (image:any):void => {
                     });
                 }
 

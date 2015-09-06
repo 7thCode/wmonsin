@@ -41,6 +41,14 @@ md-dialog(flex)
                             div(ng-message="required") {{'required' | message}}
                             div(ng-message="md-maxlength") {{'maxlength' | message}}
 
+
+                div(flow-init flow-name="uploader.flow", flow-files-added="processFiles($files)")
+                    button(flow-btn type="file") Upload Images
+                    img(flow-img="uploader.flow.files[0]")
+                    div
+                        //img(ng-src="/get_photo/55e906b58a8a159f06037489",flex,style="width: 50%; height: 40px;")
+
+
                 md-divider
                 div.md-actions(layout="row", layout-align="space-around center")
                     md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") 更新
