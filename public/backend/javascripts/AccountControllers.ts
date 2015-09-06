@@ -151,8 +151,8 @@ controllers.factory('Config', ['$resource',
         });
     }]);
 
-controllers.factory('Upload', ['$resource', function ($resource) {
-    return $resource('/upload', {}, {
+controllers.factory('File', ['$resource', function ($resource) {
+    return $resource('/file/:name',  {name: '@name'}, {
         send: { method: 'POST' }
     });
 }]);
@@ -1784,9 +1784,9 @@ controllers.controller('NumericCreateDialogController', ['$scope', '$mdDialog',
 
     }]);
 
-controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 'Upload',
-    ($scope:any, $mdDialog:any, Upload:any):void  => {
-
+controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 'File',
+    ($scope:any, $mdDialog:any, File:any):void  => {
+        $scope.images = [];
 
         $scope.processFiles = function (files) {
             $scope.images[0] = {};
@@ -1798,9 +1798,11 @@ controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 
                 image.onload = function () {
                     $scope.$apply();
                 };
-                var upload = new Upload();
-                upload.url = uri;
-                upload.$send();
+                var file = new File();
+                file.url = uri;
+
+
+                file.$send({name: name});
             };
             fileReader.readAsDataURL(files[0].file);
         };

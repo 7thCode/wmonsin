@@ -25,7 +25,6 @@ var mongoose = require('mongoose');
 var Grid = require('gridfs-stream');
 
 
-
 //var multiparty = require('connect-multiparty');
 //var multipart = multiparty();
 
@@ -136,8 +135,7 @@ function BasicHeader(response:any, session:any):any {
 
 function Guard(req:any, res:any, callback:(req:any, res:any) => void):void {
     try {
-        if (req.headers["x-requested-with"] === 'XMLHttpRequest')
-        {
+        if (req.headers["x-requested-with"] === 'XMLHttpRequest') {
             res = BasicHeader(res, "");
             callback(req, res);
         } else {
@@ -705,11 +703,11 @@ router.delete('/account/:id', (req:any, res:any):void => {
 router.get('/account/query/:query', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
         var number:number = 14000;
-       // Authenticate(req, res, number, (user:any, res:any) => {
-            var query:any = JSON.parse(decodeURIComponent(req.params.query));
-            Find(res, number, Account, query, {}, {}, (res:any, docs:any) => {
-                SendResult(res, 0, "OK", StripAccounts(docs));
-            });
+        // Authenticate(req, res, number, (user:any, res:any) => {
+        var query:any = JSON.parse(decodeURIComponent(req.params.query));
+        Find(res, number, Account, query, {}, {}, (res:any, docs:any) => {
+            SendResult(res, 0, "OK", StripAccounts(docs));
+        });
         //});
     });
 });
@@ -719,19 +717,19 @@ router.put('/account/password/:id', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
         var number:number = 15000;
         Authenticate(req, res, number, (user:any, res:any) => {
-          //  If(res, number, (user.type != "Viewer"), (res:any) => {
-                FindById(res, number, Account, req.params.id, (res, account) => {
-                    account.setPassword(req.body.password, function (error) {
-                        if (!error) {
-                            Save(res, number, account, (res:any, account:any) => {
-                                SendResult(res, 0, "OK", account);
-                            });
-                        } else {
-                            SendResult(res, number + 200, "", error);
-                        }
-                    });
+            //  If(res, number, (user.type != "Viewer"), (res:any) => {
+            FindById(res, number, Account, req.params.id, (res, account) => {
+                account.setPassword(req.body.password, function (error) {
+                    if (!error) {
+                        Save(res, number, account, (res:any, account:any) => {
+                            SendResult(res, 0, "OK", account);
+                        });
+                    } else {
+                        SendResult(res, number + 200, "", error);
+                    }
                 });
-          //  });
+            });
+            //  });
         });
     });
 });
@@ -865,43 +863,42 @@ router.get('/view/query/:query', (req:any, res:any):void => {
 
 /*! PDF */
 /*
-router.get('/pdf/:id', function (request, response, next) {
-    try {
-        var number:number = 24000;
-        response.header('Content-type', 'application/pdf');
-        var id:string = request.params.id;
-        phantom.create(function (ph) {
-            ph.createPage(function (page) {
-                page.set('viewportSize', {width: 1200, height: 1200}, function (err) {
-                    page.open("http://localhost:3000/document/" + id, function (error, status) {
-                        page.render("public/output/output" + id + ".pdf", function (error) {
-                            if (!error) {
-                                ph.exit();
-                                SendResult(response, 0, "OK", "output" + id + ".pdf");
-                            }
-                            else {
-                                SendResult(response, number + 1, "", error);
-                            }
-                        });
-                    });
-                });
-            });
-        });
-    }
-    catch (e) {
-        SendResult(response, 100000, e.message, e);
-    }
-});
-*/
+ router.get('/pdf/:id', function (request, response, next) {
+ try {
+ var number:number = 24000;
+ response.header('Content-type', 'application/pdf');
+ var id:string = request.params.id;
+ phantom.create(function (ph) {
+ ph.createPage(function (page) {
+ page.set('viewportSize', {width: 1200, height: 1200}, function (err) {
+ page.open("http://localhost:3000/document/" + id, function (error, status) {
+ page.render("public/output/output" + id + ".pdf", function (error) {
+ if (!error) {
+ ph.exit();
+ SendResult(response, 0, "OK", "output" + id + ".pdf");
+ }
+ else {
+ SendResult(response, number + 1, "", error);
+ }
+ });
+ });
+ });
+ });
+ });
+ }
+ catch (e) {
+ SendResult(response, 100000, e.message, e);
+ }
+ });
+ */
 
-router.get('/image/:id', function (request, response) {
+router.get('/file/:name', function (request, response) {
     try {
         var conn = mongoose.createConnection(config.connection);
         conn.once('open', function (error) {
             if (!error) {
-                var gfs = grid(conn.db, mongoose.mongo); //missing parameter
-                var object_id = mongoose.Types.ObjectId(request.params.id);
-                var readstream = gfs.createReadStream({_id: object_id});
+                var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
+                var readstream = gfs.createReadStream({filename: request.params.name});
                 if (readstream) {
                     readstream.pipe(response);
                     readstream.on('close', function (file) {
@@ -915,30 +912,7 @@ router.get('/image/:id', function (request, response) {
     }
 });
 
-/*
-router.post('/image/upload', multipart, function (request, response) {
-    try {
-        var conn = mongoose.createConnection(config.connection);
-        conn.once('open', function (error) {
-            if (!error) {
-                var gfs = grid(conn.db, mongoose.mongo); //missing parameter
-                var writestream = gfs.createWriteStream({filename: request.files.myFile.name});
-                fs.createReadStream(request.files.myFile.path).pipe(writestream);
-                writestream.on('close', function (file) {
-                    conn.db.close();
-                    SendResult(response, 0, "OK", file);
-                });
-            } else {
-                SendResult(response, 150, "upload error", error);
-            }
-        });
-    } catch (e) {
-        SendResult(response, 100000, e.message, e);
-    }
-});
-*/
-
-router.post('/upload', function (request, response) {
+router.post('/file/:name', function (request, response) {
 
     var parseDataURL = function (dataURL) {
         var rslt = {
@@ -963,30 +937,24 @@ router.post('/upload', function (request, response) {
         if (!error) {
             conn.db.collection('fs.files', function (error, collection) {
                 if (!error) {
-
                     var info = parseDataURL(request.body.url);
                     var chunk = info.isBase64 ? new Buffer(info.data, 'base64') : new Buffer(unescape(info.data), 'binary');
                     var writestream = gfs.createWriteStream({
-                        filename: "bn_TOP4.png",
+                        filename: request.params.name,
                     });
 
                     writestream.write(chunk);
                     writestream.end();
 
                     writestream.on('close', function (file) {
-                            conn.db.close();
-                            response.send(JSON.stringify(new result(0, "file ok", {})));
+                        conn.db.close();
+                        response.send(JSON.stringify(new result(0, "file ok", {})));
                     });
                 }
             });
         }
     });
 });
-
-
-
-
-
 
 
 //Test area
