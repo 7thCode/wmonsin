@@ -8,7 +8,7 @@
 
 'use strict';
 
-var app:angular.IModule = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers', 'ngFileUpload']);
+var app:angular.IModule = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers']);
 
 /*
 app.config(['$translateProvider', function($translateProvider) {
@@ -92,7 +92,7 @@ app.config(['$stateProvider', '$urlRouterProvider','$compileProvider','$httpProv
 
 app.config(['$mdThemingProvider', ($mdThemingProvider:any):void => {
     $mdThemingProvider.theme('default')
-        .primaryPalette('indigo')
+        .primaryPalette('blue-grey')
         .accentPalette('orange')
         .warnPalette('red');
 }]);

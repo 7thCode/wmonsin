@@ -41,10 +41,19 @@ md-dialog(flex)
                             div(ng-message="md-maxlength") {{'maxlength' | message}}
 
 
+
+        div(flow-init flow-name="uploader.flow", flow-files-added="processFiles($files)")
+            button(flow-btn type="file") Upload Images
+            img(flow-img="uploader.flow.files[0]")
+            div
+                //img(ng-src="/get_photo/55e906b58a8a159f06037489",flex,style="width: 50%; height: 40px;")
+
+
+
                 //md-button.md-primary.md-raised(ngf-select="", ngf-multiple="false",ng-click="showUpload()") ファイルを参照
                 //md-button.md-primary.md-raised(ngf-select="", ng-model="FileArchPicture1", ngf-multiple="false",ng-click="openUploadPicture('ArchPicture1','FileArchPicture1')") ファイルを参照
                 //md-button.md-primary.md-raised(ngf-select="upload($file)") ファイルを参照
-                div(class="button" ngf-select="upload($file)") Upload on file select
+                //div(class="button" ngf-select="upload($file)") Upload on file select
 
 
                 md-divider

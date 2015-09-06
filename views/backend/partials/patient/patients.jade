@@ -3,19 +3,44 @@
     Copyright (c) 2015 7ThCode.
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
+
 md-content.background
     md-progress-circular.md-accent(ng-show="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
     md-card
         md-card-header
             h1.md-headline {{'patient' | message}}
-        div(layout="row")
-            md-button.md-fab(ng-click="showPatientAcceptDialog()", aria-label="", style="background-color:#5540fc;")
-                ng-md-icon(icon="person_add", aria-label="Patients", style="position:relative;top:6px;fill:#abcdef" size="42")
-                md-tooltip {{'add' | message}}
-            md-button.md-fab(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'", style="background-color:#fc0c9c;")
-                ng-md-icon(icon="{{icon}}", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42",options='{"rotation": "none"}')
-                md-tooltip {{'opentools' | message}}
-    md-list
+            div(layout="row", layout-align="start center")
+                div(layout="row")
+                    md-button.md-fab(ng-click="showPatientAcceptDialog()", aria-label="", style="background-color:#5540fc;")
+                        ng-md-icon(icon="person_add", aria-label="Patients", style="position:relative;top:6px;fill:#abcdef" size="42")
+                        md-tooltip {{'add' | message}}
+                    md-button.md-fab(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'", style="background-color:#fc0c9c;")
+                        ng-md-icon(icon="{{icon}}", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42",options='{"rotation": "none"}')
+                        md-tooltip {{'opentools' | message}}
+                div(layout="row")
+                    md-autocomplete(md-no-cache="noCache", md-selected-item="selectedItem", md-search-text-change="searchTextChange(searchText)", md-search-text="searchText", md-selected-item-change="selectedItemChange(item)", md-items="item in querySearch(searchText)", md-item-text="item.Information.name",md-min-length="0", placeholder="Name", md-menu-class="autocomplete-custom-template")
+                        md-item-template
+                            span(class="item-title")
+                                span {{item.Information.name}}
+
+    md-list(hide-gt-sm)
+        md-list-item(ng-repeat="patient in patients")
+            md-card(layout="row", flex)
+                md-card-content(layout="row", layout-align="start center", flex)
+                    div(flex="20",layout="row", layout-align="start center")
+                        md-button.md-fab.md-accent.md-mini(ng-show="patient.Input != null", ng-click="showPatientDescription(patient._id)", aria-label="Description")
+                            ng-md-icon(icon="assignment_ind", style="position:relative;top:6px;fill:#abcdef", size="22")
+                            md-tooltip Description...
+                    div(layout="column", flex="20") {{patient.Category}}
+                    div(layout="column", flex="20")
+                        span(style="font-size:9px;") {{patient.Information.kana}}
+                        span.md-subhead {{patient.Information.name}}
+                    div(layout="column", flex="20")
+                        span.md-subhead(style="font-size:9px;") {{patient.Information.insurance}}
+                        span.md-subhead {{patient.Date | date:'yyyy-MM-dd HH:mm:ss'}}
+                    div(layout="row", flex="20", layout-align="end center") {{patient.Status | status}}
+
+    md-list(hide-sm)
         md-list-item(ng-repeat="patient in patients")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="start center", flex)

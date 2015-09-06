@@ -16,14 +16,13 @@ md-dialog(flex)
 
     md-dialog-content
         ng-form(name="validate")
+
             div(layout="row", layout-align="start center")
                 ng-md-icon.iconfill-blue(icon="account_circle", size="46")
-                md-input-container(flex)
-                    label User
-                    input(ng-model="items.username", data-ng-required="true", name="username", placeholder='Enter Username', md-maxlength="30", required)
-                    div(ng-messages="validate.username.$error")
-                        div(ng-message="required", ng-bind="'required' | message")
-                        div(ng-message="md-maxlength", ng-bind="'maxlength' | message")
+                md-autocomplete(required, name="username",  md-no-cache="noCache", md-selected-item="selectedItem", md-search-text="items.username",  md-items="item in querySearch(items.username)", md-item-text="item.username",md-min-length="1", placeholder="User Name", md-menu-class="autocomplete-template")
+                    md-item-template
+                        div.item-title {{item.username}}
+                        div.item-metadata {{item.type}}
 
             div(layout="row", layout-align="start center")
                 ng-md-icon.iconfill-pink(icon="vpn_key", size="46")

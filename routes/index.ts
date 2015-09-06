@@ -13,20 +13,8 @@ var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
 
 var log4js = require('log4js');
-
-log4js.configure({
-    appenders: [
-        {
-            "type": "dateFile",
-            "category": "request",
-            "filename": "request.log",
-            "pattern": "-yyyy-MM-dd"
-        },
-    ]
-});
-
+log4js.configure("config/logs.json");
 var logger = log4js.getLogger('request');
-
 logger.setLevel(config.loglevel);
 
 var express = require('express');
@@ -34,7 +22,7 @@ var emitter = require('events').EventEmitter;
 var _ = require('lodash');
 
 var mongoose = require('mongoose');
-var grid = require('gridfs-stream');
+var Grid = require('gridfs-stream');
 
 
 
@@ -153,18 +141,18 @@ function Guard(req:any, res:any, callback:(req:any, res:any) => void):void {
             res = BasicHeader(res, "");
             callback(req, res);
         } else {
-            SendResult(res, 1, '', {});
+            SendWarn(res, 1, '', {});
         }
     } catch (e) {
-        SendResult(res, 100000, e.message, e);
+        SendFatal(res, 100000, e.message, e);
     }
 }
 
 function Authenticate(req:any, res:any, code:number, callback:(user:any, res:any) => void):void {
-    if (req.user) {
+    if (req.isAuthenticated()) {
         callback(req.user, res);
     } else {
-        SendResult(res, code + 2, "Unacceptable", {});
+        SendWarn(res, code + 2, "Unacceptable", {});
     }
 }
 
@@ -174,10 +162,10 @@ function FindById(res:any, code:number, model:any, id:any, callback:(res:any, ob
             if (object) {
                 callback(res, object);
             } else {
-                SendResult(res, code + 10, "", {});
+                SendWarn(res, code + 10, "", {});
             }
         } else {
-            SendResult(res, code + 100, "", error);
+            SendError(res, code + 100, "", error);
         }
     });
 }
@@ -187,7 +175,7 @@ function FindOne(res:any, code:number, model:any, query:any, callback:(res:any, 
         if (!error) {
             callback(res, doc);
         } else {
-            SendResult(res, code + 100, "", error);
+            SendError(res, code + 100, "", error);
         }
     });
 }
@@ -198,10 +186,10 @@ function Find(res:any, code:number, model:any, query:any, count:any, sort:any, c
             if (docs) {
                 callback(res, docs);
             } else {
-                SendResult(res, code + 10, "", {});
+                SendError(res, code + 10, "", {});
             }
         } else {
-            SendResult(res, code + 100, "", error);
+            SendError(res, code + 100, "", error);
         }
     });
 }
@@ -211,7 +199,7 @@ function Save(res:any, code:number, instance:any, callback:(res:any, object:any)
         if (!error) {
             callback(res, instance);
         } else {
-            SendResult(res, code + 100, "", error);
+            SendError(res, code + 100, "", error);
         }
     });
 }
@@ -221,7 +209,7 @@ function Remove(res:any, code:number, model:any, id:any, callback:(res:any) => v
         if (!error) {
             callback(res);
         } else {
-            SendResult(res, code + 100, "", error);
+            SendError(res, code + 100, "", error);
         }
     });
 }
@@ -230,19 +218,44 @@ function If(res:any, code:number, condition:boolean, callback:(res:any) => void)
     if (condition) {
         callback(res);
     } else {
-        SendResult(res, code + 1, "", {});
+        SendWarn(res, code + 1, "", {});
     }
 }
 
-function SendResult(res:any, code:number, message:any, object:any):void {
-    if (code == 0)
-    {
-        logger.info(message + " " + code);
-    } else {
-        logger.error(message + " " + code);
-    }
 
+function SendWarn(res:any, code:number, message:any, object:any):void {
+    logger.warn(message + " " + code);
     res.send(JSON.stringify(new result(code, message, object)));
+}
+
+function SendError(res:any, code:number, message:any, object:any):void {
+    logger.error(message + " " + code);
+    res.send(JSON.stringify(new result(code, message, object)));
+}
+
+function SendFatal(res:any, code:number, message:any, object:any):void {
+    logger.fatal(message + " " + code);
+    res.send(JSON.stringify(new result(code, message, object)));
+}
+
+function SendResult(res:any, code:number, message:any, object:any):void {
+    logger.info(message + " " + code);
+    res.send(JSON.stringify(new result(code, message, object)));
+}
+
+function StripAccount(account:any):any {
+    delete account._id;
+    delete account.hash;
+    delete account.salt;
+    return account;
+}
+
+function StripAccounts(accounts:any):any {
+    var result = [];
+    _.each(accounts, (member:any):void => {
+        result.push(StripAccount(member));
+    });
+    return result;
 }
 
 router.get('/', (req:any, res:any):void => {
@@ -692,12 +705,12 @@ router.delete('/account/:id', (req:any, res:any):void => {
 router.get('/account/query/:query', (req:any, res:any):void => {
     Guard(req, res, (req:any, res:any) => {
         var number:number = 14000;
-        Authenticate(req, res, number, (user:any, res:any) => {
+       // Authenticate(req, res, number, (user:any, res:any) => {
             var query:any = JSON.parse(decodeURIComponent(req.params.query));
             Find(res, number, Account, query, {}, {}, (res:any, docs:any) => {
-                SendResult(res, 0, "OK", docs);
+                SendResult(res, 0, "OK", StripAccounts(docs));
             });
-        });
+        //});
     });
 });
 
@@ -924,6 +937,53 @@ router.post('/image/upload', multipart, function (request, response) {
     }
 });
 */
+
+router.post('/upload', function (request, response) {
+
+    var parseDataURL = function (dataURL) {
+        var rslt = {
+            mediaType: null,
+            encoding: null,
+            isBase64: null,
+            data: null
+        };
+
+        if (/^data:([^;]+)(;charset=([^,;]+))?(;base64)?,(.*)/.test(dataURL)) {
+            rslt.mediaType = RegExp.$1 || 'text/plain';
+            rslt.encoding = RegExp.$3 || 'US-ASCII';
+            rslt.isBase64 = String(RegExp.$4) === ';base64';
+            rslt.data = RegExp.$5;
+        }
+        return rslt;
+    };
+
+    var conn = mongoose.createConnection(config.connection);
+    var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
+    conn.once('open', function (error) {
+        if (!error) {
+            conn.db.collection('fs.files', function (error, collection) {
+                if (!error) {
+
+                    var info = parseDataURL(request.body.url);
+                    var chunk = info.isBase64 ? new Buffer(info.data, 'base64') : new Buffer(unescape(info.data), 'binary');
+                    var writestream = gfs.createWriteStream({
+                        filename: "bn_TOP4.png",
+                    });
+
+                    writestream.write(chunk);
+                    writestream.end();
+
+                    writestream.on('close', function (file) {
+                            conn.db.close();
+                            response.send(JSON.stringify(new result(0, "file ok", {})));
+                    });
+                }
+            });
+        }
+    });
+});
+
+
 
 
 

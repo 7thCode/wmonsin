@@ -41,6 +41,13 @@ app.config(['$stateProvider', '$urlRouterProvider','$compileProvider','$httpProv
 
 }]);
 
+app.config(['$mdThemingProvider', ($mdThemingProvider:any):void => {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('blue-grey')
+        .accentPalette('deep-orange')
+        .warnPalette('red');
+}]);
+
 app.filter('message', ():Function => {
         return (input:string):string => {
             var result = "?????";

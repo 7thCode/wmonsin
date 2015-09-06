@@ -7,6 +7,7 @@
 - var content = {headline:"問診票科目", save:"保存", add:"追加...", update:"更新...", delete:"削除", copy:"コピー"}
 
 md-content.background
+
     md-progress-circular.md-accent(ng-show="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
     md-card
         md-card-header
@@ -14,12 +15,32 @@ md-content.background
             md-button.md-fab(ng-click="showDepartmentCreateDialog()", aria-label="", style="background-color:#FBC02D", ng-if="type != 'Viewer'")
                 ng-md-icon.iconfill(icon="note_add", aria-label="", style="position:relative;top:6px;left:1px;", size="42")
                 md-tooltip #{content.add}
-    md-list
+
+
+    md-list(hide-gt-sm)
+        md-list-item(ng-repeat="Department in Departments", ng-show="account.type != 'Admin'")
+            md-card(layout="row", flex)
+                md-card-content(layout="row", layout-align="end center", flex)
+                    h1.md-subhead(flex) {{Department.Name}}
+                    div(layout="row", ng-if="type != 'Viewer'")
+                        md-button.md-fab.md-mini(ng-click="showDepartmentCopyDialog(Department._id)", aria-label="Copy", style="background-color:#00897B;z-index:1;")
+                            ng-md-icon.iconfill(icon="content_copy", style="position:relative;top:6px;left:1px;", size="22")
+                            md-tooltip #{content.copy}
+                    div(layout="row", ng-if="type != 'Viewer'")
+                        md-button.md-fab.md-mini(ng-click="DepartmentUpdate(Department._id)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
+                            ng-md-icon.iconfill(icon="mode_edit", style="position:relative;top:6px;left:1px;", size="22")
+                            md-tooltip #{content.update}
+                    div(layout="row")
+                        md-button.md-fab.md-mini(ng-click="showDepartmentDeleteDialog(Department._id)", aria-label="Delete", style="background-color:#ff5050;z-index:1;", ng-if="type != 'Viewer'")
+                            ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
+                            md-tooltip #{content.delete}
+
+
+    md-list(hide-sm)
         md-list-item(ng-repeat="Department in Departments", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="end center", flex)
                     h3.md-title(flex) {{Department.Name}}
-
 
                     div(layout="row", ng-if="type != 'Viewer'")
                         md-button.md-fab(ng-click="showDepartmentCopyDialog(Department._id)", aria-label="Copy", style="background-color:#00897B;z-index:1;")
@@ -35,3 +56,4 @@ md-content.background
                         md-button.md-fab(ng-click="showDepartmentDeleteDialog(Department._id)", aria-label="Delete", style="background-color:#ff5050;z-index:1;", ng-if="type != 'Viewer'")
                             ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="42")
                             md-tooltip #{content.delete}
+

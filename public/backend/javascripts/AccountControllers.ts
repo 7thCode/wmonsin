@@ -23,7 +23,7 @@
 
 'use strict';
 
-var controllers:angular.IModule = angular.module('AccountControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate', 'ngFileUpload']);
+var controllers:angular.IModule = angular.module('AccountControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate', 'flow']);
 
 controllers.value('Global', {
         socket: null
@@ -151,6 +151,14 @@ controllers.factory('Config', ['$resource',
         });
     }]);
 
+controllers.factory('Upload', ['$resource', function ($resource) {
+    return $resource('/upload', {}, {
+        send: { method: 'POST' }
+    });
+}]);
+
+
+
 controllers.factory('Pdf', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
         return $resource('/pdf/:id', {}, {});
@@ -186,44 +194,6 @@ function List(resource:any, query:any, success:(value:any) => void):void {
     });
 }
 
-/*
-
-function fileUpload($scope:any, $timeout:any, Upload:any, fileName:string):void {
-
-    $scope.$watch(fileName, (files:any):void => {
-        $scope.formUpload = false;
-        if (files != null) {
-            for (var i:number = 0; i < files.length; i++) {
-                var d:any = $scope.files;
-                ((file):void => {
-                    upload(file);
-                })(files[i]);
-            }
-        }
-    });
-
-    var upload = (file:any):void  => {
-
-        file.upload = Upload.upload({
-            url: '/image/upload',
-            method: 'POST',
-            file: file,
-            fileFormDataName: 'myFile'
-        });
-
-        file.upload.then((response:any):void => {
-                $timeout(():void => {
-                    file.result = response.data;
-                });
-            },
-            (response:any):void => {
-                if (response.status > 0) {
-                }
-            });
-    };
-}
-
-*/
 /*! Controllers  */
 
 controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
@@ -237,8 +207,8 @@ controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
         }
     }]);
 
-controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state', "$mdDialog", '$mdToast', 'Login', 'Logout', 'CurrentAccount', 'Global',
-    ($scope:any, $rootScope:any, $state:any, $mdDialog:any, $mdToast:any, Login:any, Logout:any, CurrentAccount:any, Global:any):void => {
+controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state', "$mdDialog", '$mdToast',"$mdSidenav",'$mdUtil', 'Login', 'Logout', 'CurrentAccount', 'Global',
+    ($scope:any, $rootScope:any, $state:any, $mdDialog:any, $mdToast:any, $mdSidenav:any, $mdUtil:any, Login:any, Logout:any, CurrentAccount:any, Global:any):void => {
 
         $scope.goBack = ():void => {
             window.history.back();
@@ -265,6 +235,28 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
             $scope.mode = "Account";
             $state.go('accounts');
         };
+
+
+        $scope.open = buildToggler();
+
+        function buildToggler() {
+            var debounceFn = $mdUtil.debounce(():any =>{
+                $mdSidenav('nav')
+                    .toggle()
+                    .then(function () {
+
+                    });
+            },300);
+            return debounceFn;
+        }
+
+        $scope.close = function () {
+            $mdSidenav('nav').close()
+                .then(function () {
+
+                });
+        };
+
 
         $scope.showLoginDialog = ():void => {
             $mdDialog.show({
@@ -335,8 +327,8 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
 
     }]);
 
-controllers.controller('PatientsController', ['$scope', '$state',"$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
-    ($scope:any, $state:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientAccept:any, PatientQuery:any, PatientCount:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
+controllers.controller('PatientsController', ['$scope', '$state', '$q', "$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
+    ($scope:any, $state:any, $q:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientAccept:any, PatientQuery:any, PatientCount:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
 
         if (CurrentAccount.username != "") {
             $scope.username = CurrentAccount.username;
@@ -428,6 +420,23 @@ controllers.controller('PatientsController', ['$scope', '$state',"$mdDialog", '$
                 });
             };
 
+            $scope.querySearch = (querystring:any):any => {
+                var deferred = $q.defer();
+                var query:any = TodayQuery();
+                PatientQuery.query({query: encodeURIComponent(JSON.stringify({$and:[query, {"Information.name": {$regex: querystring}}]}))}, (data:any):void => {
+                    deferred.resolve(data.value);
+                });
+                return deferred.promise;
+            };
+
+            $scope.searchTextChange = (text):void => {
+
+            };
+
+            $scope.selectedItemChange = (item):void => {
+
+            };
+
             $scope.$on('Login', ():void => {
                 $scope.progress = true;
                 PatientsList(PatientQuery, {}, (data:any):void => {
@@ -438,7 +447,7 @@ controllers.controller('PatientsController', ['$scope', '$state',"$mdDialog", '$
 
             $scope.$on('Logout', ():void => {
                 CurrentAccount.username = "";
-                CurrentAccount.type ="";
+                CurrentAccount.type = "";
                 $scope.patients = [];
             });
 
@@ -606,26 +615,26 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                     templateUrl: '/backend/partials/account/registerdialog',
                     targetEvent: null
                 }).then((answer:any):void => {
-                        var account:any = new AccountCreate();
-                        account.username = answer.items.username;
-                        account.password = answer.items.password;
-                        account.type = answer.items.type;
-                        $scope.progress = true;
-                        account.$save({}, (result:any):void => {
-                            if (result) {
-                                if (result.code == 0) {
-                                    List(AccountQuery, {}, (data:any):void => {
-                                        $scope.accounts = data;
-                                        $scope.progress = false;
-                                    });
-                                }
-                                $mdToast.show($mdToast.simple().content(result.message));
-                            } else {
-                                $mdToast.show($mdToast.simple().content('Status Updated.'));
+                    var account:any = new AccountCreate();
+                    account.username = answer.items.username;
+                    account.password = answer.items.password;
+                    account.type = answer.items.type;
+                    $scope.progress = true;
+                    account.$save({}, (result:any):void => {
+                        if (result) {
+                            if (result.code == 0) {
+                                List(AccountQuery, {}, (data:any):void => {
+                                    $scope.accounts = data;
+                                    $scope.progress = false;
+                                });
                             }
-                        });
-                    }, ():void => {
+                            $mdToast.show($mdToast.simple().content(result.message));
+                        } else {
+                            $mdToast.show($mdToast.simple().content('Status Updated.'));
+                        }
                     });
+                }, ():void => {
+                });
             };
 
             $scope.showAccountDeleteDialog = (id:any):void => {
@@ -634,23 +643,23 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                     templateUrl: '/backend/partials/account/deletedialog',
                     targetEvent: id
                 }).then((answer:any):void => {  // Answer
-                        var account:any = new Account();
-                        $scope.progress = true;
-                        account.$remove({id: id}, (result:any):void => {
-                            if (result) {
-                                if (result.code == 0) {
-                                    List(AccountQuery, {}, (data:any):void => {
-                                        $scope.accounts = data;
-                                        $scope.progress = false;
-                                    });
-                                    $mdToast.show($mdToast.simple().content(result.message));
-                                }
-                            } else {
-                                $mdToast.show($mdToast.simple().content('Status Updated.'));
+                    var account:any = new Account();
+                    $scope.progress = true;
+                    account.$remove({id: id}, (result:any):void => {
+                        if (result) {
+                            if (result.code == 0) {
+                                List(AccountQuery, {}, (data:any):void => {
+                                    $scope.accounts = data;
+                                    $scope.progress = false;
+                                });
+                                $mdToast.show($mdToast.simple().content(result.message));
                             }
-                        });
-                    }, ():void => {
+                        } else {
+                            $mdToast.show($mdToast.simple().content('Status Updated.'));
+                        }
                     });
+                }, ():void => {
+                });
             };
 
             $scope.showAccountUpdateDialog = (id:any):void => {
@@ -668,44 +677,44 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                         items: $scope.items
                                     }
                                 }).then((answer:any):void => {
-                                        switch (answer.a) {
-                                            case 1:
-                                            {
-                                                var account:any = new AccountPassword();
-                                                account.password = answer.items.password;
-                                                account.$update({id: id}, (result:any):void => {
-                                                    if (result) {
-                                                        $mdToast.show($mdToast.simple().content(result.message));
-                                                    } else {
-                                                        $mdToast.show($mdToast.simple().content('Password Updated error.'));
-                                                    }
-                                                });
-                                            }
-                                            case 2:
-                                            {
-                                                var account:any = new Account();
-                                                account.username = answer.items.username;
-                                                account.type = answer.items.type;
-                                                $scope.progress = true;
-                                                account.$update({id: id}, (result:any):void => {
-                                                    if (result) {
-                                                        if (result.code == 0) {
-                                                            List(AccountQuery, {}, (data:any):void => {
-                                                                $scope.accounts = data;
-                                                                $scope.progress = false;
-                                                                $mdToast.show($mdToast.simple().content(result.message));
-                                                            });
-                                                        } else {
-                                                            $mdToast.show($mdToast.simple().content(result.message));
-                                                        }
-                                                    } else {
-                                                        $mdToast.show($mdToast.simple().content('account Updated error.'));
-                                                    }
-                                                });
-                                            }
+                                    switch (answer.a) {
+                                        case 1:
+                                        {
+                                            var account:any = new AccountPassword();
+                                            account.password = answer.items.password;
+                                            account.$update({id: id}, (result:any):void => {
+                                                if (result) {
+                                                    $mdToast.show($mdToast.simple().content(result.message));
+                                                } else {
+                                                    $mdToast.show($mdToast.simple().content('Password Updated error.'));
+                                                }
+                                            });
                                         }
-                                    }, ():void => {
-                                    });
+                                        case 2:
+                                        {
+                                            var account:any = new Account();
+                                            account.username = answer.items.username;
+                                            account.type = answer.items.type;
+                                            $scope.progress = true;
+                                            account.$update({id: id}, (result:any):void => {
+                                                if (result) {
+                                                    if (result.code == 0) {
+                                                        List(AccountQuery, {}, (data:any):void => {
+                                                            $scope.accounts = data;
+                                                            $scope.progress = false;
+                                                            $mdToast.show($mdToast.simple().content(result.message));
+                                                        });
+                                                    } else {
+                                                        $mdToast.show($mdToast.simple().content(result.message));
+                                                    }
+                                                } else {
+                                                    $mdToast.show($mdToast.simple().content('account Updated error.'));
+                                                }
+                                            });
+                                        }
+                                    }
+                                }, ():void => {
+                                });
                             } else {
                                 $mdToast.show($mdToast.simple().content(data.message));
                             }
@@ -761,27 +770,27 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                 templateUrl: '/backend/partials/edit/departmentcreatedialog',
                 targetEvent: null
             }).then((answer:any):void => { // Answer
-                    var view:any = new ViewCreate();
-                    view.Name = answer.items.department;
-                    view.$save({}, (result:any):void => {
-                        if (result) {
-                            if (result.code == 0) {
-                                $scope.progress = true;
-                                List(ViewQuery, {}, (data:any):void  => {
-                                    $scope.Departments = data;
-                                    $scope.progress = false;
-                                    $mdToast.show($mdToast.simple().content(result.message));
-
-                                });
-                            } else {
+                var view:any = new ViewCreate();
+                view.Name = answer.items.department;
+                view.$save({}, (result:any):void => {
+                    if (result) {
+                        if (result.code == 0) {
+                            $scope.progress = true;
+                            List(ViewQuery, {}, (data:any):void  => {
+                                $scope.Departments = data;
+                                $scope.progress = false;
                                 $mdToast.show($mdToast.simple().content(result.message));
-                            }
+
+                            });
                         } else {
-                            $mdToast.show($mdToast.simple().content("save error"));
+                            $mdToast.show($mdToast.simple().content(result.message));
                         }
-                    });
-                }, ():void => { // Cancel
+                    } else {
+                        $mdToast.show($mdToast.simple().content("save error"));
+                    }
                 });
+            }, ():void => { // Cancel
+            });
         };
 
         $scope.showDepartmentCopyDialog = (id:any):void => {
@@ -834,26 +843,26 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                 templateUrl: '/backend/partials/edit/departmentdeletedialog',
                 targetEvent: id
             }).then((answer:any):void => {  // Answer
-                    var view:any = new View();
-                    $scope.progress = true;
-                    view.$remove({id: id}, (result:any):void => {
-                        if (result) {
-                            if (result.code == 0) {
-                                $scope.progress = true;
-                                List(ViewQuery, {}, (data:any):void  => {
-                                    $scope.Departments = data;
-                                    $scope.progress = false;
-                                    $mdToast.show($mdToast.simple().content(result.message));
-                                });
-                            } else {
+                var view:any = new View();
+                $scope.progress = true;
+                view.$remove({id: id}, (result:any):void => {
+                    if (result) {
+                        if (result.code == 0) {
+                            $scope.progress = true;
+                            List(ViewQuery, {}, (data:any):void  => {
+                                $scope.Departments = data;
+                                $scope.progress = false;
                                 $mdToast.show($mdToast.simple().content(result.message));
-                            }
+                            });
                         } else {
-                            $mdToast.show($mdToast.simple().content("save error"));
+                            $mdToast.show($mdToast.simple().content(result.message));
                         }
-                    });
-                }, ():void => {
+                    } else {
+                        $mdToast.show($mdToast.simple().content("save error"));
+                    }
                 });
+            }, ():void => {
+            });
         };
 
     }]);
@@ -861,52 +870,54 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
 controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDialog', "$mdToast", "CurrentView", "View",
     ($scope:any, $state:any, $mdDialog:any, $mdToast:any, CurrentView:any, View:any):void  => {
 
-        $scope.Pages = CurrentView.Data.Pages;
+        if (CurrentView.Data) {
 
-        $scope.back = () => {
-            window.history.back();
-        };
+            $scope.Pages = CurrentView.Data.Pages;
 
-        $scope.up = (index:number) => {
-            if (index > 0) {
-                var control = CurrentView.Data.Pages[index];
-                CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index - 1];
-                CurrentView.Data.Pages[index - 1] = control;
-            }
-        };
+            $scope.back = () => {
+                window.history.back();
+            };
 
-        $scope.down = (index:number) => {
-            if (index < CurrentView.Data.Pages.length - 1) {
-                var control = CurrentView.Data.Pages[index];
-                CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index + 1];
-                CurrentView.Data.Pages[index + 1] = control;
-            }
-        };
-
-        $scope.DepartmentUpdate = ():void => {
-            var view:any = new View();
-            view.Name = CurrentView.Data.Name;
-            view.Pages = CurrentView.Data.Pages;
-            view.$update({id: CurrentView.Data._id}, (result:any):void => {
-                if (result) {
-                    if (result.code == 0) {
-                        $mdToast.show($mdToast.simple().content(result.message));
-                    } else {
-                        $mdToast.show($mdToast.simple().content(result.message));
-                    }
-                } else {
-                    $mdToast.show($mdToast.simple().content('account Updated error.'));
+            $scope.up = (index:number) => {
+                if (index > 0) {
+                    var control = CurrentView.Data.Pages[index];
+                    CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index - 1];
+                    CurrentView.Data.Pages[index - 1] = control;
                 }
-            });
-        };
+            };
 
-        $scope.showPageCreateDialog = ():void => {
+            $scope.down = (index:number) => {
+                if (index < CurrentView.Data.Pages.length - 1) {
+                    var control = CurrentView.Data.Pages[index];
+                    CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index + 1];
+                    CurrentView.Data.Pages[index + 1] = control;
+                }
+            };
 
-            $mdDialog.show({
-                controller: 'PageCreateDialogController',
-                templateUrl: '/backend/partials/edit/pagecreatedialog',
-                targetEvent: null
-            }).then((answer:any):void => { // Answer
+            $scope.DepartmentUpdate = ():void => {
+                var view:any = new View();
+                view.Name = CurrentView.Data.Name;
+                view.Pages = CurrentView.Data.Pages;
+                view.$update({id: CurrentView.Data._id}, (result:any):void => {
+                    if (result) {
+                        if (result.code == 0) {
+                            $mdToast.show($mdToast.simple().content(result.message));
+                        } else {
+                            $mdToast.show($mdToast.simple().content(result.message));
+                        }
+                    } else {
+                        $mdToast.show($mdToast.simple().content('account Updated error.'));
+                    }
+                });
+            };
+
+            $scope.showPageCreateDialog = ():void => {
+
+                $mdDialog.show({
+                    controller: 'PageCreateDialogController',
+                    templateUrl: '/backend/partials/edit/pagecreatedialog',
+                    targetEvent: null
+                }).then((answer:any):void => { // Answer
 
                     var name:string = answer.items.title;
                     //   var next:number = CurrentView.Data.Pages.length + 1;
@@ -918,64 +929,73 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
                         picture: []
                     };
 
+                    if (!CurrentView.Data.Pages) {
+                        CurrentView.Data.Pages = [];
+                    }
                     CurrentView.Data.Pages.push(page);
+                    $scope.Pages = CurrentView.Data.Pages;
 
                 }, ():void => { // Cancel
                 });
-        };
+            };
 
-        $scope.PageUpdate = (index:number):void => {
-            CurrentView.Page = index;
-            $state.go('page');
-        };
+            $scope.PageUpdate = (index:number):void => {
+                CurrentView.Page = index;
+                $state.go('page');
+            };
 
-        $scope.showPageDeleteDialog = (index:number):void => {
-            $mdDialog.show({
-                controller: 'PageDeleteDialogController',
-                templateUrl: '/backend/partials/edit/pagedeletedialog',
-                targetEvent: index
-            }).then((answer:any):void => {  // Answer
+            $scope.showPageDeleteDialog = (index:number):void => {
+                $mdDialog.show({
+                    controller: 'PageDeleteDialogController',
+                    templateUrl: '/backend/partials/edit/pagedeletedialog',
+                    targetEvent: index
+                }).then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[index] = null;
                     CurrentView.Data.Pages = _.compact(CurrentView.Data.Pages);
                     $scope.Pages = CurrentView.Data.Pages;
                 }, ():void => {
                 });
-        };
-
+            };
+        }
+        else
+        {
+            $state.go('departments');
+        }
     }]);
 
 controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "CurrentView", "View",
     ($scope:any, $state:any, $mdDialog:any, CurrentView:any, View:any):void  => {
 
-        $scope.Page = CurrentView.Data.Pages[CurrentView.Page];
+        if (CurrentView.Data.Pages) {
+            $scope.Page = CurrentView.Data.Pages[CurrentView.Page];
 
-        $scope.back = () => {
+            $scope.back = () => {
                 window.history.back();
-        };
+            };
 
-        $scope.up = (index:number) => {
-            if (index > 0) {
-                var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
-                CurrentView.Data.Pages[CurrentView.Page].items[index] = CurrentView.Data.Pages[CurrentView.Page].items[index - 1];
-                CurrentView.Data.Pages[CurrentView.Page].items[index - 1] = control;
-            }
-        };
+            $scope.up = (index:number) => {
+                if (index > 0) {
+                    var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                    CurrentView.Data.Pages[CurrentView.Page].items[index] = CurrentView.Data.Pages[CurrentView.Page].items[index - 1];
+                    CurrentView.Data.Pages[CurrentView.Page].items[index - 1] = control;
+                }
+            };
 
-        $scope.down = (index:number) => {
-            if (index < CurrentView.Data.Pages[CurrentView.Page].items.length - 1) {
-                var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
-                CurrentView.Data.Pages[CurrentView.Page].items[index] = CurrentView.Data.Pages[CurrentView.Page].items[index + 1];
-                CurrentView.Data.Pages[CurrentView.Page].items[index + 1] = control;
-            }
-        };
+            $scope.down = (index:number) => {
+                if (index < CurrentView.Data.Pages[CurrentView.Page].items.length - 1) {
+                    var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                    CurrentView.Data.Pages[CurrentView.Page].items[index] = CurrentView.Data.Pages[CurrentView.Page].items[index + 1];
+                    CurrentView.Data.Pages[CurrentView.Page].items[index + 1] = control;
+                }
+            };
 
-        $scope.showTextCreateDialog = ():void => {
+            $scope.showTextCreateDialog = ():void => {
 
-            $mdDialog.show({
-                controller: 'TextCreateDialogController',
-                templateUrl: '/backend/partials/edit/item/text/textcreatedialog',
-                targetEvent: null
-            }).then((answer:any):void => { // Answer
+                $mdDialog.show({
+                    controller: 'TextCreateDialogController',
+                    templateUrl: '/backend/partials/edit/item/text/textcreatedialog',
+                    targetEvent: null
+                }).then((answer:any):void => { // Answer
 
                     var control = {
                         label: answer.items.label,
@@ -991,15 +1011,15 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
 
                 }, ():void => { // Cancel
                 });
-        };
+            };
 
-        $scope.showCheckCreateDialog = ():void => {
+            $scope.showCheckCreateDialog = ():void => {
 
-            $mdDialog.show({
-                controller: 'CheckCreateDialogController',
-                templateUrl: '/backend/partials/edit/item/check/checkcreatedialog',
-                targetEvent: null
-            }).then((answer:any):void => { // Answer
+                $mdDialog.show({
+                    controller: 'CheckCreateDialogController',
+                    templateUrl: '/backend/partials/edit/item/check/checkcreatedialog',
+                    targetEvent: null
+                }).then((answer:any):void => { // Answer
 
                     var control = {
                         label: answer.items.label,
@@ -1013,15 +1033,15 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 }, ():void => { // Cancel
                 });
 
-        };
+            };
 
-        $scope.showSelectCreateDialog = ():void => {
+            $scope.showSelectCreateDialog = ():void => {
 
-            $mdDialog.show({
-                controller: 'SelectCreateDialogController',
-                templateUrl: '/backend/partials/edit/item/select/selectcreatedialog',
-                targetEvent: null
-            }).then((answer:any):void => { // Answer
+                $mdDialog.show({
+                    controller: 'SelectCreateDialogController',
+                    templateUrl: '/backend/partials/edit/item/select/selectcreatedialog',
+                    targetEvent: null
+                }).then((answer:any):void => { // Answer
 
                     var control = {
                         label: answer.items.label,
@@ -1035,16 +1055,15 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
 
                 }, ():void => { // Cancel
                 });
+            };
 
-        };
+            $scope.showNumericCreateDialog = ():void => {
 
-        $scope.showNumericCreateDialog = ():void => {
-
-            $mdDialog.show({
-                controller: 'NumericCreateDialogController',
-                templateUrl: '/backend/partials/edit/item/numeric/numericcreatedialog',
-                targetEvent: null
-            }).then((answer:any):void => { // Answer
+                $mdDialog.show({
+                    controller: 'NumericCreateDialogController',
+                    templateUrl: '/backend/partials/edit/item/numeric/numericcreatedialog',
+                    targetEvent: null
+                }).then((answer:any):void => { // Answer
 
                     var control = {
                         label: answer.items.label,
@@ -1058,15 +1077,15 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 }, ():void => { // Cancel
                 });
 
-        };
+            };
 
-        $scope.showPictureCreateDialog = ():void => {
+            $scope.showPictureCreateDialog = ():void => {
 
-            $mdDialog.show({
-                controller: 'PictureCreateDialogController',
-                templateUrl: '/backend/partials/edit/item/picture/picturecreatedialog',
-                targetEvent: null
-            }).then((answer:any):void => { // Answer
+                $mdDialog.show({
+                    controller: 'PictureCreateDialogController',
+                    templateUrl: '/backend/partials/edit/item/picture/picturecreatedialog',
+                    targetEvent: null
+                }).then((answer:any):void => { // Answer
 
                     var control = {
                         "height": 600,
@@ -1082,24 +1101,24 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
 
                 }, ():void => { // Cancel
                 });
-        };
-
-        $scope.showButtonCreateDialog = ():void => {
-
-            var items = {
-                type: "button",
-                validate: true,
-                class: "md-accent"
             };
 
-            $mdDialog.show({
-                controller: 'ButtonCreateDialogController',
-                templateUrl: '/backend/partials/edit/item/button/buttoncreatedialog',
-                targetEvent: null,
-                locals: {
-                    items: items
-                }
-            }).then((answer:any):void => { // Answer
+            $scope.showButtonCreateDialog = ():void => {
+
+                var items = {
+                    type: "button",
+                    validate: true,
+                    class: "md-accent"
+                };
+
+                $mdDialog.show({
+                    controller: 'ButtonCreateDialogController',
+                    templateUrl: '/backend/partials/edit/item/button/buttoncreatedialog',
+                    targetEvent: null,
+                    locals: {
+                        items: items
+                    }
+                }).then((answer:any):void => { // Answer
 
                     var control = {
                         label: answer.items.label,
@@ -1114,259 +1133,263 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                     CurrentView.Data.Pages[CurrentView.Page].items.push(control);
                 }, ():void => { // Cancel
                 });
-        };
+            };
 
-        $scope.showTextUpdateDialog = (index:number):void => {
+            $scope.showTextUpdateDialog = (index:number):void => {
 
-            var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
 
-            $mdDialog.show({
-                controller: 'TextUpdateDialogController',
-                templateUrl: '/backend/partials/edit/item/check/textupdatedialog',
-                targetEvent: null,
-                locals: {
-                    items: items
-                }
-            }).then((answer:any):void => { // Answer
+                $mdDialog.show({
+                    controller: 'TextUpdateDialogController',
+                    templateUrl: '/backend/partials/edit/item/check/textupdatedialog',
+                    targetEvent: null,
+                    locals: {
+                        items: items
+                    }
+                }).then((answer:any):void => { // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
                 }, ():void => { // Cancel
                 });
-        };
+            };
 
-        $scope.showCheckUpdateDialog = (index:number):void => {
+            $scope.showCheckUpdateDialog = (index:number):void => {
 
-            var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
-            items.name = items.name.split("-")[0];
+                var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                items.name = items.name.split("-")[0];
 
-            $mdDialog.show({
-                controller: 'CheckUpdateDialogController',
-                templateUrl: '/backend/partials/edit/item/check/checkupdatedialog',
-                targetEvent: null,
-                locals: {
-                    items: items
-                }
-            }).then((answer:any):void => { // Answer
+                $mdDialog.show({
+                    controller: 'CheckUpdateDialogController',
+                    templateUrl: '/backend/partials/edit/item/check/checkupdatedialog',
+                    targetEvent: null,
+                    locals: {
+                        items: items
+                    }
+                }).then((answer:any):void => { // Answer
                     answer.items.name = answer.items.name + "-" + answer.items.label;
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
                 }, ():void => { // Cancel
                 });
-        };
+            };
 
-        $scope.showSelectUpdateDialog = (index:number):void => {
+            $scope.showSelectUpdateDialog = (index:number):void => {
 
-            var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
 
-            $mdDialog.show({
-                controller: 'SelectUpdateDialogController',
-                templateUrl: '/backend/partials/edit/item/select/selectupdatedialog',
-                targetEvent: null,
-                locals: {
-                    items: items
-                }
-            }).then((answer:any):void => { // Answer
+                $mdDialog.show({
+                    controller: 'SelectUpdateDialogController',
+                    templateUrl: '/backend/partials/edit/item/select/selectupdatedialog',
+                    targetEvent: null,
+                    locals: {
+                        items: items
+                    }
+                }).then((answer:any):void => { // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
                 }, ():void => { // Cancel
                 });
-        };
+            };
 
-        $scope.showNumericUpdateDialog = (index:number):void => {
+            $scope.showNumericUpdateDialog = (index:number):void => {
 
-            var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
 
-            $mdDialog.show({
-                controller: 'NumericUpdateDialogController',
-                templateUrl: '/backend/partials/edit/item/numeric/numericupdatedialog',
-                targetEvent: null,
-                locals: {
-                    items: items
-                }
-            })
-                .then((answer:any):void => { // Answer
-                    CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
-                }, ():void => { // Cancel
-                });
-        };
+                $mdDialog.show({
+                    controller: 'NumericUpdateDialogController',
+                    templateUrl: '/backend/partials/edit/item/numeric/numericupdatedialog',
+                    targetEvent: null,
+                    locals: {
+                        items: items
+                    }
+                })
+                    .then((answer:any):void => { // Answer
+                        CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
+                    }, ():void => { // Cancel
+                    });
+            };
 
-        $scope.showPictureUpdateDialog = (index:number):void => {
+            $scope.showPictureUpdateDialog = (index:number):void => {
 
-            var items = CurrentView.Data.Pages[CurrentView.Page].picture[0];
+                var items = CurrentView.Data.Pages[CurrentView.Page].picture[0];
 
-            $mdDialog.show({
-                controller: 'PictureUpdateDialogController',
-                templateUrl: '/backend/partials/edit/item/picture/pictureupdatedialog',
-                targetEvent: null,
-                locals: {
-                    items: items
-                }
-            }).then((answer:any):void => { // Answer
+                $mdDialog.show({
+                    controller: 'PictureUpdateDialogController',
+                    templateUrl: '/backend/partials/edit/item/picture/pictureupdatedialog',
+                    targetEvent: null,
+                    locals: {
+                        items: items
+                    }
+                }).then((answer:any):void => { // Answer
                     CurrentView.Data.Pages[CurrentView.Page].picture[0] = answer.items;
                 }, ():void => { // Cancel
                 });
-        };
+            };
 
-        $scope.showButtonUpdateDialog = (index:number):void => {
+            $scope.showButtonUpdateDialog = (index:number):void => {
 
-            var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
 
-            $mdDialog.show({
-                controller: 'ButtonUpdateDialogController',
-                templateUrl: '/backend/partials/edit/item/button/buttonupdatedialog',
-                targetEvent: null,
-                locals: {
-                    items: items
-                }
-            }).then((answer:any):void => { // Answer
+                $mdDialog.show({
+                    controller: 'ButtonUpdateDialogController',
+                    templateUrl: '/backend/partials/edit/item/button/buttonupdatedialog',
+                    targetEvent: null,
+                    locals: {
+                        items: items
+                    }
+                }).then((answer:any):void => { // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
                 }, ():void => { // Cancel
                 });
-        };
+            };
 
-        $scope.showTextDeleteDialog = (index:number):void => {
+            $scope.showTextDeleteDialog = (index:number):void => {
 
-            $mdDialog.show({
-                controller: 'TextDeleteDialogController',
-                templateUrl: '/backend/partials/edit/item/check/textdeletedialog',
-                targetEvent: index
-            }).then((answer:any):void => {  // Answer
+                $mdDialog.show({
+                    controller: 'TextDeleteDialogController',
+                    templateUrl: '/backend/partials/edit/item/check/textdeletedialog',
+                    targetEvent: index
+                }).then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
                     CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
                 }, ():void => {
                 });
 
-        };
+            };
 
-        $scope.showCheckDeleteDialog = (index:number):void => {
+            $scope.showCheckDeleteDialog = (index:number):void => {
 
-            $mdDialog.show({
-                controller: 'CheckDeleteDialogController',
-                templateUrl: '/backend/partials/edit/item/check/checkdeletedialog',
-                targetEvent: index
-            }).then((answer:any):void => {  // Answer
+                $mdDialog.show({
+                    controller: 'CheckDeleteDialogController',
+                    templateUrl: '/backend/partials/edit/item/check/checkdeletedialog',
+                    targetEvent: index
+                }).then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
                     CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
                 }, ():void => {
                 });
 
-        };
+            };
 
-        $scope.showSelectDeleteDialog = (index:number):void => {
+            $scope.showSelectDeleteDialog = (index:number):void => {
 
-            $mdDialog.show({
-                controller: 'SelectDeleteDialogController',
-                templateUrl: '/backend/partials/edit/item/select/selectdeletedialog',
-                targetEvent: index
-            }).then((answer:any):void => {  // Answer
+                $mdDialog.show({
+                    controller: 'SelectDeleteDialogController',
+                    templateUrl: '/backend/partials/edit/item/select/selectdeletedialog',
+                    targetEvent: index
+                }).then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
                     CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
                 }, ():void => {
                 });
 
-        };
+            };
 
-        $scope.showNumericDeleteDialog = (index:number):void => {
+            $scope.showNumericDeleteDialog = (index:number):void => {
 
-            $mdDialog.show({
-                controller: 'NumericDeleteDialogController',
-                templateUrl: '/backend/partials/edit/item/numeric/numericdeletedialog',
-                targetEvent: index
-            }).then((answer:any):void => {  // Answer
+                $mdDialog.show({
+                    controller: 'NumericDeleteDialogController',
+                    templateUrl: '/backend/partials/edit/item/numeric/numericdeletedialog',
+                    targetEvent: index
+                }).then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
                     CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
                 }, ():void => {
                 });
 
-        };
+            };
 
-        $scope.showPictureDeleteDialog = (index:number):void => {
+            $scope.showPictureDeleteDialog = (index:number):void => {
 
-            $mdDialog.show({
-                controller: 'PictureDeleteDialogController',
-                templateUrl: '/backend/partials/edit/item/picture/picturedeletedialog',
-                targetEvent: index
-            }).then((answer:any):void => {  // Answer
+                $mdDialog.show({
+                    controller: 'PictureDeleteDialogController',
+                    templateUrl: '/backend/partials/edit/item/picture/picturedeletedialog',
+                    targetEvent: index
+                }).then((answer:any):void => {  // Answer
                     CurrentView.Data.Pages[CurrentView.Page].picture[0] = null;
                     CurrentView.Data.Pages[CurrentView.Page].picture = _.compact(CurrentView.Data.Pages[CurrentView.Page].picture);
                 }, ():void => {
                 });
-        };
+            };
 
-        $scope.showButtonDeleteDialog = (index:number):void => {
+            $scope.showButtonDeleteDialog = (index:number):void => {
 
-            $mdDialog.show({
-                controller: 'ButtonDeleteDialogController',
-                templateUrl: '/backend/partials/edit/item/button/buttondeletedialog',
-                targetEvent: index
-            })
-                .then((answer:any):void => {  // Answer
-                    CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
-                    CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
-                }, ():void => {
-                });
+                $mdDialog.show({
+                    controller: 'ButtonDeleteDialogController',
+                    templateUrl: '/backend/partials/edit/item/button/buttondeletedialog',
+                    targetEvent: index
+                })
+                    .then((answer:any):void => {  // Answer
+                        CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
+                        CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
+                    }, ():void => {
+                    });
 
-        };
+            };
 
-        /*
-         $scope.showItemCreateDialog = ():void => {
+            /*
+             $scope.showItemCreateDialog = ():void => {
 
-         $mdDialog.show({
-         controller: 'ItemCreateDialogController',
-         templateUrl: '/backend/partials/edit/item/itemcreatedialog',
-         targetEvent: null
-         })
-         .then((answer:any):void => { // Answer
-
-
-         //todo Item Create
+             $mdDialog.show({
+             controller: 'ItemCreateDialogController',
+             templateUrl: '/backend/partials/edit/item/itemcreatedialog',
+             targetEvent: null
+             })
+             .then((answer:any):void => { // Answer
 
 
-         }, ():void => { // Cancel
-         });
-
-         };
-
-         $scope.showItemUpdateDialog = (index:number):void => {
-
-         $scope.items = $scope.Page.items[index];
-
-         $mdDialog.show({
-         controller: 'ItemUpdateDialogController',
-         templateUrl: '/backend/partials/edit/item/itemupdatedialog',
-         targetEvent: null,
-         locals: {
-         items: $scope.items
-         }
-         })
-         .then((answer:any):void => { // Answer
-
-         var a = answer.items;
-
-         //todo Item Update
+             //todo Item Create
 
 
-         }, ():void => { // Cancel
-         });
+             }, ():void => { // Cancel
+             });
 
-         };
+             };
 
-         $scope.showItemDeleteDialog = (index:number):void => {
+             $scope.showItemUpdateDialog = (index:number):void => {
 
-         $mdDialog.show({
-         controller: 'ItemDeleteDialogController',
-         templateUrl: '/backend/partials/edit/item/itemdeletedialog',
-         targetEvent: index
-         })
-         .then((answer:any):void => {  // Answer
+             $scope.items = $scope.Page.items[index];
+
+             $mdDialog.show({
+             controller: 'ItemUpdateDialogController',
+             templateUrl: '/backend/partials/edit/item/itemupdatedialog',
+             targetEvent: null,
+             locals: {
+             items: $scope.items
+             }
+             })
+             .then((answer:any):void => { // Answer
+
+             var a = answer.items;
+
+             //todo Item Update
 
 
-         //todo Item Delete
+             }, ():void => { // Cancel
+             });
+
+             };
+
+             $scope.showItemDeleteDialog = (index:number):void => {
+
+             $mdDialog.show({
+             controller: 'ItemDeleteDialogController',
+             templateUrl: '/backend/partials/edit/item/itemdeletedialog',
+             targetEvent: index
+             })
+             .then((answer:any):void => {  // Answer
 
 
-         }, ():void => {
-         });
+             //todo Item Delete
 
-         };
-         */
 
+             }, ():void => {
+             });
+
+             };
+             */
+        }
+        else
+        {
+            $state.go('departments');
+        }
     }]);
 
 /*! Dialogs  */
@@ -1393,17 +1416,17 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
                 templateUrl: '/backend/partials/controll/notification',
                 targetEvent: ""
             }).then((answer:any):void  => {  // Answer
-                    var config:any = new Config();
-                    config.body = $scope.config;
-                    config.$update({}, (result:any):void => {
-                        if (result.code == 0) {
-                            $mdToast.show($mdToast.simple().content('Updated.'));
-                        } else {
-                            $mdToast.show($mdToast.simple().content(result.message));
-                        }
-                    });
-                }, ():void  => {
+                var config:any = new Config();
+                config.body = $scope.config;
+                config.$update({}, (result:any):void => {
+                    if (result.code == 0) {
+                        $mdToast.show($mdToast.simple().content('Updated.'));
+                    } else {
+                        $mdToast.show($mdToast.simple().content(result.message));
+                    }
                 });
+            }, ():void  => {
+            });
         };
 
         $scope.icon = "vertical_align_top";
@@ -1425,8 +1448,7 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
 controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet', '$location', 'CurrentPatient', 'Pdf',
     ($scope:any, $mdBottomSheet:any, $location:any, CurrentPatient:any, Pdf:any):void  => {
 
-        if (CurrentPatient)
-        {
+        if (CurrentPatient) {
             $scope.items = [
                 {name: 'Archive', icon: 'archive'},
                 {name: 'Mail', icon: 'mail'},
@@ -1447,8 +1469,24 @@ controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet', '$loc
         }
     }]);
 
-controllers.controller('LoginDialogController', ['$scope', '$mdDialog',
-    ($scope:any, $mdDialog:any):void  => {
+controllers.controller('LoginDialogController', ['$scope','$q', '$mdDialog','AccountQuery',
+    ($scope:any,$q:any, $mdDialog:any, AccountQuery:any):void  => {
+
+        $scope.querySearch = (querystring:any):any => {
+            var deferred = $q.defer();
+            AccountQuery.query({query: encodeURIComponent(JSON.stringify({"username": {$regex: querystring}}))}, (data:any):void => {
+                deferred.resolve(data.value);
+            });
+            return deferred.promise;
+        };
+
+        $scope.searchTextChange = (text):void => {
+
+        };
+
+        $scope.selectedItemChange = (item):void => {
+
+        };
 
         $scope.hide = ():void => {
             $mdDialog.hide();
@@ -1459,6 +1497,9 @@ controllers.controller('LoginDialogController', ['$scope', '$mdDialog',
         };
 
         $scope.answer = (answer:any):void  => {
+
+            //$scope.username = $scope.searchText;
+
             $mdDialog.hide($scope);
         };
 
@@ -1743,23 +1784,25 @@ controllers.controller('NumericCreateDialogController', ['$scope', '$mdDialog',
 
     }]);
 
-controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog','Upload',
+controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 'Upload',
     ($scope:any, $mdDialog:any, Upload:any):void  => {
 
-        // upload on file select or drop
-        $scope.upload = function (file) {
-            Upload.upload({
-                url: 'upload/url',
-                fields: {'username': $scope.username},
-                file: file
-            }).progress(function (evt) {
-                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
-            }).success(function (data, status, headers, config) {
-                console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
-            }).error(function (data, status, headers, config) {
-                console.log('error status: ' + status);
-            })
+
+        $scope.processFiles = function (files) {
+            $scope.images[0] = {};
+            var fileReader = new FileReader();
+            var image = new Image();
+            fileReader.onload = function (event) {
+                var uri = event.target.result;
+                image.src = uri;
+                image.onload = function () {
+                    $scope.$apply();
+                };
+                var upload = new Upload();
+                upload.url = uri;
+                upload.$send();
+            };
+            fileReader.readAsDataURL(files[0].file);
         };
 
 

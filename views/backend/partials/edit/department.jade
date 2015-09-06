@@ -18,11 +18,38 @@ md-content.background
             md-button.md-fab(ng-click="showPageCreateDialog()", aria-label="", style="background-color:#FFB300;z-index:1;", ng-if="type != 'Viewer'")
                 ng-md-icon.department-button1-icon(icon="note_add", aria-label="", size="42")
                 md-tooltip #{content.add}
-    md-list
+
+    md-list(hide-gt-sm)
         md-list-item(ng-repeat="Page in Pages", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="end center", flex)
-                    div(flex) {{Page.headline}}
+                    h1.md-subhead(flex) {{Page.headline}}
+
+                    div(layout="row", ng-show="type != 'Viewer'")
+                        md-button.md-fab.md-mini(ng-click="up($index)", aria-label="Up", style="background-color:#64ffda;z-index:1;", ng-if="type != 'Viewer'")
+                            ng-md-icon.department-button2-icon(icon="keyboard_arrow_up", size="22")
+                            md-tooltip #{content.up}
+
+                    div(layout="row", ng-show="type != 'Viewer'")
+                        md-button.md-fab.md-mini(ng-click="down($index)", aria-label="Down", style="background-color:#69F0AE;z-index:1;", ng-if="type != 'Viewer'")
+                            ng-md-icon.department-button2-icon(icon="keyboard_arrow_down", size="22")
+                            md-tooltip #{content.down}
+
+                    div(layout="row", ng-show="type != 'Viewer'")
+                        md-button.md-fab.md-mini(ng-click="PageUpdate($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
+                            ng-md-icon.department-button1-icon(icon="mode_edit", size="22")
+                            md-tooltip #{content.update}
+
+                    div(layout="row", ng-show="type != 'Viewer'")
+                        md-button.md-fab.md-mini(ng-click="showPageDeleteDialog($index)", aria-label="Delete", style="background-color:#ff5050;z-index:1;", ng-if="type != 'Viewer'")
+                            ng-md-icon.department-button1-icon(icon="remove", size="22")
+                            md-tooltip #{content.delete}
+
+    md-list(hide-sm)
+        md-list-item(ng-repeat="Page in Pages", ng-show="account.type != 'Admin'")
+            md-card(layout="row", flex)
+                md-card-content(layout="row", layout-align="end center", flex)
+                    h3.md-title(flex) {{Page.headline}}
 
                     div(layout="row", ng-show="type != 'Viewer'")
                         md-button.md-fab(ng-click="up($index)", aria-label="Up", style="background-color:#64ffda;z-index:1;", ng-if="type != 'Viewer'")
@@ -43,4 +70,3 @@ md-content.background
                         md-button.md-fab(ng-click="showPageDeleteDialog($index)", aria-label="Delete", style="background-color:#ff5050;z-index:1;", ng-if="type != 'Viewer'")
                             ng-md-icon.department-button1-icon(icon="remove", size="42")
                             md-tooltip #{content.delete}
-

@@ -13,7 +13,6 @@ h3, h4, h5 {
   font-weight: 700;
 }
 
-
 //rainbow
 .child {
   background: rgba(98, 135, 167, .5);
@@ -152,7 +151,6 @@ body .gwd-gen-2efjgwdanimation {
   }
 }
 
-
 //angular-animate
 .ng-enter,
 .ng-leave,
@@ -185,23 +183,20 @@ body .gwd-gen-2efjgwdanimation {
   opacity: 1;
 }
 
-
-
-
 //customize
 .department-content {
   background-color: #A0A0FF;
 }
 
 .department-progress-circular {
-  position:absolute;
-  top:50%;
-  left:50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }
 
 .department-button(@background-color:#FF1744) {
-  background-color:@background-color;
-  z-index:1;
+  background-color: @background-color;
+  z-index: 1;
 }
 
 .department-button1 {
@@ -228,12 +223,11 @@ body .gwd-gen-2efjgwdanimation {
   .department-button(#ff5050);
 }
 
-
 .department-button-icon(@top: 6px, @left: 1px) {
-  position:relative;
-  top:@top;
-  left:@left;
-  fill:#eeeeee;
+  position: relative;
+  top: @top;
+  left: @left;
+  fill: #eeeeee;
 }
 
 .department-button1-icon {
@@ -241,7 +235,7 @@ body .gwd-gen-2efjgwdanimation {
 }
 
 .department-button2-icon {
-  .department-button-icon(10px,0px);
+  .department-button-icon(10px, 0px);
 }
 
 .background {
@@ -264,17 +258,33 @@ body .gwd-gen-2efjgwdanimation {
   top: 30px;
 }
 
-.file-upload-area {
-  padding: 20px;
-  border: 2px #DDD dashed;
-  text-align: center;
-  color: #DDD;
-  margin-bottom: 20px;
+md-sidenav,
+md-sidenav.md-locked-open,
+md-sidenav.md-closed.md-locked-open-add-active {
+  min-width: 100px !important;
+  width: 40vw !important;
+  max-width: 400px !important;
 }
-.file-upload-area input[type="file"] {
-  display: none;
+
+.autocomplete-template li {
+  border-bottom: 1px solid #ccc;
+  height: auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  white-space: normal;
 }
-.file-upload-dragover {
-  background-color: #F9F9F9;
-  opacity: 0.8;
+
+.autocomplete-template li:last-child {
+  border-bottom-width: 0;
+}
+
+.autocomplete-template .item-title,
+.autocomplete-template .item-metadata {
+  display: block;
+  line-height: 2;
+}
+
+.autocomplete-template .item-title md-icon {
+  height: 18px;
+  width: 18px;
 }

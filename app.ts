@@ -17,18 +17,8 @@ var config = JSON.parse(text);
 config.state = app.get('env');
 
 var log4js = require('log4js');
-log4js.configure({
-    appenders: [
-        {
-            "type": "dateFile",
-            "category": "request",
-            "filename": "request.log",
-            "pattern": "-yyyy-MM-dd"
-        }
-    ]
-});
+log4js.configure("config/logs.json");
 var logger = log4js.getLogger('request');
-
 logger.setLevel(config.loglevel);
 
 logger.info('Config Ok.');
