@@ -9,8 +9,8 @@
 md-content.background
 
     md-progress-circular.md-accent(ng-show="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
-    md-card
-        md-card-header
+    md-card.box-edge
+        md-card-content
             h1.md-headline #{content.headline}
             md-button.md-fab(ng-click="showDepartmentCreateDialog()", aria-label="", style="background-color:#FBC02D", ng-if="type != 'Viewer'")
                 ng-md-icon.iconfill(icon="note_add", aria-label="", style="position:relative;top:6px;left:1px;", size="42")

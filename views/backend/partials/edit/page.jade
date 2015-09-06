@@ -9,9 +9,9 @@
 md-content.background
 
     md-progress-circular.md-accent(ng-show="progress", md-mode="indeterminate", style="position:absolute;top:50%;left:50%;")
-    md-card
+    md-card.box-edge
         ng-form(name="validate")
-            md-card-header
+            md-card-content
                 md-input-container(flex)
                     label #{content.headline}
                     input(ng-model="Page.headline", data-ng-required="true", name="title", placeholder='Enter Username', md-maxlength="30", required)
@@ -122,8 +122,9 @@ md-content.background
         md-list-item(ng-repeat="picture in Page.picture", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)
-                    h3.md-title(flex="40") {{picture.type}}
-                    h4(flex="40") {{picture.name}}
+                    h1.md-subhead(flex) {{picture.type}}
+                    h1.md-subhead(flex) {{picture.name}}
+
                     div(layout="row", ng-if="picture.type == 'picture'")
                         div(flex, ng-if="type != 'Viewer'")
                             md-button.md-fab.md-mini(ng-click="showPictureUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
@@ -206,8 +207,9 @@ md-content.background
         md-list-item(ng-repeat="picture in Page.picture", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)
-                    h3.md-title(flex="40") {{picture.type}}
-                    h4(flex="40") {{picture.name}}
+                    h3.md-title(flex) {{picture.type}}
+                    h4(flex) {{picture.name}}
+
                     div(layout="row", ng-if="picture.type == 'picture'")
                         div(flex, ng-if="type != 'Viewer'")
                             md-button.md-fab(ng-click="showPictureUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")

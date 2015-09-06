@@ -5,11 +5,11 @@
     http://opensource.org/licenses/mit-license.php
 
 md-content.background
-    md-card
-        md-card-header
+    md-card.box-edge
+        md-card-content
             h1.md-headline 問診内容
             h4 {{Information.time}}
-            h3 {{Information.kana}} [ {{Information.name}}  -  {{Information.insurance}} ]
+            h3 {{Information.kana}} [ {{Information.name}} ]
         md-card-content
             div(layout="row")
                 div
@@ -19,63 +19,63 @@ md-content.background
                 div
                     md-switch(ng-model="IsDone") Done
     md-card
-       md-tabs(md-selected="selectedIndex",style="min-height:660px;")
+        md-tabs(md-selected="selectedIndex",style="min-height:660px;")
 
-        md-tab(label="schema")
-            md-card
-                div(layout="row")
-                    div(flex)
-                        md-button.md-fab.md-warn(ng-click="download()", aria-label="Download")
-                            ng-md-icon.iconfill(icon="save", size="46", id="icon")
-                    div(flex)
-                        canvas#schema(width="300", height="600")
-                    div(flex)
+            md-tab(label="schema")
+                md-card
+                    div(layout="row")
+                        div(flex)
+                            md-button.md-fab.md-warn(ng-click="download()", aria-label="Download")
+                                ng-md-icon.iconfill(icon="save", size="46", id="icon")
+                        div(flex)
+                            canvas#schema(width="300", height="600")
+                        div(flex)
 
-        md-tab(label="data")
-            md-list
-                md-card-content
-                 div(layout layout-align="center center", ng-repeat="item in Input")
+            md-tab(label="data")
+                md-list
+                    md-card-content
+                        div(layout layout-align="center center", ng-repeat="item in Input")
 
-                    div(layout="row",ng-show="item.type == 'text'", flex)
-                        md-card(flex)
-                            md-card-content(layout="row", layout-align="start center", flex)
-                                label.md-subhead(ng-bind="item.name")
-                                .md-title(ng-bind="item.value")
+                            div(layout="row",ng-show="item.type == 'text'", flex)
+                                md-card(flex)
+                                    md-card-content(layout="row", layout-align="start center", flex)
+                                        label.md-subhead(ng-bind="item.name")
+                                        .md-title(ng-bind="item.value")
 
-                    div(layout="row",ng-show="item.type == 'select'", flex)
-                        md-card(flex)
-                            md-card-content(layout="row", layout-align="start center", flex)
-                                label.md-subhead(ng-bind="item.name")
-                                .md-title(ng-bind="item.value")
+                            div(layout="row",ng-show="item.type == 'select'", flex)
+                                md-card(flex)
+                                    md-card-content(layout="row", layout-align="start center", flex)
+                                        label.md-subhead(ng-bind="item.name")
+                                        .md-title(ng-bind="item.value")
 
-                    div(layout="row",ng-show="item.type == 'check'", flex)
-                        md-card(flex, ng-show="item.value")
-                            md-card-content(layout="row", layout-align="start center", flex)
-                                label.md-subhead(ng-bind="item.name")
-                                .md-title(ng-bind="item.value")
+                            div(layout="row",ng-show="item.type == 'check'", flex)
+                                md-card(flex, ng-show="item.value")
+                                    md-card-content(layout="row", layout-align="start center", flex)
+                                        label.md-subhead(ng-bind="item.name")
+                                        .md-title(ng-bind="item.value")
 
-                    div(layout="row",ng-show="item.type == 'numeric'", flex)
-                        md-card(flex)
-                            md-card-content(layout="row", layout-align="start center", flex)
-                                label.md-subhead(ng-bind="item.name")
-                                .md-title(ng-bind="item.value")
+                            div(layout="row",ng-show="item.type == 'numeric'", flex)
+                                md-card(flex)
+                                    md-card-content(layout="row", layout-align="start center", flex)
+                                        label.md-subhead(ng-bind="item.name")
+                                        .md-title(ng-bind="item.value")
 
-        md-tab(label="copyable")
-            md-card
-                md-card-content(layout-align="start start",flex)
-                    div(layout="column", ng-repeat="item in Input", flex)
-                        div(ng-show="item.type == 'text'")
-                            strong {{item.name}} :
-                            span {{item.value}}
-                        div(ng-show="item.type == 'select'")
-                            strong {{item.name}} :
-                            span {{item.value}}
-                        div(ng-show="item.type == 'check'")
-                            div(ng-show="item.value")
+            md-tab(label="copyable")
+                md-card
+                    md-card-content(layout-align="start start",flex)
+                        div(layout="column", ng-repeat="item in Input", flex)
+                            div(ng-show="item.type == 'text'")
                                 strong {{item.name}} :
                                 span {{item.value}}
-                        div(ng-show="item.type == 'numeric'")
-                            strong {{item.name}} :
-                            span {{item.value}}
+                            div(ng-show="item.type == 'select'")
+                                strong {{item.name}} :
+                                span {{item.value}}
+                            div(ng-show="item.type == 'check'")
+                                div(ng-show="item.value")
+                                    strong {{item.name}} :
+                                    span {{item.value}}
+                            div(ng-show="item.type == 'numeric'")
+                                strong {{item.name}} :
+                                span {{item.value}}
 
 

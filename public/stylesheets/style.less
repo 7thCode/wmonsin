@@ -258,6 +258,8 @@ body .gwd-gen-2efjgwdanimation {
   top: 30px;
 }
 
+//md-sidenav
+
 md-sidenav,
 md-sidenav.md-locked-open,
 md-sidenav.md-closed.md-locked-open-add-active {
@@ -265,6 +267,30 @@ md-sidenav.md-closed.md-locked-open-add-active {
   width: 40vw !important;
   max-width: 400px !important;
 }
+
+.sidenav-edge {
+  opacity:0.2;
+  background: -moz-linear-gradient(left,  rgba(0,0,0,0.01) 0%, rgba(0,0,0,1) 44%, rgba(255,255,255,0.26) 50%, rgba(255,255,255,0.01) 52%, rgba(255,255,255,0) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,0,0,0.01)), color-stop(44%,rgba(0,0,0,1)), color-stop(50%,rgba(255,255,255,0.26)), color-stop(52%,rgba(255,255,255,0.01)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left,  rgba(0,0,0,0.01) 0%,rgba(0,0,0,1) 44%,rgba(255,255,255,0.26) 50%,rgba(255,255,255,0.01) 52%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left,  rgba(0,0,0,0.01) 0%,rgba(0,0,0,1) 44%,rgba(255,255,255,0.26) 50%,rgba(255,255,255,0.01) 52%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(left,  rgba(0,0,0,0.01) 0%,rgba(0,0,0,1) 44%,rgba(255,255,255,0.26) 50%,rgba(255,255,255,0.01) 52%,rgba(255,255,255,0) 100%); /* IE10+ */
+  background: linear-gradient(to right,  rgba(0,0,0,0.01) 0%,rgba(0,0,0,1) 44%,rgba(255,255,255,0.26) 50%,rgba(255,255,255,0.01) 52%,rgba(255,255,255,0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#03000000', endColorstr='#00ffffff',GradientType=1 ); /* IE6-9 */
+}
+
+.box-edge {
+  /* border-radius */
+  border-radius:6px;
+  -webkit-border-radius:6px;
+  -moz-border-radius:6px;
+
+  /* box-shadow */
+  box-shadow:rgba(113, 135, 164, 0.65098) 0px 0px 6px 3px;
+  -webkit-box-shadow:rgba(113, 135, 164, 0.65098) 0px 0px 6px 3px;
+  -moz-box-shadow:rgba(113, 135, 164, 0.65098) 0px 0px 6px 3px;
+}
+//md-autocomplete
 
 .autocomplete-template li {
   border-bottom: 1px solid #ccc;

@@ -22,7 +22,7 @@ md-content.background
             md-list
                 md-list-item(layout-align="center center" ng-repeat="content in contents.items")
 
-                    md-card(flex)
+                    md-card.box-edge(flex)
                         md-card-content(layout-align="start center")
 
                             md-input-container(style="width:100%", ng-if="content.type == 'text' && content.items.length == 0")
