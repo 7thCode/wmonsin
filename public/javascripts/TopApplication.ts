@@ -9,6 +9,7 @@
 
  */
 
+'use strict';
 
 var app:any = angular.module('TopApplication', ['ui.router', 'TopControllers']);
 /*

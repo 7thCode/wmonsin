@@ -9,7 +9,23 @@ md-content.background
     md-card.box-edge
         md-card-content
             h1.md-headline {{'patient' | message}}
-            div(layout="row", layout-align="start center")
+            div(layout="row", layout-align="start center" hide-gt-sm)
+                div(layout="column")
+                  div
+                    md-button.md-fab(ng-click="showPatientAcceptDialog()", aria-label="", style="background-color:#5540fc;")
+                        ng-md-icon(icon="person_add", aria-label="Patients", style="position:relative;top:6px;fill:#abcdef" size="42")
+                        md-tooltip {{'add' | message}}
+                    md-button.md-fab(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'", style="background-color:#fc0c9c;")
+                        ng-md-icon(icon="{{icon}}", style="position:relative;top:6px;left:1px;fill:#ffffff", size="42",options='{"rotation": "none"}')
+                        md-tooltip {{'opentools' | message}}
+
+                  div
+                    md-autocomplete(md-no-cache="noCache", md-selected-item="selectedItem", md-search-text-change="searchTextChange(searchText)", md-search-text="searchText", md-selected-item-change="selectedItemChange(item)", md-items="item in querySearch(searchText)", md-item-text="item.Information.name",md-min-length="0", placeholder="Name", md-menu-class="autocomplete-custom-template")
+                        md-item-template
+                            span(class="item-title")
+                                span {{item.Information.name}}
+
+            div(layout="row", layout-align="start center" hide-sm)
                 div(layout="row")
                     md-button.md-fab(ng-click="showPatientAcceptDialog()", aria-label="", style="background-color:#5540fc;")
                         ng-md-icon(icon="person_add", aria-label="Patients", style="position:relative;top:6px;fill:#abcdef" size="42")

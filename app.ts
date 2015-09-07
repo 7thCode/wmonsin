@@ -63,6 +63,7 @@ logger.info("mongoose.connect(config.connection, options);");
 app.use(session({
     secret: config.sessionkey,
     resave: false,
+    rolling:false,
     saveUninitialized: true,
     cookie: {
         maxAge: 365 * 24 * 60 * 60 *1000
@@ -114,6 +115,7 @@ if (app.get('env') === 'development') {
 }
 
 app.use((err:any, req:any, res:any, next:any):void => {
+    logger.fatal(err.message);
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,

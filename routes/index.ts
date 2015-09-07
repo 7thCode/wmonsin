@@ -61,7 +61,7 @@ var result = require('./result');
 module.exports = router;
 
 // root user
-FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any) => {
+FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any):void => {
     if (!account) {
         Account.register(new Account({username: config.user, type: "Admin"}),
             config.password,
@@ -237,7 +237,9 @@ function SendFatal(res:any, code:number, message:any, object:any):void {
 }
 
 function SendResult(res:any, code:number, message:any, object:any):void {
-    logger.info(message + " " + code);
+    if (code != 0) {
+        logger.info(message + " " + code);
+    }
     res.send(JSON.stringify(new result(code, message, object)));
 }
 
@@ -522,11 +524,11 @@ router.put('/patient/:id', (req:any, res:any):void => {
 
 /*! delete */
 router.delete('/patient/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 4000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            If(res, number, (user.type != "Viewer"), (res:any) => {
-                Remove(res, number, Patient, req.params.id, (res:any) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
+            If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                Remove(res, number, Patient, req.params.id, (res:any):void  => {
                     SendResult(res, 0, "OK", {});
                 });
             });
@@ -536,11 +538,11 @@ router.delete('/patient/:id', (req:any, res:any):void => {
 
 /*! query */
 router.get('/patient/query/:query', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 5000;
-        Authenticate(req, res, number, (user:any, res:any) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
             var query = JSON.parse(decodeURIComponent(req.params.query));
-            Find(res, number, Patient, query, {}, {sort: {Date: -1}}, (res:any, docs:any):any => {
+            Find(res, number, Patient, query, {}, {sort: {Date: -1}}, (res:any, docs:any):void  => {
                 SendResult(res, 0, "OK", docs);
             });
         });
@@ -549,9 +551,9 @@ router.get('/patient/query/:query', (req:any, res:any):void => {
 
 /*! query */
 router.get('/patient/count/:query', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 6000;
-        Authenticate(req, res, number, (user:any, res:any) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
             var query = JSON.parse(decodeURIComponent(req.params.query));
             Patient.count(query, (error:any, docs:any):void => {
                 if (!error) {
@@ -570,10 +572,10 @@ router.get('/patient/count/:query', (req:any, res:any):void => {
 
 /*! status */
 router.get('/patient/status/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 7000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            FindById(res, number, Patient, req.params.id, (res, patient) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
+            FindById(res, number, Patient, req.params.id, (res:any, patient:any):void  => {
                 SendResult(res, 0, "OK", patient.Status);
             });
         });
@@ -581,13 +583,13 @@ router.get('/patient/status/:id', (req:any, res:any):void => {
 });
 
 router.put('/patient/status/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 8000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            If(res, number, (user.type != "Viewer"), (res:any) => {
-                FindById(res, number, Patient, req.params.id, (res, patient) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
+            If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                FindById(res, number, Patient, req.params.id, (res:any, patient:any):void  => {
                     patient.Status = req.body.Status;
-                    Save(res, number, patient, (res:any, patient:any) => {
+                    Save(res, number, patient, (res:any, patient:any):void  => {
                         SendResult(res, 0, "OK", patient.Status);
                     });
                 });
@@ -599,15 +601,15 @@ router.put('/patient/status/:id', (req:any, res:any):void => {
 /*! account */
 /*! create */
 router.post('/account/create', (request:any, response:any):void => {
-    Guard(request, response, (request:any, response:any) => {
+    Guard(request, response, (request:any, response:any):void  => {
         var number:number = 9000;
-        Authenticate(request, response, number, (user:any, res:any) => {
-            If(res, number, (user.type != "Viewer"), (res:any) => {
-                FindOne(res, number, Account, {username: request.body.username.toLowerCase()}, (res:any, account:any) => {
+        Authenticate(request, response, number, (user:any, res:any):void  => {
+            If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                FindOne(res, number, Account, {username: request.body.username.toLowerCase()}, (res:any, account:any):void  => {
                     if (!account) {
                         Account.register(new Account({username: request.body.username, type: request.body.type}),
                             request.body.password,
-                            function (error, account) {
+                            (error:any, account:any):void => {
                                 if (!error) {
                                     SendResult(res, 0, "OK", account);
                                 }
@@ -623,20 +625,20 @@ router.post('/account/create', (request:any, response:any):void => {
 
 /*! logout */
 router.post('/account/logout', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         req.logout();
         SendResult(res, 0, "OK", {});
     });
 });
 
 /*! login */
-router.post('/account/login', function (request, response, next) {
-    passport.authenticate('local', function (error, user, info) {
+router.post('/account/login', (request:any, response:any, next:any):void  => {
+    passport.authenticate('local', (error:any, user:any, info:any):void  => {
         var number:number = 10000;
         try {
             if (!error) {
                 if (user) {
-                    request.login(user, function (error) {
+                    request.login(user, (error:any):void => {
                         if (!error) {
                             SendResult(response, 0, "OK", user);
                         } else {
@@ -657,10 +659,10 @@ router.post('/account/login', function (request, response, next) {
 
 /*! get */
 router.get('/account/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 11000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            FindById(res, number, Account, req.params.id, (res, account) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
+            FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
                 SendResult(res, 0, "OK", account);
             });
         });
@@ -669,14 +671,14 @@ router.get('/account/:id', (req:any, res:any):void => {
 
 /*! update */
 router.put('/account/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 12000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            If(res, number, (user.type != "Viewer"), (res:any) => {
-                FindById(res, number, Account, req.params.id, (res, account) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
+            If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
                     account.username = req.body.username;
                     account.type = req.body.type;
-                    Save(res, number, account, (res:any, account:any) => {
+                    Save(res, number, account, (res:any, account:any):void  => {
                         SendResult(res, 0, "OK", account);
                     });
                 });
@@ -687,11 +689,11 @@ router.put('/account/:id', (req:any, res:any):void => {
 
 /*! delete */
 router.delete('/account/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 13000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            If(res, number, (user.type != "Viewer"), (res:any) => {
-                Remove(res, number, Account, req.params.id, (res:any) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
+            If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                Remove(res, number, Account, req.params.id, (res:any):void  => {
                     SendResult(res, 0, "OK", {});
                 });
             });
@@ -701,11 +703,11 @@ router.delete('/account/:id', (req:any, res:any):void => {
 
 /*! query */
 router.get('/account/query/:query', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 14000;
         // Authenticate(req, res, number, (user:any, res:any) => {
         var query:any = JSON.parse(decodeURIComponent(req.params.query));
-        Find(res, number, Account, query, {}, {}, (res:any, docs:any) => {
+        Find(res, number, Account, query, {}, {}, (res:any, docs:any):void  => {
             SendResult(res, 0, "OK", StripAccounts(docs));
         });
         //});
@@ -714,14 +716,14 @@ router.get('/account/query/:query', (req:any, res:any):void => {
 
 /*! update */
 router.put('/account/password/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 15000;
-        Authenticate(req, res, number, (user:any, res:any) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
             //  If(res, number, (user.type != "Viewer"), (res:any) => {
-            FindById(res, number, Account, req.params.id, (res, account) => {
-                account.setPassword(req.body.password, function (error) {
+            FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
+                account.setPassword(req.body.password, (error:any):void  => {
                     if (!error) {
-                        Save(res, number, account, (res:any, account:any) => {
+                        Save(res, number, account, (res:any, account:any):void  => {
                             SendResult(res, 0, "OK", account);
                         });
                     } else {
@@ -737,9 +739,9 @@ router.put('/account/password/:id', (req:any, res:any):void => {
 /*! config */
 /*! get */
 router.get('/config', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 16000;
-        Authenticate(req, res, number, (user:any, res:any) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
             SendResult(res, 0, "OK", config);
         });
     });
@@ -747,10 +749,10 @@ router.get('/config', (req:any, res:any):void => {
 
 /*! update */
 router.put('/config', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 17000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            If(res, number, (user.type != "Viewer"), (res:any) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
+            If(res, number, (user.type != "Viewer"), (res:any):void  => {
                 config = req.body.body;
                 fs.writeFile('config/config.json', JSON.stringify(config), (error:any):void => {
                     if (!error) {
@@ -767,31 +769,31 @@ router.put('/config', (req:any, res:any):void => {
 /*! views */
 /*! create view */
 router.post('/view', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 18000;
         var view:any = new View();
         var data:any = req.body.data;
         var viewdata:any = JSON.parse(data);
         view.Pages = viewdata.Pages;
         view.Name = viewdata.Name;
-        Save(res, number, view, (res:any, view:any) => {
+        Save(res, number, view, (res:any, view:any):void  => {
             SendResult(res, 0, "OK", view);
         });
     });
 });
 
 router.post('/view/create', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 19000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            If(res, number, (user.type != "Viewer"), (res:any) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
+            If(res, number, (user.type != "Viewer"), (res:any):void  => {
                 View.count({Name: req.body.Name}, (error:any, count:number):void => {
                     if (!error) {
                         if (count == 0) {
                             var view:any = new View();
                             view.Name = req.body.Name;
                             view.Pages = req.body.Pages;
-                            Save(res, number, view, (res:any, view:any) => {
+                            Save(res, number, view, (res:any, view:any):void  => {
                                 SendResult(res, 0, "OK", view);
                             });
                         } else {
@@ -808,9 +810,9 @@ router.post('/view/create', (req:any, res:any):void => {
 
 /*! get view */
 router.get('/view/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 20000;
-        FindById(res, number, View, req.params.id, (res, view) => {
+        FindById(res, number, View, req.params.id, (res:any, view:any):void  => {
             SendResult(res, 0, "OK", view);
         });
     });
@@ -818,14 +820,14 @@ router.get('/view/:id', (req:any, res:any):void => {
 
 /*! update */
 router.put('/view/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 21000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            If(res, number, (user.type != "Viewer"), (res:any) => {
-                FindById(res, number, View, req.params.id, (res, view) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
+            If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                FindById(res, number, View, req.params.id, (res:any, view:any):void => {
                     view.Name = req.body.Name;
                     view.Pages = req.body.Pages;
-                    Save(res, number, view, (res:any, object:any) => {
+                    Save(res, number, view, (res:any, object:any):void  => {
                         SendResult(res, 0, "OK", view);
                     });
                 });
@@ -836,11 +838,11 @@ router.put('/view/:id', (req:any, res:any):void => {
 
 /*! delete */
 router.delete('/view/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void  => {
         var number:number = 22000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            If(res, number, (user.type != "Viewer"), (res:any) => {
-                Remove(res, number, View, req.params.id, (res:any) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
+            If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                Remove(res, number, View, req.params.id, (res:any):void  => {
                     SendResult(res, 0, "OK", {});
                 });
             });
@@ -850,11 +852,11 @@ router.delete('/view/:id', (req:any, res:any):void => {
 
 /*! query */
 router.get('/view/query/:query', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    Guard(req, res, (req:any, res:any):void => {
         var number:number = 23000;
-        Authenticate(req, res, number, (user:any, res:any) => {
+        Authenticate(req, res, number, (user:any, res:any):void  => {
             var query:any = JSON.parse(decodeURIComponent(req.params.query));
-            Find(res, number, View, {}, {}, {}, (res:any, views:any) => {
+            Find(res, number, View, {}, {}, {}, (res:any, views:any):void  => {
                 SendResult(res, 0, "OK", views);
             });
         });
@@ -892,130 +894,238 @@ router.get('/view/query/:query', (req:any, res:any):void => {
  });
  */
 
-router.get('/file/:name', function (request, response) {
+router.get('/file/:name', (request:any, response:any, next:any):void => {
     try {
         var conn = mongoose.createConnection(config.connection);
-        conn.once('open', function (error) {
+        conn.once('open', (error:any):void => {
             if (!error) {
                 var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
-                var readstream = gfs.createReadStream({filename: request.params.name});
-                if (readstream) {
-                    readstream.pipe(response);
-                    readstream.on('close', function (file) {
-                        conn.db.close();
+                if (gfs) {
+                    conn.db.collection('fs.files', (error:any, collection:any):void => {
+                        if (!error) {
+                            if (collection) {
+                                collection.findOne({filename: request.params.name}, (error:any, item:any):void => {
+                                    if (!error) {
+                                        if (item) {
+                                            var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
+                                            if (gfs) {
+                                                var readstream = gfs.createReadStream({filename: request.params.name});
+                                                if (readstream) {
+                                                    readstream.pipe(response);
+                                                    readstream.on('close', (file:any):void => {
+                                                        conn.db.close();
+                                                    });
+                                                }
+                                            }
+                                        } else {
+                                            next();
+                                        }
+                                    }
+                                })
+                            }
+                        }
                     });
                 }
             }
         });
     } catch (e) {
-        SendResult(response, 100000, e.message, e);
     }
 });
 
-router.post('/file/:name', function (request, response) {
+router.post('/file/:name', (request:any, response:any):void => {
+    Guard(request, response, (request:any, response:any):void => {
+        var number:number = 24000;
+        Authenticate(request, response, number, (user:any, response:any):void  => {
+            var conn = mongoose.createConnection(config.connection);
+            if (conn) {
+                conn.once('open', (error:any):void  => {
+                    if (!error) {
+                        var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
+                        if (gfs) {
+                            conn.db.collection('fs.files', (error:any, collection:any):void => {
+                                if (!error) {
+                                    if (collection) {
+                                        collection.findOne({filename: request.params.name}, (error:any, item:any):void => {
+                                            if (!error) {
+                                                if (!item) {
 
-    var parseDataURL = function (dataURL) {
-        var rslt = {
-            mediaType: null,
-            encoding: null,
-            isBase64: null,
-            data: null
-        };
+                                                    var parseDataURL = (dataURL:any):any => {
+                                                        var rslt = {
+                                                            mediaType: null,
+                                                            encoding: null,
+                                                            isBase64: null,
+                                                            data: null
+                                                        };
+                                                        if (/^data:([^;]+)(;charset=([^,;]+))?(;base64)?,(.*)/.test(dataURL)) {
+                                                            rslt.mediaType = RegExp.$1 || 'text/plain';
+                                                            rslt.encoding = RegExp.$3 || 'US-ASCII';
+                                                            rslt.isBase64 = String(RegExp.$4) === ';base64';
+                                                            rslt.data = RegExp.$5;
+                                                        }
+                                                        return rslt;
+                                                    };
 
-        if (/^data:([^;]+)(;charset=([^,;]+))?(;base64)?,(.*)/.test(dataURL)) {
-            rslt.mediaType = RegExp.$1 || 'text/plain';
-            rslt.encoding = RegExp.$3 || 'US-ASCII';
-            rslt.isBase64 = String(RegExp.$4) === ';base64';
-            rslt.data = RegExp.$5;
-        }
-        return rslt;
-    };
-
-    var conn = mongoose.createConnection(config.connection);
-    var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
-    conn.once('open', function (error) {
-        if (!error) {
-            conn.db.collection('fs.files', function (error, collection) {
-                if (!error) {
-                    var info = parseDataURL(request.body.url);
-                    var chunk = info.isBase64 ? new Buffer(info.data, 'base64') : new Buffer(unescape(info.data), 'binary');
-                    var writestream = gfs.createWriteStream({
-                        filename: request.params.name,
-                    });
-
-                    writestream.write(chunk);
-                    writestream.end();
-
-                    writestream.on('close', function (file) {
-                        conn.db.close();
-                        response.send(JSON.stringify(new result(0, "file ok", {})));
-                    });
-                }
-            });
-        }
+                                                    var info = parseDataURL(request.body.url);
+                                                    var chunk = info.isBase64 ? new Buffer(info.data, 'base64') : new Buffer(unescape(info.data), 'binary');
+                                                    var writestream = gfs.createWriteStream({filename: request.params.name});
+                                                    if (writestream) {
+                                                        writestream.write(chunk);
+                                                        writestream.end();
+                                                        writestream.on('close', (file:any):void => {
+                                                            conn.db.close();
+                                                            SendResult(response, 0, "OK", {});
+                                                        });
+                                                    } else {
+                                                        SendFatal(response, number + 40, "stream not open", {});
+                                                    }
+                                                } else {
+                                                    SendWarn(response, number + 1, "already found", {});
+                                                }
+                                            } else {
+                                                SendError(response, number + 100, "find error " + error.message, error);
+                                            }
+                                        });
+                                    } else {
+                                        SendFatal(response, number + 30, "no collection", {});
+                                    }
+                                } else {
+                                    SendError(response, number + 100, "collection error " + error.message, error);
+                                }
+                            });
+                        } else {
+                            SendFatal(response, number + 20, "no gfs", {});
+                        }
+                    } else {
+                        SendError(response, number + 100, "open error " + error.message, error);
+                    }
+                });
+            } else {
+                SendError(response, number + 10, "connection error", {});
+            }
+        });
     });
 });
 
-router.put('/file/:name', function (request, response) {
+router.put('/file/:name', (request:any, response:any):void => {
+    Guard(request, response, (request:any, response:any):void => {
+        var number:number = 25000;
+        Authenticate(request, response, number, (user:any, response:any):void => {
+            var conn = mongoose.createConnection(config.connection);
+            if (conn) {
+                conn.once('open', (error:any):void  => {
+                    if (!error) {
+                        var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
+                        if (gfs) {
+                            conn.db.collection('fs.files', (error:any, collection:any):void  => {
+                                if (!error) {
+                                    if (collection) {
+                                        collection.findOne({filename: request.params.name}, (error:any, item:any):void => {
+                                            if (!error) {
+                                                if (item) {
+                                                    collection.remove({filename: request.params.name}, () => {
 
-    var parseDataURL = function (dataURL) {
-        var rslt = {
-            mediaType: null,
-            encoding: null,
-            isBase64: null,
-            data: null
-        };
+                                                        var parseDataURL = (dataURL:any):any => {
+                                                            var rslt = {
+                                                                mediaType: null,
+                                                                encoding: null,
+                                                                isBase64: null,
+                                                                data: null
+                                                            };
+                                                            if (/^data:([^;]+)(;charset=([^,;]+))?(;base64)?,(.*)/.test(dataURL)) {
+                                                                rslt.mediaType = RegExp.$1 || 'text/plain';
+                                                                rslt.encoding = RegExp.$3 || 'US-ASCII';
+                                                                rslt.isBase64 = String(RegExp.$4) === ';base64';
+                                                                rslt.data = RegExp.$5;
+                                                            }
+                                                            return rslt;
+                                                        };
 
-        if (/^data:([^;]+)(;charset=([^,;]+))?(;base64)?,(.*)/.test(dataURL)) {
-            rslt.mediaType = RegExp.$1 || 'text/plain';
-            rslt.encoding = RegExp.$3 || 'US-ASCII';
-            rslt.isBase64 = String(RegExp.$4) === ';base64';
-            rslt.data = RegExp.$5;
-        }
-        return rslt;
-    };
-
-    var conn = mongoose.createConnection(config.connection);
-    var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
-    conn.once('open', function (error) {
-        if (!error) {
-            conn.db.collection('fs.files', function (error, collection) {
-                if (!error) {
-                    collection.remove({filename: request.params.name}, () => {
-                        var info = parseDataURL(request.body.url);
-                        var chunk = info.isBase64 ? new Buffer(info.data, 'base64') : new Buffer(unescape(info.data), 'binary');
-                        var writestream = gfs.createWriteStream({
-                            filename: request.params.name,
-                        });
-
-                        writestream.write(chunk);
-                        writestream.end();
-
-                        writestream.on('close', function (file) {
-                            conn.db.close();
-                            response.send(JSON.stringify(new result(0, "file ok", {})));
-                        });
-                    });
-                }
-            });
-        }
+                                                        var info = parseDataURL(request.body.url);
+                                                        var chunk = info.isBase64 ? new Buffer(info.data, 'base64') : new Buffer(unescape(info.data), 'binary');
+                                                        var writestream = gfs.createWriteStream({filename: request.params.name});
+                                                        if (writestream) {
+                                                            writestream.write(chunk);
+                                                            writestream.end();
+                                                            writestream.on('close', (file:any):void => {
+                                                                conn.db.close();
+                                                                SendResult(response, 0, "OK", {});
+                                                            });
+                                                        } else {
+                                                            SendFatal(response, number + 40, "stream not open", {});
+                                                        }
+                                                    });
+                                                } else {
+                                                    SendWarn(response, number + 1, "not found", {});
+                                                }
+                                            } else {
+                                                SendError(response, number + 100, "find error" + error.message, error);
+                                            }
+                                        });
+                                    } else {
+                                        SendFatal(response, number + 30, "no collection", {});
+                                    }
+                                } else {
+                                    SendError(response, number + 100, "collection error " + error.message, error);
+                                }
+                            });
+                        } else {
+                            SendFatal(response, number + 20, "no gfs", {});
+                        }
+                    } else {
+                        SendError(response, number + 100, "open error " + error.message, error);
+                    }
+                });
+            } else {
+                SendError(response, number + 10, "connection error", {});
+            }
+        });
     });
 });
 
-router.delete('/file/:name', function (request, response) {
-
-    var conn = mongoose.createConnection(config.connection);
-    var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
-    conn.once('open', function (error) {
-        if (!error) {
-            conn.db.collection('fs.files', function (error, collection) {
-                if (!error) {
-                    collection.remove({filename: request.params.name}, () => {
-
-                    });
-                }
-            });
-        }
+router.delete('/file/:name', (request:any, response:any):void => {
+    Guard(request, response, (request:any, response:any):void => {
+        var number:number = 26000;
+        Authenticate(request, response, number, (user:any, response:any) => {
+            var conn = mongoose.createConnection(config.connection);
+            if (conn) {
+                conn.once('open', (error:any):void => {
+                    if (!error) {
+                        var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
+                        if (gfs) {
+                            conn.db.collection('fs.files', (error:any, collection:any):void => {
+                                if (!error) {
+                                    if (collection) {
+                                        collection.findOne({filename: request.params.name}, (error:any, item:any):void => {
+                                            if (!error) {
+                                                if (item) {
+                                                    collection.remove({filename: request.params.name}, ():void => {
+                                                        SendResult(response, 0, "OK", {});
+                                                    });
+                                                } else {
+                                                    SendWarn(response, number + 1, "not found", {});
+                                                }
+                                            } else {
+                                                SendError(response, number + 100, "find error " + error.message, error);
+                                            }
+                                        });
+                                    } else {
+                                        SendFatal(response, number + 30, "connection error", {});
+                                    }
+                                } else {
+                                    SendError(response, number + 100, "connection error " + error.message, error);
+                                }
+                            });
+                        } else {
+                            SendFatal(response, number + 20, "gfs error", {});
+                        }
+                    } else {
+                        SendError(response, number + 100, "open error " + error.message, error);
+                    }
+                });
+            } else {
+                SendError(response, number + 10, "connection error", {});
+            }
+        });
     });
 });
 

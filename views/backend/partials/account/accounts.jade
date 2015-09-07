@@ -15,7 +15,7 @@ md-content.background
 
     md-list(hide-gt-sm)
         md-list-item(ng-repeat="account in accounts", ng-show="account.type != 'Admin'")
-            md-card.box-edge(layout="row", flex)
+            md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)
                     h1.md-subhead(flex) {{account.username}}
 
