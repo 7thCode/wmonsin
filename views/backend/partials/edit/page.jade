@@ -54,86 +54,91 @@ md-content.background
         md-list-item(ng-repeat="item in Page.items", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
 
-                md-card-content(layout="row", layout-align="center center", flex)
-                    h1.md-subhead(flex) {{item.type}}
-                    h1.md-subhead(flex) {{item.name}}
+                md-card-content(layout="column", layout-align="center center", flex)
+                    div(layout="row")
+                        h1.md-subhead(flex) {{item.type}}
+                    div
+                        h1.md-subhead(flex) {{item.name}}
+                    div(layout="row")
 
-                    div(layout="row", ng-if="type != 'Viewer'")
-                        md-button.md-fab.md-mini(ng-click="up($index)", aria-label="Up", ng-if="type != 'Viewer'", style="background-color:#64ffda;z-index:1;")
-                            ng-md-icon.iconfill(icon="keyboard_arrow_up", style="position:relative;top:10px;left:1px;", size="22")
-                            md-tooltip #{content.up}
+                        div(layout="row", ng-if="type != 'Viewer'")
+                            md-button.md-fab.md-mini(ng-click="up($index)", aria-label="Up", ng-if="type != 'Viewer'", style="background-color:#64ffda;z-index:1;")
+                                ng-md-icon.iconfill(icon="keyboard_arrow_up", style="position:relative;top:10px;left:1px;", size="22")
+                                md-tooltip #{content.up}
 
-                    div(layout="row", ng-if="type != 'Viewer'")
-                        md-button.md-fab.md-mini(ng-click="down($index)", aria-label="Down", ng-if="type != 'Viewer'", style="background-color:#69F0AE;z-index:1;")
-                            ng-md-icon.iconfill(icon="keyboard_arrow_down", style="position:relative;top:10px;left:1px;", size="22")
-                            md-tooltip #{content.down}
+                        div(layout="row", ng-if="type != 'Viewer'")
+                            md-button.md-fab.md-mini(ng-click="down($index)", aria-label="Down", ng-if="type != 'Viewer'", style="background-color:#69F0AE;z-index:1;")
+                                ng-md-icon.iconfill(icon="keyboard_arrow_down", style="position:relative;top:10px;left:1px;", size="22")
+                                md-tooltip #{content.down}
 
-                    div(layout="row", ng-if="item.type == 'text'")
-                        div(flex, ng-if="type != 'Viewer'")
-                            md-button.md-fab.md-mini(ng-click="showCheckUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
-                                ng-md-icon.iconfill(icon="mode_edit",style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.update}
-                        div(flex)
-                            md-button.md-fab.md-mini(ng-click="showCheckDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.delete}
+                        div(layout="row", ng-if="item.type == 'text'")
+                            div(flex, ng-if="type != 'Viewer'")
+                                md-button.md-fab.md-mini(ng-click="showCheckUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
+                                    ng-md-icon.iconfill(icon="mode_edit",style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.update}
+                            div(flex)
+                                md-button.md-fab.md-mini(ng-click="showCheckDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
+                                    ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.delete}
 
-                    div(layout="row", ng-if="item.type == 'check'")
-                        div(flex, ng-if="type != 'Viewer'")
-                            md-button.md-fab.md-mini(ng-click="showCheckUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
-                                ng-md-icon.iconfill(icon="mode_edit",style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.update}
-                        div(flex)
-                            md-button.md-fab.md-mini(ng-click="showCheckDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.delete}
+                        div(layout="row", ng-if="item.type == 'check'")
+                            div(flex, ng-if="type != 'Viewer'")
+                                md-button.md-fab.md-mini(ng-click="showCheckUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
+                                    ng-md-icon.iconfill(icon="mode_edit",style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.update}
+                            div(flex)
+                                md-button.md-fab.md-mini(ng-click="showCheckDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
+                                    ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.delete}
 
-                    div(layout="row", ng-if="item.type == 'select'")
-                        div(flex, ng-if="type != 'Viewer'")
-                            md-button.md-fab.md-mini(ng-click="showSelectUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
-                                ng-md-icon.iconfill(icon="mode_edit",style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.update}
-                        div(flex)
-                            md-button.md-fab.md-mini(ng-click="showSelectDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.delete}
+                        div(layout="row", ng-if="item.type == 'select'")
+                            div(flex, ng-if="type != 'Viewer'")
+                                md-button.md-fab.md-mini(ng-click="showSelectUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
+                                    ng-md-icon.iconfill(icon="mode_edit",style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.update}
+                            div(flex)
+                                md-button.md-fab.md-mini(ng-click="showSelectDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
+                                    ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.delete}
 
-                    div(layout="row", ng-if="item.type == 'numeric'")
-                        div(flex, ng-if="type != 'Viewer'")
-                            md-button.md-fab.md-mini(ng-click="showNumericUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
-                                ng-md-icon.iconfill(icon="mode_edit",style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.update}
-                        div(flex)
-                            md-button.md-fab.md-mini(ng-click="showNumericDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.delete}
+                        div(layout="row", ng-if="item.type == 'numeric'")
+                            div(flex, ng-if="type != 'Viewer'")
+                                md-button.md-fab.md-mini(ng-click="showNumericUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
+                                    ng-md-icon.iconfill(icon="mode_edit",style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.update}
+                            div(flex)
+                                md-button.md-fab.md-mini(ng-click="showNumericDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
+                                    ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.delete}
 
-                    div(layout="row", ng-if="item.type == 'button'")
-                        div(flex, ng-if="type != 'Viewer'")
-                            md-button.md-fab.md-mini(ng-click="showButtonUpdateDialog($index)", aria-label="Update",  style="background-color:#4527A0;z-index:1;")
-                                ng-md-icon.iconfill(icon="mode_edit", style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.update}
-                        div(flex)
-                            md-button.md-fab.md-mini(ng-click="showButtonDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.delete}
+                        div(layout="row", ng-if="item.type == 'button'")
+                            div(flex, ng-if="type != 'Viewer'")
+                                md-button.md-fab.md-mini(ng-click="showButtonUpdateDialog($index)", aria-label="Update",  style="background-color:#4527A0;z-index:1;")
+                                    ng-md-icon.iconfill(icon="mode_edit", style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.update}
+                            div(flex)
+                                md-button.md-fab.md-mini(ng-click="showButtonDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
+                                    ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.delete}
 
     md-list(hide-gt-sm)
         md-list-item(ng-repeat="picture in Page.picture", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
-                md-card-content(layout="row", layout-align="center center", flex)
-                    h1.md-subhead(flex) {{picture.type}}
-                    h1.md-subhead(flex) {{picture.name}}
-
-                    div(layout="row", ng-if="picture.type == 'picture'")
-                        div(flex, ng-if="type != 'Viewer'")
-                            md-button.md-fab.md-mini(ng-click="showPictureUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
-                                ng-md-icon.iconfill(icon="mode_edit", style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.update}
-                        div(flex)
-                            md-button.md-fab.md-mini(ng-click="showPictureDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
-                                ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
-                                md-tooltip #{content.delete}
+                md-card-content(layout="column", layout-align="center center", flex)
+                    div(layout="row")
+                        h1.md-subhead(flex) {{picture.type}}
+                    div
+                        h1.md-subhead(flex) {{picture.name}}
+                    div(layout="row")
+                        div(layout="row", ng-if="picture.type == 'picture'")
+                            div(flex, ng-if="type != 'Viewer'")
+                                md-button.md-fab.md-mini(ng-click="showPictureUpdateDialog($index)", aria-label="Update", style="background-color:#4527A0;z-index:1;")
+                                    ng-md-icon.iconfill(icon="mode_edit", style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.update}
+                            div(flex)
+                                md-button.md-fab.md-mini(ng-click="showPictureDeleteDialog($index)", aria-label="Delete", ng-if="type != 'Viewer'", style="background-color:#ff5050;z-index:1;")
+                                    ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
+                                    md-tooltip #{content.delete}
 
     md-list(hide-sm)
         md-list-item(ng-repeat="item in Page.items", ng-show="account.type != 'Admin'")

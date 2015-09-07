@@ -22,8 +22,11 @@ md-content.background
     md-list(hide-gt-sm)
         md-list-item(ng-repeat="Page in Pages", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
-                md-card-content(layout="row", layout-align="end center", flex)
+                md-card-content(layout="column", layout-align="end center", flex)
+                  div(layout="row")
                     h1.md-subhead(flex) {{Page.headline}}
+
+                  div(layout="row")
 
                     div(layout="row", ng-show="type != 'Viewer'")
                         md-button.md-fab.md-mini(ng-click="up($index)", aria-label="Up", style="background-color:#64ffda;z-index:1;", ng-if="type != 'Viewer'")
