@@ -30,8 +30,8 @@ md-dialog.box-edge(flex)
                     label Password
                     input(ng-model="items.password", data-ng-required="true", name="password", placeholder='Password', type="password", md-maxlength="30", required)
                     div(ng-messages="validate.password.$error")
-                        div(ng-message="required", ng-bind="'required' | message")
-                        div(ng-message="md-maxlength", ng-bind="'maxlength' | message")
+                        div(ng-message="required") 必ず入力してください.
+                        div(ng-message="md-maxlength") もうすこし短くしてください
 
             md-divider
             div.md-actions(layout="row" layout-align="space-around center")

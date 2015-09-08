@@ -19,20 +19,20 @@ md-dialog.box-edge(flex)
             div(layout="row", layout-align="start center")
                 ng-md-icon.iconfill-blue(icon="account_circle", size="46")
                 md-input-container(flex)
-                    label(ng-bind="'name' | message")
+                    label 名前
                     input(ng-model="items.username", data-ng-required="true", name="username", placeholder='Enter Username', md-maxlength="30", required)
                     div(ng-messages="validate.username.$error")
-                        div(ng-message="required", ng-bind="'required' | message")
-                        div(ng-message="md-maxlength", ng-bind="'maxlength' | message")
+                        div(ng-message="required") 必ず入力してください.
+                        div(ng-message="md-maxlength") もうすこし短くしてください.
 
             div(layout="row", layout-align="start center")
                 ng-md-icon.iconfill-pink(icon="vpn_key", size="46")
                 md-input-container(flex)
-                    label(ng-bind="'password' | message")
+                    label パスワード
                     input(ng-model="items.password", data-ng-required="true", name="password", placeholder='Enter New Password', md-maxlength="30", required)
                     div(ng-messages="validate.password.$error")
-                        div(ng-message="required", ng-bind="'required' | message")
-                        div(ng-message="md-maxlength", ng-bind="'maxlength' | message")
+                        div(ng-message="required") 必ず入力してください.
+                        div(ng-message="md-maxlength") もうすこし短くしてください.
 
             md-radio-group(ng-model="items.type", aria-label="")
                 md-radio-button(value="Editor", aria-label="Editor") ドクター(編集権限)
@@ -40,5 +40,5 @@ md-dialog.box-edge(flex)
 
             md-divider
             div.md-actions(layout="row", layout-align="space-around center")
-                md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.username.$invalid", aria-label="Save", ng-bind="'save' | message")
-                md-button.md-raised.md-warn(ng-click='changePassword()', ng-disabled="validate.password.$invalid", aria-label="Password", ng-bind="'changepass' | message")
+                md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.username.$invalid", aria-label="Save") 保存
+                md-button.md-raised.md-warn(ng-click='changePassword()', ng-disabled="validate.password.$invalid", aria-label="Password") パスワード変更

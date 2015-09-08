@@ -22,8 +22,8 @@ md-dialog.box-edge(flex)
                     label ユーザ名
                     input(ng-model="items.username", data-ng-required="true", name="username", placeholder='Enter Username', md-maxlength="30", required)
                     div(ng-messages="validate.username.$error")
-                        div(ng-message="required", ng-bind="'required' | message")
-                        div(ng-message="md-maxlength", ng-bind="'maxlength' | message")
+                        div(ng-message="required") 必ず入力してください
+                        div(ng-message="md-maxlength") もうすこし短くしてください
 
             div(layout="row", layout-align="start center")
                 ng-md-icon.iconfill-pink(icon="vpn_key", size="46")
@@ -31,8 +31,8 @@ md-dialog.box-edge(flex)
                     label パスワード
                     input(ng-model="items.password", data-ng-required="true", name="password", placeholder='Password', type="password", md-maxlength="30", required)
                     div(ng-messages="validate.password.$error")
-                        div(ng-message="required", ng-bind="'required' | message")
-                        div(ng-message="md-maxlength", ng-bind="'maxlength' | message")
+                        div(ng-message="required") 必ず入力してください
+                        div(ng-message="md-maxlength") もうすこし短くしてください
 
             md-radio-group(ng-model="items.type", aria-label="", required)
                 md-radio-button(value="Editor", aria-label="") Doctor

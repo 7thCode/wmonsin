@@ -16,8 +16,8 @@ md-content.background
                     label #{content.headline}
                     input(ng-model="Page.headline", data-ng-required="true", name="title", placeholder='Enter Username', md-maxlength="30", required)
                     div(ng-messages="validate.title.$error")
-                        div(ng-message="required") {{'required' | message}}
-                        div(ng-message="md-maxlength") {{'maxlength' | message}}
+                        div(ng-message="required") 必ず入力してください.
+                        div(ng-message="md-maxlength") もうすこし短くしてください.
 
                 div(layout="row", layout-align="start center", ng-if="type != 'Viewer'",style="z-index:1;")
                     md-fab-speed-dial.md-fling(md-open="false", md-direction="right")

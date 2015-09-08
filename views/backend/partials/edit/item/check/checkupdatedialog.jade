@@ -22,15 +22,15 @@ md-dialog.box-edge(flex)
                     label 質問
                     input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter title', md-maxlength="30", required)
                     div(ng-messages="validate.label.$error")
-                        div(ng-message="required") {{'required' | message}}
-                        div(ng-message="md-maxlength") {{'maxlength' | message}}
+                        div(ng-message="required") 必ず入力してください.
+                        div(ng-message="md-maxlength") もうすこし短くしてください.
 
                 md-input-container(flex)
                     label 答え
                     input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter title', md-maxlength="30", required)
                     div(ng-messages="validate.label.$error")
-                        div(ng-message="required") {{'required' | message}}
-                        div(ng-message="md-maxlength") {{'maxlength' | message}}
+                        div(ng-message="required") 必ず入力してください.
+                        div(ng-message="md-maxlength") もうすこし短くしてください.
 
             md-divider
             div.md-actions(layout="row", layout-align="space-around center")

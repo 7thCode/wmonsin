@@ -24,12 +24,6 @@ var _ = require('lodash');
 var mongoose = require('mongoose');
 var Grid = require('gridfs-stream');
 
-
-//var multiparty = require('connect-multiparty');
-//var multipart = multiparty();
-
-//var phantom = require('phantom');
-
 var Patient = require('./patient');
 var Account = require('./account');
 
@@ -47,6 +41,8 @@ var router = express.Router();
 var configure = require('./configure');
 
 var result = require('./result');
+
+logger.info('Index.js Start.');
 
 
 //var emitter = require('socket.io-emitter')({ host: '127.0.0.1', port: 6379 });

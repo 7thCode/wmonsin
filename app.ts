@@ -21,27 +21,104 @@ log4js.configure("config/logs.json");
 var logger = log4js.getLogger('request');
 logger.setLevel(config.loglevel);
 
-logger.info('Config Ok.');
-logger.info('Logger Ok.');
+logger.info('-----------------------Invoke---------------------');
+
+if (log4js) {
+    logger.info('log4js Ok.');
+} else {
+    logger.fatal('log4js NG.');
+}
+
+if (logger) {
+    logger.info('logger Ok.');
+} else {
+    logger.fatal('logger NG.');
+}
+
+if (express) {
+    logger.info('express Ok.');
+} else {
+    logger.fatal('express NG.');
+}
+
+if (fs) {
+    logger.info('fs Ok.');
+} else {
+    logger.fatal('fs NG.');
+}
+
+if (config) {
+    logger.info('config Ok.');
+} else {
+    logger.fatal('config NG.');
+}
 
 var path = require('path');
 var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+if (path) {
+    logger.info('path Ok.');
+} else {
+    logger.fatal('path NG.');
+}
+
+if (favicon) {
+    logger.info('favicon Ok.');
+} else {
+    logger.fatal('favicon NG.');
+}
+
+if (cookieParser) {
+    logger.info('cookieParser Ok.');
+} else {
+    logger.fatal('cookieParser NG.');
+}
+
+if (bodyParser) {
+    logger.info('bodyParser Ok.');
+} else {
+    logger.fatal('bodyParser NG.');
+}
+
 //passport
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 //passport
 
+if (passport) {
+    logger.info('passport Ok.');
+} else {
+    logger.fatal('passport NG.');
+}
+
+if (LocalStrategy) {
+    logger.info('LocalStrategy Ok.');
+} else {
+    logger.fatal('LocalStrategy NG.');
+}
+
 var session = require('express-session');
 var routes = require('./routes/index');
+
+if (session) {
+    logger.info('session Ok.');
+} else {
+    logger.fatal('session NG.');
+}
+
+if (routes) {
+    logger.info('routes Ok.');
+} else {
+    logger.fatal('routes NG.');
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-logger.info("app.set('views', path.join(__dirname, 'views'));");
+logger.info('Jade Start.');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -58,15 +135,33 @@ var MongoStore = require('connect-mongo')(session);
 var options = {server: {socketOptions: {connectTimeoutMS: 1000000}}};
 mongoose.connect(config.connection, options);
 
-logger.info("mongoose.connect(config.connection, options);");
+if (mongoose) {
+    logger.info('mongoose Ok.');
+} else {
+    logger.fatal('mongoose NG.');
+}
+
+if (MongoStore) {
+    logger.info('MongoStore Ok.');
+} else {
+    logger.fatal('MongoStore NG.');
+}
+
+process.on('exit', function(code) {
+    logger.info('Stop.' + code);
+});
+
+process.on('SIGINT', function() {
+    logger.info('SIGINT.');
+});
 
 app.use(session({
     secret: config.sessionkey,
     resave: false,
-    rolling:false,
+    rolling: false,
     saveUninitialized: true,
     cookie: {
-        maxAge: 365 * 24 * 60 * 60 *1000
+        maxAge: 365 * 24 * 60 * 60 * 1000
     },
     store: new MongoStore({
         mongooseConnection: mongoose.connection
@@ -80,9 +175,9 @@ app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-logger.info("app.use(express.static(path.join(__dirname, 'public')));");
 
 app.use('/', routes);
+
 
 //passport
 passport.serializeUser(function (user, done) {
@@ -97,8 +192,17 @@ var Account = require('./routes/account');
 passport.use(new LocalStrategy(Account.authenticate()));
 //passport
 
+
+if (Account) {
+    logger.info('Account Ok.');
+} else {
+    logger.fatal('Account NG.');
+}
+
+logger.info('-----------------------Start---------------------');
+
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);

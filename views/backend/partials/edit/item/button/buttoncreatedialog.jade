@@ -23,23 +23,23 @@ md-dialog.box-edge(flex)
                         label アイテムラベル
                         input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter Label', md-maxlength="30", required)
                         div(ng-messages="validate.label.$error")
-                            div(ng-message="required") {{'required' | message}}
-                            div(ng-message="md-maxlength") {{'maxlength' | message}}
+                            div(ng-message="required") 必ず入力してください.
+                            div(ng-message="md-maxlength") もうすこし短くしてください.
 
                     md-input-container(flex)
                         label アイテム名
                         input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter Name', md-maxlength="30", required)
                         div(ng-messages="validate.name.$error")
-                            div(ng-message="required") {{'required' | message}}
-                            div(ng-message="md-maxlength") {{'maxlength' | message}}
+                            div(ng-message="required") 必ず入力してください.
+                            div(ng-message="md-maxlength") もうすこし短くしてください.
 
                 div(layout="row")
                     md-input-container(flex)
                         label パス
                         input(ng-model="items.path", data-ng-required="true", name="path", placeholder='Enter Path', md-maxlength="50", required)
                         div(ng-messages="validate.path.$error")
-                            div(ng-message="required") {{'required' | message}}
-                            div(ng-message="md-maxlength") {{'maxlength' | message}}
+                            div(ng-message="required") 必ず入力してください.
+                            div(ng-message="md-maxlength") もうすこし短くしてください.
 
                 div(layout="row")
                     md-switch(ng-model="items.validate", aria-label="validate", equired) バリデート

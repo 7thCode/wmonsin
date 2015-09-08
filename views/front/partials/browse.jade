@@ -12,12 +12,12 @@ md-content.background
 
             md-card-content(layout layout-align="center center", ng-show="contents.picture.length > 0")
                 md-radio-group
-                    md-radio-button(ng-click="setColor('rgba(200, 20, 30, 0.4)')", value="rgba(200, 20, 30, 0.4)") {{'itai' | message}}
-                    md-radio-button(ng-click="setColor('rgba(20, 200, 30, 0.4)')", value="rgba(20, 200, 30, 0.4)") {{'hare' | message}}
-                    md-radio-button(ng-click="setColor('rgba(20, 20, 200, 0.4)')", value="rgba(20, 20, 200, 0.4)") {{'shibire' | message}}
+                    md-radio-button(ng-click="setColor('rgba(200, 20, 30, 0.4)')", value="rgba(200, 20, 30, 0.4)") 痛い
+                    md-radio-button(ng-click="setColor('rgba(20, 200, 30, 0.4)')", value="rgba(20, 200, 30, 0.4)") 腫れ
+                    md-radio-button(ng-click="setColor('rgba(20, 20, 200, 0.4)')", value="rgba(20, 20, 200, 0.4)") 痺れ
 
                 canvas#schema(width="300", height="600")
-                md-button.md-raised.md-warn(ng-click="clearPicture()") {{'clear' | message}}
+                md-button.md-raised.md-warn(ng-click="clearPicture()") 消去
 
             md-list
                 md-list-item(layout-align="center center" ng-repeat="content in contents.items")

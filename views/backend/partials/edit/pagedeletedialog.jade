@@ -4,18 +4,20 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
+- var content = {headline:"問診票ページ削除",cancel:"キャンセル", delete:"削除" }
+
 md-dialog.box-edge(flex="percentage")
     md-toolbar
         .md-toolbar-tools(layout="row", layout-align="end center")
             h3(flex)
-                span(flex) 削除
+                span(flex) #{content.headline}
             div
                 md-button.md-fab.md-warn(ng-click='cancel()', aria-label="Cancel", style="position:relative;top:20px;")
                     ng-md-icon.iconfill(icon="clear", style="position:relative;top:4px;", size="46")
-                    md-tooltip キャンセル
+                    md-tooltip #{content.cancel}
     md-dialog-content
 
         md-divider
         div.md-actions(layout="row", layout-align="space-around center")
-            md-button.md-raised.md-primary(ng-click='answer()', aria-label="Delete") Delete
-            md-tooltip 削除
+            md-button.md-raised.md-primary(ng-click='answer()', aria-label="Delete") #{content.delete}
+            md-tooltip #{content.delete}

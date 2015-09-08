@@ -22,23 +22,23 @@ md-dialog.box-edge(flex)
                         label 質問
                         input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter title', md-maxlength="30", required)
                         div(ng-messages="validate.label.$error")
-                            div(ng-message="required") {{'required' | message}}
-                            div(ng-message="md-maxlength") {{'maxlength' | message}}
+                            div(ng-message="required") 必ず入力してください.
+                            div(ng-message="md-maxlength") もうすこし短くしてください.
 
                     md-input-container(flex)
                         label 名前
                         input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter title', md-maxlength="30", required)
                         div(ng-messages="validate.label.$error")
-                            div(ng-message="required") {{'required' | message}}
-                            div(ng-message="md-maxlength") {{'maxlength' | message}}
+                            div(ng-message="required") 必ず入力してください.
+                            div(ng-message="md-maxlength") もうすこし短くしてください.
 
                 div(layout="row", layout-align="start center")
                     md-input-container(flex)
                         label パス
                         input(ng-model="items.path", data-ng-required="true", name="path", placeholder='Enter Path', md-maxlength="30", required)
                         div(ng-messages="validate.path.$error")
-                            div(ng-message="required") {{'required' | message}}
-                            div(ng-message="md-maxlength") {{'maxlength' | message}}
+                            div(ng-message="required") 必ず入力してください.
+                            div(ng-message="md-maxlength") もうすこし短くしてください.
 
 
 
@@ -47,9 +47,6 @@ md-dialog.box-edge(flex)
             img(flow-img="uploader.flow.files[0]")
             div
                 //img(ng-src="/get_photo/55e906b58a8a159f06037489",flex,style="width: 50%; height: 40px;")
-
-
-
 
 
                 md-divider

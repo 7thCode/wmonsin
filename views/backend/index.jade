@@ -49,31 +49,31 @@ block content
 
                     md-button.md-fab.menu-button(ng-click="goTop()", aria-label="", style="background-color:#26969a;z-index:10;")
                         ng-md-icon(icon="home", aria-label="Top", style="position:relative;top:5px;fill:#a0ffff", size="42")
-                        md-tooltip(ng-bind="'top' | message")
+                        md-tooltip トップ
 
                     md-button.md-fab.menu-button(ng-show="type == 'Admin'", ng-click="goConfig()", aria-label="", style="background-color:#EC407A;z-index:10;")
                         ng-md-icon(icon="settings", aria-label="Config", style="position:relative;top:5px;fill:#F8BBD0", size="42")
-                        md-tooltip(ng-bind="'config' | message")
+                        md-tooltip コンフィグ
 
                     md-button.md-fab.menu-button(ng-show="type != 'Viewer'", ng-click="goEdit()", aria-label="", style="background-color:#B2EBF2;z-index:10;")
                         ng-md-icon(icon="edit", aria-label="Edit", style="position:relative;top:5px;fill:#0097A7", size="42")
-                        md-tooltip(ng-bind="'config' | message")
+                        md-tooltip 編集
 
                     md-button.md-fab.menu-button(ng-show="mode == 'Account'",ng-click="goPatient()", aria-label="", style="background-color:#039BE5;z-index:10;")
                         ng-md-icon(icon="perm_identity", aria-label="Patients", style="position:relative;top:6px;fill:#B3E5FC", size="42")
-                        md-tooltip(ng-bind="'patient' | message")
+                        md-tooltip 患者
 
                     md-button.md-fab.menu-button(ng-show="mode == 'Patient'", ng-click="goAccount()", aria-label="", style="background-color:#B3E5FC;z-index:10;")
                         ng-md-icon(icon="face", aria-label="Account", style="position:relative;top:6px;fill:#039BE5", size="42")
-                        md-tooltip(ng-bind="'stuff' | message")
+                        md-tooltip スタッフ
 
                     md-button.md-fab.menu-button(ng-show="type == ''", ng-click="showLoginDialog()", aria-label="", style="background-color:#FF1744;z-index:10;")
                         ng-md-icon(icon="check_box_outline_blank", aria-label="Account", style="position:relative;top:5px;fill:#B3E5FC", size="42")
-                        md-tooltip(ng-bind="'login' | message")
+                        md-tooltip ログイン
 
                     md-button.md-fab.menu-button(ng-show="type != ''", ng-click="Logout()", aria-label="", style="background-color:#FF1744;z-index:10;")
                         ng-md-icon(icon="check_box", aria-label="Account", style="position:relative;top:5px;fill:#B3E5FC", size="42")
-                        md-tooltip(ng-bind="'logout' | message")
+                        md-tooltip ログアウト
 
         div(ui-view="")
 
