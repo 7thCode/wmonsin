@@ -46,7 +46,6 @@ gulp.task('js', function () {
         ],
         {base: '..'}
     )
-
         .pipe(uglify())
         .pipe(concat('client.min.js'))
         .pipe(gulp.dest('dest/wmonsin/public/javascripts'))

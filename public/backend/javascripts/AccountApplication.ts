@@ -5,7 +5,6 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-
 'use strict';
 
 var app:angular.IModule = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers']);
@@ -33,6 +32,7 @@ app.config(['$stateProvider', '$urlRouterProvider','$compileProvider','$httpProv
 
     $stateProvider
 
+
         .state('start', {
             url: '/start',
             templateUrl: '/backend/partials/patient/start',
@@ -47,8 +47,13 @@ app.config(['$stateProvider', '$urlRouterProvider','$compileProvider','$httpProv
 
         .state('description', {
             url: '/description',
-            templateUrl: '/backend/partials/patient/description',
-            controller: 'DescriptionController'
+            templateUrl: function ($stateParams) {
+                var id = $stateParams.id;
+                return '/backend/partials/patient/description/' + id;
+
+            },
+            controller: 'DescriptionController',
+            params: {id:null}
         })
 
         .state('accounts', {

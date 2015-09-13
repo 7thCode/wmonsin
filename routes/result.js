@@ -1,6 +1,10 @@
-/// <reference path="../../DefinitelyTyped/lib.d.ts"/>
-/// <reference path="../../DefinitelyTyped/node/node.d.ts" />
-/// <reference path="../../DefinitelyTyped/express/express.d.ts" />
+/**
+ result.ts
+ Copyright (c) 2015 7ThCode.
+ This software is released under the MIT License.
+ http://opensource.org/licenses/mit-license.php
+ */
+'use strict';
 var Result = (function () {
     function Result(code, message, value) {
         this.code = code;

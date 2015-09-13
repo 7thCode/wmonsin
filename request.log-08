@@ -1,0 +1,255 @@
+[2015-09-08 00:00:33.353] [INFO] request - Config Ok.
+[2015-09-08 00:00:33.362] [INFO] request - Logger Ok.
+[2015-09-08 00:37:44.483] [INFO] request - Config Ok.
+[2015-09-08 00:37:47.006] [INFO] request - app.set('views', path.join(__dirname, 'views'));
+[2015-09-08 00:37:44.487] [INFO] request - Logger Ok.
+[2015-09-08 00:37:47.847] [INFO] request - mongoose.connect(config.connection, options);
+[2015-09-08 00:37:47.850] [INFO] request - app.use(express.static(path.join(__dirname, 'public')));
+[2015-09-08 12:56:12.641] [INFO] request - Starting...
+[2015-09-08 12:56:15.869] [INFO] request - Index.js Start.
+[2015-09-08 12:56:12.644] [INFO] request - Config Ok.
+[2015-09-08 12:56:15.883] [INFO] request - Session Start.
+[2015-09-08 12:56:12.644] [INFO] request - Logger Ok.
+[2015-09-08 12:56:15.884] [INFO] request - Jade Start.
+[2015-09-08 12:56:13.029] [INFO] request - Express Start.
+[2015-09-08 12:56:17.213] [INFO] request - Mongoose Start.
+[2015-09-08 12:56:17.216] [INFO] request - Well Done.
+[2015-09-08 12:57:27.027] [INFO] request - Starting...
+[2015-09-08 12:57:27.479] [INFO] request - Index.js Start.
+[2015-09-08 12:57:27.030] [INFO] request - Config Ok.
+[2015-09-08 12:57:27.495] [INFO] request - Session Start.
+[2015-09-08 12:57:27.030] [INFO] request - Logger Ok.
+[2015-09-08 12:57:27.496] [INFO] request - Jade Start.
+[2015-09-08 12:57:27.056] [INFO] request - Express Start.
+[2015-09-08 12:57:27.718] [INFO] request - Mongoose Start.
+[2015-09-08 12:57:27.721] [INFO] request - Well Done.
+[2015-09-08 13:07:40.099] [INFO] request - Starting...
+[2015-09-08 13:07:43.751] [INFO] request - Index.js Start.
+[2015-09-08 13:07:40.102] [INFO] request - log4js Ok.
+[2015-09-08 13:07:43.767] [INFO] request - session Ok.
+[2015-09-08 13:07:40.102] [INFO] request - logger Ok.
+[2015-09-08 13:07:43.767] [INFO] request - routes Ok.
+[2015-09-08 13:07:40.102] [INFO] request - express Ok.
+[2015-09-08 13:07:43.767] [INFO] request - Jade Start.
+[2015-09-08 13:07:40.102] [INFO] request - fs Ok.
+[2015-09-08 13:07:44.826] [INFO] request - mongoose Ok.
+[2015-09-08 13:07:40.102] [INFO] request - config Ok.
+[2015-09-08 13:07:44.826] [INFO] request - MongoStore Ok.
+[2015-09-08 13:07:40.466] [INFO] request - path Ok.
+[2015-09-08 13:07:44.829] [INFO] request - Account Ok.
+[2015-09-08 13:07:40.466] [INFO] request - favicon Ok.
+[2015-09-08 13:07:40.466] [INFO] request - cookieParser Ok.
+[2015-09-08 13:07:40.466] [INFO] request - bodyParser Ok.
+[2015-09-08 13:07:40.962] [INFO] request - passport Ok.
+[2015-09-08 13:07:40.962] [INFO] request - LocalStrategy Ok.
+[2015-09-08 13:09:39.610] [INFO] request - Starting...
+[2015-09-08 13:09:40.057] [INFO] request - Index.js Start.
+[2015-09-08 13:09:39.613] [INFO] request - log4js Ok.
+[2015-09-08 13:09:40.071] [INFO] request - session Ok.
+[2015-09-08 13:09:39.613] [INFO] request - logger Ok.
+[2015-09-08 13:09:40.071] [INFO] request - routes Ok.
+[2015-09-08 13:09:39.613] [INFO] request - express Ok.
+[2015-09-08 13:09:40.071] [INFO] request - Jade Start.
+[2015-09-08 13:09:39.613] [INFO] request - fs Ok.
+[2015-09-08 13:09:40.291] [INFO] request - mongoose Ok.
+[2015-09-08 13:09:39.613] [INFO] request - config Ok.
+[2015-09-08 13:09:40.291] [INFO] request - MongoStore Ok.
+[2015-09-08 13:09:39.637] [INFO] request - path Ok.
+[2015-09-08 13:09:40.295] [INFO] request - Account Ok.
+[2015-09-08 13:09:39.637] [INFO] request - favicon Ok.
+[2015-09-08 13:09:39.637] [INFO] request - cookieParser Ok.
+[2015-09-08 13:09:39.637] [INFO] request - bodyParser Ok.
+[2015-09-08 13:09:39.656] [INFO] request - passport Ok.
+[2015-09-08 13:09:39.656] [INFO] request - LocalStrategy Ok.
+[2015-09-08 14:12:33.755] [INFO] request - -----------------------Start---------------------
+[2015-09-08 14:12:34.190] [INFO] request - Index.js Start.
+[2015-09-08 14:12:33.759] [INFO] request - log4js Ok.
+[2015-09-08 14:12:34.204] [INFO] request - session Ok.
+[2015-09-08 14:12:33.760] [INFO] request - logger Ok.
+[2015-09-08 14:12:34.205] [INFO] request - routes Ok.
+[2015-09-08 14:12:33.760] [INFO] request - express Ok.
+[2015-09-08 14:12:34.205] [INFO] request - Jade Start.
+[2015-09-08 14:12:33.760] [INFO] request - fs Ok.
+[2015-09-08 14:12:34.419] [INFO] request - mongoose Ok.
+[2015-09-08 14:12:33.760] [INFO] request - config Ok.
+[2015-09-08 14:12:34.419] [INFO] request - MongoStore Ok.
+[2015-09-08 14:12:33.782] [INFO] request - path Ok.
+[2015-09-08 14:12:34.426] [INFO] request - Account Ok.
+[2015-09-08 14:12:33.782] [INFO] request - favicon Ok.
+[2015-09-08 14:12:33.782] [INFO] request - cookieParser Ok.
+[2015-09-08 14:12:33.782] [INFO] request - bodyParser Ok.
+[2015-09-08 14:12:33.806] [INFO] request - passport Ok.
+[2015-09-08 14:12:33.806] [INFO] request - LocalStrategy Ok.
+[2015-09-08 14:20:10.639] [INFO] request - -----------------------Start---------------------
+[2015-09-08 14:20:11.056] [INFO] request - Index.js Start.
+[2015-09-08 14:20:10.643] [INFO] request - log4js Ok.
+[2015-09-08 14:20:11.071] [INFO] request - session Ok.
+[2015-09-08 14:20:10.644] [INFO] request - logger Ok.
+[2015-09-08 14:20:11.072] [INFO] request - routes Ok.
+[2015-09-08 14:20:10.644] [INFO] request - express Ok.
+[2015-09-08 14:20:11.072] [INFO] request - Jade Start.
+[2015-09-08 14:20:10.644] [INFO] request - fs Ok.
+[2015-09-08 14:20:11.282] [INFO] request - mongoose Ok.
+[2015-09-08 14:20:10.644] [INFO] request - config Ok.
+[2015-09-08 14:20:11.282] [INFO] request - MongoStore Ok.
+[2015-09-08 14:20:10.669] [INFO] request - path Ok.
+[2015-09-08 14:20:11.286] [INFO] request - Account Ok.
+[2015-09-08 14:20:10.669] [INFO] request - favicon Ok.
+[2015-09-08 14:20:10.669] [INFO] request - cookieParser Ok.
+[2015-09-08 14:20:10.669] [INFO] request - bodyParser Ok.
+[2015-09-08 14:20:10.689] [INFO] request - passport Ok.
+[2015-09-08 14:20:10.689] [INFO] request - LocalStrategy Ok.
+[2015-09-08 14:23:09.378] [INFO] request - -----------------------Start---------------------
+[2015-09-08 14:23:09.782] [INFO] request - Index.js Start.
+[2015-09-08 14:23:09.381] [INFO] request - log4js Ok.
+[2015-09-08 14:23:09.795] [INFO] request - session Ok.
+[2015-09-08 14:23:09.381] [INFO] request - logger Ok.
+[2015-09-08 14:23:09.796] [INFO] request - routes Ok.
+[2015-09-08 14:23:09.381] [INFO] request - express Ok.
+[2015-09-08 14:23:09.796] [INFO] request - Jade Start.
+[2015-09-08 14:23:09.381] [INFO] request - fs Ok.
+[2015-09-08 14:23:10.001] [INFO] request - mongoose Ok.
+[2015-09-08 14:23:09.381] [INFO] request - config Ok.
+[2015-09-08 14:23:10.001] [INFO] request - MongoStore Ok.
+[2015-09-08 14:23:09.405] [INFO] request - path Ok.
+[2015-09-08 14:23:10.005] [INFO] request - Account Ok.
+[2015-09-08 14:23:09.405] [INFO] request - favicon Ok.
+[2015-09-08 14:23:09.405] [INFO] request - cookieParser Ok.
+[2015-09-08 14:23:09.405] [INFO] request - bodyParser Ok.
+[2015-09-08 14:23:09.422] [INFO] request - passport Ok.
+[2015-09-08 14:23:09.422] [INFO] request - LocalStrategy Ok.
+[2015-09-08 14:26:47.318] [INFO] request - SIGINT.
+[2015-09-08 18:24:57.254] [INFO] request - -----------------------Invoke---------------------
+[2015-09-08 18:24:59.406] [INFO] request - Index.js Start.
+[2015-09-08 18:24:57.257] [INFO] request - log4js Ok.
+[2015-09-08 18:24:59.422] [INFO] request - session Ok.
+[2015-09-08 18:24:57.258] [INFO] request - logger Ok.
+[2015-09-08 18:24:59.422] [INFO] request - routes Ok.
+[2015-09-08 18:24:57.258] [INFO] request - express Ok.
+[2015-09-08 18:24:59.422] [INFO] request - Jade Start.
+[2015-09-08 18:24:57.258] [INFO] request - fs Ok.
+[2015-09-08 18:25:00.282] [INFO] request - mongoose Ok.
+[2015-09-08 18:24:57.258] [INFO] request - config Ok.
+[2015-09-08 18:25:00.282] [INFO] request - MongoStore Ok.
+[2015-09-08 18:24:57.467] [INFO] request - path Ok.
+[2015-09-08 18:25:00.285] [INFO] request - Account Ok.
+[2015-09-08 18:24:57.467] [INFO] request - favicon Ok.
+[2015-09-08 18:25:00.285] [INFO] request - -----------------------Start---------------------
+[2015-09-08 18:24:57.467] [INFO] request - cookieParser Ok.
+[2015-09-08 18:24:57.467] [INFO] request - bodyParser Ok.
+[2015-09-08 18:24:57.526] [INFO] request - passport Ok.
+[2015-09-08 18:24:57.527] [INFO] request - LocalStrategy Ok.
+[2015-09-08 18:28:38.041] [WARN] request - Unacceptable 5002
+[2015-09-08 18:58:45.618] [INFO] request - SIGINT.
+[2015-09-08 21:51:51.933] [INFO] request - -----------------------Invoke---------------------
+[2015-09-08 21:51:59.058] [INFO] request - Index.js Start.
+[2015-09-08 21:51:51.936] [INFO] request - log4js Ok.
+[2015-09-08 21:51:59.073] [INFO] request - session Ok.
+[2015-09-08 21:51:51.936] [INFO] request - logger Ok.
+[2015-09-08 21:51:59.073] [INFO] request - routes Ok.
+[2015-09-08 21:51:51.937] [INFO] request - express Ok.
+[2015-09-08 21:51:59.073] [INFO] request - Jade Start.
+[2015-09-08 21:51:51.937] [INFO] request - fs Ok.
+[2015-09-08 21:52:00.378] [INFO] request - mongoose Ok.
+[2015-09-08 21:51:51.937] [INFO] request - config Ok.
+[2015-09-08 21:52:00.379] [INFO] request - MongoStore Ok.
+[2015-09-08 21:51:52.908] [INFO] request - path Ok.
+[2015-09-08 21:52:00.383] [INFO] request - Account Ok.
+[2015-09-08 21:51:52.908] [INFO] request - favicon Ok.
+[2015-09-08 21:52:00.383] [INFO] request - -----------------------Start---------------------
+[2015-09-08 21:51:52.908] [INFO] request - cookieParser Ok.
+[2015-09-08 21:51:52.909] [INFO] request - bodyParser Ok.
+[2015-09-08 21:51:53.328] [INFO] request - passport Ok.
+[2015-09-08 21:51:53.329] [INFO] request - LocalStrategy Ok.
+[2015-09-08 21:52:04.251] [INFO] request - SIGINT.
+[2015-09-08 21:53:07.220] [INFO] request - -----------------------Invoke---------------------
+[2015-09-08 21:53:07.688] [INFO] request - Index.js Start.
+[2015-09-08 21:53:07.223] [INFO] request - log4js Ok.
+[2015-09-08 21:53:07.703] [INFO] request - session Ok.
+[2015-09-08 21:53:07.224] [INFO] request - logger Ok.
+[2015-09-08 21:53:07.703] [INFO] request - routes Ok.
+[2015-09-08 21:53:07.224] [INFO] request - express Ok.
+[2015-09-08 21:53:07.703] [INFO] request - Jade Start.
+[2015-09-08 21:53:07.224] [INFO] request - fs Ok.
+[2015-09-08 21:53:07.923] [INFO] request - mongoose Ok.
+[2015-09-08 21:53:07.224] [INFO] request - config Ok.
+[2015-09-08 21:53:07.923] [INFO] request - MongoStore Ok.
+[2015-09-08 21:53:07.256] [INFO] request - path Ok.
+[2015-09-08 21:53:07.926] [INFO] request - Account Ok.
+[2015-09-08 21:53:07.256] [INFO] request - favicon Ok.
+[2015-09-08 21:53:07.926] [INFO] request - -----------------------Start---------------------
+[2015-09-08 21:53:07.257] [INFO] request - cookieParser Ok.
+[2015-09-08 21:53:07.257] [INFO] request - bodyParser Ok.
+[2015-09-08 21:53:07.274] [INFO] request - passport Ok.
+[2015-09-08 21:53:07.274] [INFO] request - LocalStrategy Ok.
+[2015-09-08 21:54:35.819] [WARN] request - Unacceptable 23002
+[2015-09-08 22:04:49.167] [INFO] request - SIGINT.
+[2015-09-08 22:04:58.517] [INFO] request - -----------------------Invoke---------------------
+[2015-09-08 22:05:02.088] [INFO] request - Index.js Start.
+[2015-09-08 22:04:58.521] [INFO] request - log4js Ok.
+[2015-09-08 22:05:02.102] [INFO] request - session Ok.
+[2015-09-08 22:04:58.522] [INFO] request - logger Ok.
+[2015-09-08 22:05:02.103] [INFO] request - routes Ok.
+[2015-09-08 22:04:58.522] [INFO] request - express Ok.
+[2015-09-08 22:05:02.103] [INFO] request - Jade Start.
+[2015-09-08 22:04:58.522] [INFO] request - fs Ok.
+[2015-09-08 22:05:03.265] [INFO] request - mongoose Ok.
+[2015-09-08 22:04:58.522] [INFO] request - config Ok.
+[2015-09-08 22:05:03.265] [INFO] request - MongoStore Ok.
+[2015-09-08 22:04:59.038] [INFO] request - path Ok.
+[2015-09-08 22:05:03.269] [INFO] request - Account Ok.
+[2015-09-08 22:04:59.038] [INFO] request - favicon Ok.
+[2015-09-08 22:05:03.269] [INFO] request - -----------------------Start---------------------
+[2015-09-08 22:04:59.038] [INFO] request - cookieParser Ok.
+[2015-09-08 22:04:59.038] [INFO] request - bodyParser Ok.
+[2015-09-08 22:04:59.220] [INFO] request - passport Ok.
+[2015-09-08 22:04:59.220] [INFO] request - LocalStrategy Ok.
+[2015-09-08 22:05:17.257] [WARN] request - Unacceptable 23002
+[2015-09-08 22:22:34.162] [INFO] request - SIGINT.
+[2015-09-08 22:23:18.945] [INFO] request - -----------------------Invoke---------------------
+[2015-09-08 22:23:19.378] [INFO] request - Index.js Start.
+[2015-09-08 22:23:18.949] [INFO] request - log4js Ok.
+[2015-09-08 22:23:19.398] [INFO] request - session Ok.
+[2015-09-08 22:23:18.949] [INFO] request - logger Ok.
+[2015-09-08 22:23:19.398] [INFO] request - routes Ok.
+[2015-09-08 22:23:18.950] [INFO] request - express Ok.
+[2015-09-08 22:23:19.399] [INFO] request - Jade Start.
+[2015-09-08 22:23:18.950] [INFO] request - fs Ok.
+[2015-09-08 22:23:19.684] [INFO] request - mongoose Ok.
+[2015-09-08 22:23:18.950] [INFO] request - config Ok.
+[2015-09-08 22:23:19.684] [INFO] request - MongoStore Ok.
+[2015-09-08 22:23:18.973] [INFO] request - path Ok.
+[2015-09-08 22:23:19.687] [INFO] request - Account Ok.
+[2015-09-08 22:23:18.973] [INFO] request - favicon Ok.
+[2015-09-08 22:23:19.687] [INFO] request - -----------------------Start---------------------
+[2015-09-08 22:23:18.973] [INFO] request - cookieParser Ok.
+[2015-09-08 22:23:18.973] [INFO] request - bodyParser Ok.
+[2015-09-08 22:23:18.990] [INFO] request - passport Ok.
+[2015-09-08 22:23:18.991] [INFO] request - LocalStrategy Ok.
+[2015-09-08 22:23:42.994] [WARN] request - Unacceptable 23002
+[2015-09-08 22:23:46.741] [WARN] request - Unacceptable 23002
+[2015-09-08 22:33:07.162] [INFO] request - SIGINT.
+[2015-09-08 22:35:28.182] [WARN] request - Unacceptable 5002
+[2015-09-08 22:35:40.378] [INFO] request -  10002
+[2015-09-08 22:35:50.462] [INFO] request -  10002
+[2015-09-08 22:37:02.346] [INFO] request - -----------------------Invoke---------------------
+[2015-09-08 22:37:02.765] [INFO] request - Index.js Start.
+[2015-09-08 22:37:02.350] [INFO] request - log4js Ok.
+[2015-09-08 22:37:02.777] [INFO] request - session Ok.
+[2015-09-08 22:37:02.350] [INFO] request - logger Ok.
+[2015-09-08 22:37:02.778] [INFO] request - routes Ok.
+[2015-09-08 22:37:02.351] [INFO] request - express Ok.
+[2015-09-08 22:37:02.778] [INFO] request - Jade Start.
+[2015-09-08 22:37:02.351] [INFO] request - fs Ok.
+[2015-09-08 22:37:02.983] [INFO] request - mongoose Ok.
+[2015-09-08 22:37:02.351] [INFO] request - config Ok.
+[2015-09-08 22:37:02.983] [INFO] request - MongoStore Ok.
+[2015-09-08 22:37:02.372] [INFO] request - path Ok.
+[2015-09-08 22:37:02.990] [INFO] request - Account Ok.
+[2015-09-08 22:37:02.372] [INFO] request - favicon Ok.
+[2015-09-08 22:37:02.990] [INFO] request - -----------------------Start---------------------
+[2015-09-08 22:37:02.372] [INFO] request - cookieParser Ok.
+[2015-09-08 22:37:02.372] [INFO] request - bodyParser Ok.
+[2015-09-08 22:37:02.389] [INFO] request - passport Ok.
+[2015-09-08 22:37:02.390] [INFO] request - LocalStrategy Ok.
+[2015-09-08 22:37:10.354] [INFO] request - SIGINT.

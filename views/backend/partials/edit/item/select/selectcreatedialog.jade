@@ -20,14 +20,14 @@ md-dialog.box-edge(flex)
                 div(layout="row", layout-align="start center")
 
                     md-input-container(flex)
-                        label 質問
+                        label name
                         input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter title', md-maxlength="30", required)
                         div(ng-messages="validate.name.$error")
                             div(ng-message="required") 必ず入力してください.
                             div(ng-message="md-maxlength") もうすこし短くしてください.
 
                     md-input-container(flex)
-                        label 答え
+                        label 質問
                         input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter title', md-maxlength="30", required)
                         div(ng-messages="validate.label.$error")
                             div(ng-message="required") 必ず入力してください.

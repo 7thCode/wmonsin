@@ -111,7 +111,7 @@ controllers.factory('ViewQuery', ['$resource',
         });
     }]);
 
-function PatientsList(resource:any, query:any, success:(value:any, headers:any) => void):void {
+function PatientsList(resource:any, success:(value:any, headers:any) => void):void {
     var result:any[] = [];
 
     var today:Date = new Date();
@@ -133,7 +133,7 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
     ($scope:any, $stateParams:any, $location:any, Patient:any, PatientQuery:any, CurrentPatient:any, Global:any, ViewQuery:any, Views:any):void => {
 
         List(ViewQuery, {}, (data:any):void  => {
-            PatientsList(PatientQuery, {}, (patients:any):void => {
+            PatientsList(PatientQuery, (patients:any):void => {
                 $scope.patients = patients;
                 Views.Data = data;
             });
@@ -167,7 +167,7 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
 
         Global.socket.on('client', (data:any):void => {
             if (data.value === "1") {
-                PatientsList(PatientQuery, {}, (data:any):void => {
+                PatientsList(PatientQuery, (data:any):void => {
                     $scope.patients = data;
                 });
             }

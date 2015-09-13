@@ -216,7 +216,6 @@ function If(res:any, code:number, condition:boolean, callback:(res:any) => void)
     }
 }
 
-
 function SendWarn(res:any, code:number, message:any, object:any):void {
     logger.warn(message + " " + code);
     res.send(JSON.stringify(new result(code, message, object)));
@@ -288,8 +287,19 @@ router.get('/backend/partials/patient/patients', (req:any, res:any):void => {
     res.render('backend/partials/patient/patients');
 });
 
-router.get('/backend/partials/patient/description', (req:any, res:any):void => {
-    res.render('backend/partials/patient/description');
+router.get('/backend/partials/patient/description/:id', (req:any, res:any, next:any):void => {
+    var id =req.params.id;
+    Patient.findById(id, (error:any, patient:any):void => {
+        if (!error) {
+            if (patient) {
+                res.render('backend/partials/patient/description', {patient:patient});
+            } else {
+                next();
+            }
+        } else {
+            next();
+        }
+    });
 });
 
 

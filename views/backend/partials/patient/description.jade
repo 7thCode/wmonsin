@@ -11,6 +11,8 @@ md-content.background
             h4 {{Information.time}}
             h3 {{Information.kana}} [ {{Information.name}} ]
         md-card-content
+
+
             div(layout="row")
                 div
                     md-button.md-fab.md-warn(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'")
@@ -19,17 +21,7 @@ md-content.background
                 div
                     md-switch(ng-model="IsDone") Done
     md-card
-        md-tabs(md-selected="selectedIndex",style="min-height:660px;")
-
-            md-tab(label="schema")
-                md-card
-                    div(layout="row")
-                        div(flex)
-                            md-button.md-fab.md-warn(ng-click="download()", aria-label="Download")
-                                ng-md-icon.iconfill(icon="save", size="46", id="icon")
-                        div(flex)
-                            canvas#schema(width="300", height="600")
-                        div(flex)
+        md-tabs(md-selected="selectedIndex",style="min-height:660px;",ng-init="load()")
 
             md-tab(label="data")
                 md-list
@@ -77,5 +69,22 @@ md-content.background
                             div(ng-show="item.type == 'numeric'")
                                 strong {{item.name}} :
                                 span {{item.value}}
+
+            md-tab(label="schema")
+                md-list
+                    //canvas(id="schema-pic1", width="300", height="600")
+                    //canvas(id="schema-pic2", width="300", height="600")
+                    each item in patient.Input
+                        if item.type == "picture"
+                            md-card
+                                div(layout="row")
+                                    div(flex)
+                                        md-button.md-fab.md-warn(ng-click="download('schema-#{item.name}')", aria-label="Download")
+                                            ng-md-icon.iconfill(icon="save", size="46", id="icon")
+                                    div(flex)
+                                        canvas(id="schema-" + "#{item.name}", width="300", height="600", ng-model="item.name")
+                                        //canvas(id="schema-pic1", width="300", height="600")
+                                        //canvas(id="schema-pic2", width="300", height="600")
+                                    div(flex)
 
 

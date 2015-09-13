@@ -1,0 +1,35 @@
+[2015-09-10 13:49:32.315] [INFO] request - -----------------------Invoke---------------------
+[2015-09-10 13:49:32.321] [INFO] request - log4js Ok.
+[2015-09-10 13:49:32.321] [INFO] request - logger Ok.
+[2015-09-10 13:49:32.322] [INFO] request - express Ok.
+[2015-09-10 13:49:32.322] [INFO] request - fs Ok.
+[2015-09-10 13:49:32.322] [INFO] request - config Ok.
+[2015-09-10 13:49:32.322] [INFO] request - path Ok.
+[2015-09-10 13:49:32.335] [INFO] request - favicon Ok.
+[2015-09-10 13:49:32.339] [INFO] request - cookieParser Ok.
+[2015-09-10 13:49:32.344] [INFO] request - bodyParser Ok.
+[2015-09-10 13:49:32.357] [INFO] request - passport Ok.
+[2015-09-10 13:49:32.362] [INFO] request - LocalStrategy Ok.
+[2015-09-10 13:49:32.397] [INFO] request - session Ok.
+[2015-09-10 22:00:41.895] [INFO] request - -----------------------Invoke---------------------
+[2015-09-10 22:00:44.408] [INFO] request - Index.js Start.
+[2015-09-10 22:00:41.898] [INFO] request - log4js Ok.
+[2015-09-10 22:00:44.425] [INFO] request - routes Ok.
+[2015-09-10 22:00:41.898] [INFO] request - logger Ok.
+[2015-09-10 22:00:44.426] [INFO] request - Jade Start.
+[2015-09-10 22:00:41.898] [INFO] request - express Ok.
+[2015-09-10 22:00:44.721] [INFO] request - mongoose Ok.
+[2015-09-10 22:00:41.898] [INFO] request - fs Ok.
+[2015-09-10 22:00:45.315] [INFO] request - MongoStore Ok.
+[2015-09-10 22:00:41.899] [INFO] request - config Ok.
+[2015-09-10 22:00:45.327] [INFO] request - Account Ok.
+[2015-09-10 22:00:41.899] [INFO] request - path Ok.
+[2015-09-10 22:00:45.327] [INFO] request - -----------------------Start---------------------
+[2015-09-10 22:00:42.032] [INFO] request - favicon Ok.
+[2015-09-10 22:00:42.080] [INFO] request - cookieParser Ok.
+[2015-09-10 22:00:42.115] [INFO] request - bodyParser Ok.
+[2015-09-10 22:00:42.156] [INFO] request - passport Ok.
+[2015-09-10 22:00:42.177] [INFO] request - LocalStrategy Ok.
+[2015-09-10 22:00:42.529] [INFO] request - session Ok.
+[2015-09-10 22:01:09.516] [WARN] request - Unacceptable 5002
+[2015-09-10 22:04:41.044] [INFO] request - SIGINT.

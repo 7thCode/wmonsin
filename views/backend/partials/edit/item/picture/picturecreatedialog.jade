@@ -19,14 +19,14 @@ md-dialog.box-edge(flex)
             div(layout="column")
                 div(layout="row", layout-align="start center")
                     md-input-container(flex)
-                        label 質問
+                        label name
                         input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter title', md-maxlength="30", required)
                         div(ng-messages="validate.label.$error")
                             div(ng-message="required") 必ず入力してください.
                             div(ng-message="md-maxlength") もうすこし短くしてください.
 
                     md-input-container(flex)
-                        label 名前
+                        label 質問
                         input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter title', md-maxlength="30", required)
                         div(ng-messages="validate.label.$error")
                             div(ng-message="required") 必ず入力してください.
@@ -43,9 +43,9 @@ md-dialog.box-edge(flex)
 
 
         div(flow-init flow-name="uploader.flow", flow-files-added="processFiles($files)")
-            button(flow-btn type="file") Upload Images
+            md-button.md-raised.md-primary(flow-btn type="file") Upload Images
             img(flow-img="uploader.flow.files[0]")
-            div
+
                 //img(ng-src="/get_photo/55e906b58a8a159f06037489",flex,style="width: 50%; height: 40px;")
 
 

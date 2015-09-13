@@ -1,0 +1,13 @@
+[2015-09-11 22:05:57.953] [INFO] request - -----------------------Invoke---------------------
+[2015-09-11 22:05:57.958] [INFO] request - log4js Ok.
+[2015-09-11 22:05:57.959] [INFO] request - logger Ok.
+[2015-09-11 22:05:57.959] [INFO] request - express Ok.
+[2015-09-11 22:05:57.959] [INFO] request - fs Ok.
+[2015-09-11 22:05:57.959] [INFO] request - config Ok.
+[2015-09-11 22:05:57.959] [INFO] request - path Ok.
+[2015-09-11 22:05:57.974] [INFO] request - favicon Ok.
+[2015-09-11 22:05:57.978] [INFO] request - cookieParser Ok.
+[2015-09-11 22:05:57.983] [INFO] request - bodyParser Ok.
+[2015-09-11 22:05:57.997] [INFO] request - passport Ok.
+[2015-09-11 22:05:58.002] [INFO] request - LocalStrategy Ok.
+[2015-09-11 22:05:58.033] [INFO] request - session Ok.

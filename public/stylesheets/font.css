@@ -1,0 +1,51 @@
+@font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 100;
+  src: url('../font/woff/NotoSansThin.eot');
+  /* IE9 Compat Modes */
+  src: url('../font/woff/NotoSansThin.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../font/woff/NotoSansThin.woff') format('woff'), /* Modern Browsers */ url('../font/ttf/NotoSansThin.ttf') format('truetype');
+  /* Safari, Android, iOS */
+}
+@font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 200;
+  src: url('../font/woff/NotoSansLight.eot');
+  src: url('../font/woff/NotoSansLight.eot?#iefix') format('embedded-opentype'), url('../font/woff/NotoSansLight.woff') format('woff'), url('../font/ttf/NotoSansLight.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../font/woff/NotoSansDemiLight.eot');
+  src: url('../font/woff/NotoSansDemiLight.eot?#iefix') format('embedded-opentype'), url('../font/woff/NotoSansDemiLight.woff') format('woff'), url('../font/ttf/NotoSansDemiLight.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../font/woff/NotoSansRegular.eot');
+  src: url('../font/woff/NotoSansRegular.eot?#iefix') format('embedded-opentype'), url('../font/woff/NotoSansRegular.woff') format('woff'), url('../font/ttf/NotoSansRegular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../font/woff/NotoSansMedium.eot');
+  src: url('../font/woff/NotoSansMedium.eot?#iefix') format('embedded-opentype'), url('../font/woff/NotoSansMedium.woff') format('woff'), url('../font/ttf/NotoSansMedium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../font/woff/NotoSansBold.eot');
+  src: url('../font/woff/NotoSansBold.eot?#iefix') format('embedded-opentype'), url('../font/woff/NotoSansBold.woff') format('woff'), url('../font/ttf/NotoSansBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 900;
+  src: url('../font/woff/NotoSansBlack.eot');
+  src: url('../font/woff/NotoSansBlack.eot?#iefix') format('embedded-opentype'), url('../font/woff/NotoSansBlack.woff') format('woff'), url('../font/ttf/NotoSansBlack.ttf') format('truetype');
+}

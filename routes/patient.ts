@@ -5,7 +5,6 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-
 'use strict';
 
 var mongoose = require('mongoose');

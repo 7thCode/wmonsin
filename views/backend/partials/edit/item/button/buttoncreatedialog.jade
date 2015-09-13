@@ -20,18 +20,20 @@ md-dialog.box-edge(flex)
                 div(layout="row", layout-align="start center")
 
                     md-input-container(flex)
+                        label name
+                        input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter Name', md-maxlength="30", required)
+                        div(ng-messages="validate.name.$error")
+                            div(ng-message="required") 必ず入力してください.
+                            div(ng-message="md-maxlength") もうすこし短くしてください.
+
+
+                    md-input-container(flex)
                         label アイテムラベル
                         input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter Label', md-maxlength="30", required)
                         div(ng-messages="validate.label.$error")
                             div(ng-message="required") 必ず入力してください.
                             div(ng-message="md-maxlength") もうすこし短くしてください.
 
-                    md-input-container(flex)
-                        label アイテム名
-                        input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter Name', md-maxlength="30", required)
-                        div(ng-messages="validate.name.$error")
-                            div(ng-message="required") 必ず入力してください.
-                            div(ng-message="md-maxlength") もうすこし短くしてください.
 
                 div(layout="row")
                     md-input-container(flex)

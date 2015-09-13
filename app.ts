@@ -8,10 +8,15 @@
 'use strict';
 
 var express = require('express');
-
+var morgan = require('morgan');
 var app = express();
 
 var fs = require('fs');
+
+//app.use(morgan());
+//var stream = fs.createWriteStream(__dirname + '/log.txt', { flags: 'a' });
+//app.use(morgan({ stream: stream }));
+
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
 config.state = app.get('env');
@@ -54,28 +59,27 @@ if (config) {
 }
 
 var path = require('path');
-var favicon = require('serve-favicon');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-
 if (path) {
     logger.info('path Ok.');
 } else {
     logger.fatal('path NG.');
 }
 
+var favicon = require('serve-favicon');
 if (favicon) {
     logger.info('favicon Ok.');
 } else {
     logger.fatal('favicon NG.');
 }
 
+var cookieParser = require('cookie-parser');
 if (cookieParser) {
     logger.info('cookieParser Ok.');
 } else {
     logger.fatal('cookieParser NG.');
 }
 
+var bodyParser = require('body-parser');
 if (bodyParser) {
     logger.info('bodyParser Ok.');
 } else {
@@ -84,30 +88,28 @@ if (bodyParser) {
 
 //passport
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-//passport
-
 if (passport) {
     logger.info('passport Ok.');
 } else {
     logger.fatal('passport NG.');
 }
 
+var LocalStrategy = require('passport-local').Strategy;
 if (LocalStrategy) {
     logger.info('LocalStrategy Ok.');
 } else {
     logger.fatal('LocalStrategy NG.');
 }
+//passport
 
 var session = require('express-session');
-var routes = require('./routes/index');
-
 if (session) {
     logger.info('session Ok.');
 } else {
     logger.fatal('session NG.');
 }
 
+var routes = require('./routes/index');
 if (routes) {
     logger.info('routes Ok.');
 } else {
@@ -127,25 +129,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
-//app.use(express.static(path.join(__dirname, 'public')));
-
 var mongoose = require('mongoose');
-
-var MongoStore = require('connect-mongo')(session);
-var options = {server: {socketOptions: {connectTimeoutMS: 1000000}}};
-mongoose.connect(config.connection, options);
-
 if (mongoose) {
     logger.info('mongoose Ok.');
 } else {
     logger.fatal('mongoose NG.');
 }
 
+var MongoStore = require('connect-mongo')(session);
 if (MongoStore) {
     logger.info('MongoStore Ok.');
 } else {
     logger.fatal('MongoStore NG.');
 }
+
+var options = {server: {socketOptions: {connectTimeoutMS: 1000000}}};
+mongoose.connect(config.connection, options);
 
 process.on('exit', function(code) {
     logger.info('Stop.' + code);
@@ -175,9 +174,7 @@ app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 app.use('/', routes);
-
 
 //passport
 passport.serializeUser(function (user, done) {
@@ -190,14 +187,12 @@ passport.deserializeUser(function (obj, done) {
 
 var Account = require('./routes/account');
 passport.use(new LocalStrategy(Account.authenticate()));
-//passport
-
-
 if (Account) {
     logger.info('Account Ok.');
 } else {
     logger.fatal('Account NG.');
 }
+//passport
 
 logger.info('-----------------------Start---------------------');
 

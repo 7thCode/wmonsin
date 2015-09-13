@@ -5,7 +5,6 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-
 /**
  0 - ok
  1 - rights
@@ -151,13 +150,13 @@ controllers.factory('Config', ['$resource',
         });
     }]);
 
-controllers.factory('File', ['$resource', function ($resource) {
-    return $resource('/file/:name',  {name: '@name'}, {
-        send: { method: 'POST' }
-    });
-}]);
-
-
+controllers.factory('File', ['$resource',
+    ($resource):angular.resource.IResource<any> => {
+        return $resource('/file/:name', {name: '@name'}, {
+            send: {method: 'POST'},
+            update : {method: 'PUT'}
+        });
+    }]);
 
 controllers.factory('Pdf', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
@@ -176,7 +175,7 @@ function PatientsList(resource:any, query:any, success:(value:any, headers:any) 
     var query:any = TodayQuery();
     resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any, headers:any):void => {
         if (data) {
-            if (data.code == 0) {
+            if (data.code === 0) {
                 success(data.value, headers);
             }
         }
@@ -187,7 +186,7 @@ function List(resource:any, query:any, success:(value:any) => void):void {
     var result:any[] = [];
     resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any):void => {
         if (data) {
-            if (data.code == 0) {
+            if (data.code === 0) {
                 success(data.value);
             }
         }
@@ -199,7 +198,7 @@ function List(resource:any, query:any, success:(value:any) => void):void {
 controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
     ($scope:any, $state:any, CurrentAccount:any):void => {
 
-        if (CurrentAccount.username != "") {
+        if (CurrentAccount.username !== "") {
             $scope.username = CurrentAccount.username;
             $scope.type = CurrentAccount.type;
         } else {
@@ -207,7 +206,7 @@ controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
         }
     }]);
 
-controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state', "$mdDialog", '$mdToast',"$mdSidenav",'$mdUtil', 'Login', 'Logout', 'CurrentAccount', 'Global',
+controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state', "$mdDialog", '$mdToast', "$mdSidenav", '$mdUtil', 'Login', 'Logout', 'CurrentAccount', 'Global',
     ($scope:any, $rootScope:any, $state:any, $mdDialog:any, $mdToast:any, $mdSidenav:any, $mdUtil:any, Login:any, Logout:any, CurrentAccount:any, Global:any):void => {
 
         $scope.goBack = ():void => {
@@ -236,62 +235,54 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
             $state.go('accounts');
         };
 
-
         $scope.open = buildToggler();
 
         function buildToggler() {
-            var debounceFn = $mdUtil.debounce(():any =>{
-                $mdSidenav('nav')
-                    .toggle()
-                    .then(function () {
-
-                    });
-            },300);
+            var debounceFn = $mdUtil.debounce(():any => {
+                $mdSidenav('nav').toggle().then(():void => {
+                });
+            }, 300);
             return debounceFn;
         }
 
-        $scope.close = function () {
-            $mdSidenav('nav').close()
-                .then(function () {
-
-                });
+        $scope.close = ():void => {
+            $mdSidenav('nav').close().then(():void => {
+            });
         };
-
 
         $scope.showLoginDialog = ():void => {
             $mdDialog.show({
                 controller: 'LoginDialogController',
                 templateUrl: '/backend/partials/account/logindialog',
                 targetEvent: null
-            })
-                .then((answer:any):void => { // Answer
-                    var account:any = new Login();
-                    account.username = answer.items.username;
-                    account.password = answer.items.password;
-                    account.$login((account:any):void => {
-                        if (account) {
-                            if (account.code == 0) {
-                                CurrentAccount.username = account.value.username;
-                                CurrentAccount.type = account.value.type;
-                                $scope.username = account.value.username;
-                                $scope.type = account.value.type;
-                                localStorage.setItem("account", JSON.stringify(CurrentAccount));
-                                $rootScope.$broadcast('Login');
-                            }
-                            $mdToast.show($mdToast.simple().content(account.message));
-                        } else {
-                            $mdToast.show($mdToast.simple().content("login error"));
+            }).then((answer:any):void => { // Answer
+                var account:any = new Login();
+                account.username = answer.items.username;
+                account.password = answer.items.password;
+                account.$login((account:any):void => {
+                    if (account) {
+                        if (account.code === 0) {
+                            CurrentAccount.username = account.value.username;
+                            CurrentAccount.type = account.value.type;
+                            $scope.username = account.value.username;
+                            $scope.type = account.value.type;
+                            localStorage.setItem("account", JSON.stringify(CurrentAccount));
+                            $rootScope.$broadcast('Login');
                         }
-                    });
-                }, ():void => { // Error
+                        $mdToast.show($mdToast.simple().content(account.message));
+                    } else {
+                        $mdToast.show($mdToast.simple().content("login error"));
+                    }
                 });
+            }, ():void => { // Error
+            });
         };
 
         $scope.Logout = ():void => {
             var account:any = new Logout();
             account.$logout((account:any):void => {
                 if (account) {
-                    if (account.code == 0) {
+                    if (account.code === 0) {
                         CurrentAccount.username = "";
                         CurrentAccount.type = "";
                         $scope.username = "";
@@ -307,12 +298,11 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
             });
         };
 
-        if (Global.socket == null) {
+        if (Global.socket === null) {
             Global.socket = io.connect();
         }
 
-
-        if (localStorage.getItem("account") != null) {
+        if (localStorage.getItem("account") !== null) {
             var account:any = JSON.parse(localStorage.getItem("account"));
             CurrentAccount.username = account.username;
             CurrentAccount.type = account.type;
@@ -327,10 +317,10 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
 
     }]);
 
-controllers.controller('PatientsController', ['$scope', '$state', '$q', "$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
-    ($scope:any, $state:any, $q:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientAccept:any, PatientQuery:any, PatientCount:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
+controllers.controller('PatientsController', ['$scope', '$state','$stateParams', '$q', "$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
+    ($scope:any, $state:any, $stateParams, $q:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientAccept:any, PatientQuery:any, PatientCount:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
 
-        if (CurrentAccount.username != "") {
+        if (CurrentAccount.username !== "") {
             $scope.username = CurrentAccount.username;
             $scope.type = CurrentAccount.type;
 
@@ -342,7 +332,8 @@ controllers.controller('PatientsController', ['$scope', '$state', '$q', "$mdDial
 
             $scope.showPatientDescription = (id:any):void => {
                 CurrentPatient.id = id;
-                $state.go('description');
+                $stateParams.id = id;
+                $state.go('description',{id:id});
             };
 
             $scope.icon = "vertical_align_top";
@@ -363,7 +354,7 @@ controllers.controller('PatientsController', ['$scope', '$state', '$q', "$mdDial
                 var query:any = TodayQuery();
                 PatientCount.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any):void => {
                     if (data) {
-                        if (data.code == 0) {
+                        if (data.code === 0) {
                             var items = {count: 0};
                             items.count = data.value;
 
@@ -374,47 +365,46 @@ controllers.controller('PatientsController', ['$scope', '$state', '$q', "$mdDial
                                 locals: {
                                     items: items
                                 }
-                            })
-                                .then((answer:any):void => { // Answer
+                            }).then((answer:any):void => { // Answer
 
-                                    var patient:any = new PatientAccept();
-                                    patient.Input = {};
-                                    patient.Information = {};
-                                    patient.Information.name = answer.items.name;
+                                var patient:any = new PatientAccept();
+                                patient.Input = {};
+                                patient.Information = {};
+                                patient.Information.name = answer.items.name;
 
-                                    var now:Date = new Date();
-                                    var hour:string = ("0" + now.getHours()).slice(-2); // 時
-                                    var min:string = ("0" + now.getMinutes()).slice(-2); // 分
-                                    var sec:string = ("0" + now.getSeconds()).slice(-2); // 秒
-                                    patient.Information.time = hour + ':' + min + ':' + sec;
+                                var now:Date = new Date();
+                                var hour:string = ("0" + now.getHours()).slice(-2); // 時
+                                var min:string = ("0" + now.getMinutes()).slice(-2); // 分
+                                var sec:string = ("0" + now.getSeconds()).slice(-2); // 秒
+                                patient.Information.time = hour + ':' + min + ':' + sec;
 
-                                    answer.items.kana = answer.items.kana.replace(/[ぁ-ん]/g, (s:any):string => {
-                                        return String.fromCharCode(s.charCodeAt(0) + 0x60);
-                                    });
-
-                                    patient.Information.kana = answer.items.kana;
-                                    patient.Information.insurance = answer.items.insurance;
-                                    patient.Category = answer.items.category;
-                                    patient.Sequential = items.count;
-                                    $scope.progress = true;
-                                    patient.$save({}, (result:any):void => {
-                                        if (result) {
-                                            if (result.code == 0) {
-                                                PatientsList(PatientQuery, {}, (data:any):void => {
-                                                    $scope.progress = false;
-                                                    Global.socket.emit('server', {value: "1"});
-                                                    $scope.patients = data;
-                                                    $mdToast.show($mdToast.simple().content(result.message));
-                                                });
-                                            } else {
-                                                $mdToast.show($mdToast.simple().content(result.message));
-                                            }
-                                        } else {
-                                            $mdToast.show($mdToast.simple().content("save error"));
-                                        }
-                                    });
-                                }, ():void => { // Cancel
+                                answer.items.kana = answer.items.kana.replace(/[ぁ-ん]/g, (s:any):string => {
+                                    return String.fromCharCode(s.charCodeAt(0) + 0x60);
                                 });
+
+                                patient.Information.kana = answer.items.kana;
+                                patient.Information.insurance = answer.items.insurance;
+                                patient.Category = answer.items.category;
+                                patient.Sequential = items.count;
+                                $scope.progress = true;
+                                patient.$save({}, (result:any):void => {
+                                    if (result) {
+                                        if (result.code === 0) {
+                                            PatientsList(PatientQuery, {}, (data:any):void => {
+                                                $scope.progress = false;
+                                                Global.socket.emit('server', {value: "1"});
+                                                $scope.patients = data;
+                                                $mdToast.show($mdToast.simple().content(result.message));
+                                            });
+                                        } else {
+                                            $mdToast.show($mdToast.simple().content(result.message));
+                                        }
+                                    } else {
+                                        $mdToast.show($mdToast.simple().content("save error"));
+                                    }
+                                });
+                            }, ():void => { // Cancel
+                            });
                         }
                     }
                 });
@@ -423,7 +413,7 @@ controllers.controller('PatientsController', ['$scope', '$state', '$q', "$mdDial
             $scope.querySearch = (querystring:any):any => {
                 var deferred = $q.defer();
                 var query:any = TodayQuery();
-                PatientQuery.query({query: encodeURIComponent(JSON.stringify({$and:[query, {"Information.name": {$regex: querystring}}]}))}, (data:any):void => {
+                PatientQuery.query({query: encodeURIComponent(JSON.stringify({$and: [query, {"Information.name": {$regex: querystring}}]}))}, (data:any):void => {
                     deferred.resolve(data.value);
                 });
                 return deferred.promise;
@@ -479,19 +469,22 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
 
         if (CurrentPatient) {
             $scope.selectedIndex = 0;
-            $scope.$watch('selectedIndex', function (current, old) {
+
+            $scope.load = ():void => {
                 var patient:any = new Patient();
                 patient.$get({id: CurrentPatient.id}, (data:any):void => {
                         if (data) {
-                            if (data.code == 0) {
+                            if (data.code === 0) {
                                 $scope.Input = [];
-                                _.each<any>(data.value.Input, (value:any, index:number, array:any[]):void => {
-                                    if (value.type == "picture") {
-                                        var canvas:any = new fabric.Canvas('schema');
-                                        canvas.loadFromJSON(JSON.stringify(value.value), canvas.renderAll.bind(canvas), (o:any, object:any):void => {
-                                        });
-                                    }
+                                _.each<any>(data.value.Input, (value:any, index:any, array:any[]):void => {
+                                    if (value.type === "picture") {
 
+                                            var canvas:any = new fabric.Canvas('schema-' + value.name);
+                                            canvas.loadFromJSON(JSON.stringify(value.value), canvas.renderAll.bind(canvas), (o:any, object:any):void => {
+                                                var a = 1;
+                                            });
+
+                                    }
                                     $scope.Input.push(value);
                                     $scope.Information = data.value.Information;
                                 });
@@ -502,14 +495,14 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                             $mdToast.show($mdToast.simple().content('patient error'));
                         }
                     }
-                );
-            });
+                )
+            };
 
             var patient:any = new PatientStatus();
             patient.$get({id: CurrentPatient.id}, (result:any):void => {
                 if (result) {
-                    if (result.code == 0) {
-                        $scope.IsDone = (result.value == "Done");
+                    if (result.code === 0) {
+                        $scope.IsDone = (result.value === "Done");
                     } else {
                         $mdToast.show($mdToast.simple().content(result.message));
                     }
@@ -543,23 +536,23 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                 });
             };
 
-            $scope.download = (event:any):void => {
-                var canvas:any = document.getElementById("schema");
+            $scope.download = (name:any):void => {
+                var canvas:any = document.getElementById(name);
                 Canvas2Image.saveAsPNG(canvas);
             };
 
             $scope.$watch('IsDone', ():void => {
-                if ($scope.IsDone != null) {// avoid initalizeation.
+                if ($scope.IsDone !== null) {// avoid initalizeation.
                     var patient:any = new PatientStatus();
                     patient.$get({id: CurrentPatient.id}, (result:any):void => {
                         if (result) {
-                            if (result.code == 0) {
-                                if ($scope.IsDone == true) {
-                                    if (result.value != "Done") {
+                            if (result.code === 0) {
+                                if ($scope.IsDone === true) {
+                                    if (result.value !== "Done") {
                                         patient.Status = "Done";
                                         patient.$update({id: CurrentPatient.id}, (result:any):void => {
                                             if (result) {
-                                                if (result.code == 0) {
+                                                if (result.code === 0) {
                                                     Global.socket.emit('server', {value: "1"});
                                                 }
                                                 $mdToast.show($mdToast.simple().content('Status Updated.'));
@@ -569,11 +562,11 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                         });
                                     }
                                 } else {
-                                    if (result.value != "Accepted") {
+                                    if (result.value !== "Accepted") {
                                         patient.Status = "Accepted";
                                         patient.$update({id: CurrentPatient.id}, (result:any):void => {
                                             if (result) {
-                                                if (result.code == 0) {
+                                                if (result.code === 0) {
                                                     Global.socket.emit('server', {value: "1"});
                                                 }
                                                 $mdToast.show($mdToast.simple().content(result.message));
@@ -598,7 +591,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
 controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '$mdToast', 'Account', 'AccountQuery', 'AccountCreate', 'AccountPassword', 'CurrentAccount',
     ($scope:any, $state:any, $mdDialog:any, $mdToast:any, Account:any, AccountQuery:any, AccountCreate:any, AccountPassword:any, CurrentAccount:any):void => {
 
-        if (CurrentAccount.username != "") {
+        if (CurrentAccount.username !== "") {
             $scope.username = CurrentAccount.username;
             $scope.type = CurrentAccount.type;
 
@@ -622,7 +615,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                     $scope.progress = true;
                     account.$save({}, (result:any):void => {
                         if (result) {
-                            if (result.code == 0) {
+                            if (result.code === 0) {
                                 List(AccountQuery, {}, (data:any):void => {
                                     $scope.accounts = data;
                                     $scope.progress = false;
@@ -647,7 +640,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                     $scope.progress = true;
                     account.$remove({id: id}, (result:any):void => {
                         if (result) {
-                            if (result.code == 0) {
+                            if (result.code === 0) {
                                 List(AccountQuery, {}, (data:any):void => {
                                     $scope.accounts = data;
                                     $scope.progress = false;
@@ -666,7 +659,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                 var account:any = new Account();
                 account.$get({id: id}, (data:any):void => {
                         if (data) {
-                            if (data.code == 0) {
+                            if (data.code === 0) {
                                 $scope.items = data.value;
                                 $scope.items.password = "";
                                 $mdDialog.show({
@@ -698,7 +691,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                             $scope.progress = true;
                                             account.$update({id: id}, (result:any):void => {
                                                 if (result) {
-                                                    if (result.code == 0) {
+                                                    if (result.code === 0) {
                                                         List(AccountQuery, {}, (data:any):void => {
                                                             $scope.accounts = data;
                                                             $scope.progress = false;
@@ -774,13 +767,12 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                 view.Name = answer.items.department;
                 view.$save({}, (result:any):void => {
                     if (result) {
-                        if (result.code == 0) {
+                        if (result.code === 0) {
                             $scope.progress = true;
                             List(ViewQuery, {}, (data:any):void  => {
                                 $scope.Departments = data;
                                 $scope.progress = false;
                                 $mdToast.show($mdToast.simple().content(result.message));
-
                             });
                         } else {
                             $mdToast.show($mdToast.simple().content(result.message));
@@ -809,7 +801,7 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                     view.Name = answer.items.department;
                     view.$save({}, (result:any):void => {
                         if (result) {
-                            if (result.code == 0) {
+                            if (result.code === 0) {
                                 $scope.progress = true;
                                 List(ViewQuery, {}, (data:any):void  => {
                                     $scope.Departments = data;
@@ -847,7 +839,7 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                 $scope.progress = true;
                 view.$remove({id: id}, (result:any):void => {
                     if (result) {
-                        if (result.code == 0) {
+                        if (result.code === 0) {
                             $scope.progress = true;
                             List(ViewQuery, {}, (data:any):void  => {
                                 $scope.Departments = data;
@@ -900,7 +892,7 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
                 view.Pages = CurrentView.Data.Pages;
                 view.$update({id: CurrentView.Data._id}, (result:any):void => {
                     if (result) {
-                        if (result.code == 0) {
+                        if (result.code === 0) {
                             $mdToast.show($mdToast.simple().content(result.message));
                         } else {
                             $mdToast.show($mdToast.simple().content(result.message));
@@ -957,8 +949,7 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
                 });
             };
         }
-        else
-        {
+        else {
             $state.go('departments');
         }
     }]);
@@ -1103,6 +1094,35 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 });
             };
 
+            $scope.showPictureUpdateDialog = (index:number):void => {
+
+                var items = CurrentView.Data.Pages[CurrentView.Page].picture[0];
+
+                $mdDialog.show({
+                    controller: 'PictureUpdateDialogController',
+                    templateUrl: '/backend/partials/edit/item/picture/pictureupdatedialog',
+                    targetEvent: null,
+                    locals: {
+                        items: items
+                    }
+                }).then((answer:any):void => { // Answer
+
+                    var control = {
+                        "height": 600,
+                        "width": 300,
+                        "path": answer.items.path,
+                        "type": "picture",
+                        "model": "",
+                        "name": answer.items.name,
+                        "label": answer.items.label
+                    };
+
+                    CurrentView.Data.Pages[CurrentView.Page].picture[0] = control;
+          //          CurrentView.Data.Pages[CurrentView.Page].picture[0] = answer.items;
+                }, ():void => { // Cancel
+                });
+            };
+
             $scope.showButtonCreateDialog = ():void => {
 
                 var items = {
@@ -1199,29 +1219,13 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                     locals: {
                         items: items
                     }
-                })
-                    .then((answer:any):void => { // Answer
-                        CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
-                    }, ():void => { // Cancel
-                    });
-            };
-
-            $scope.showPictureUpdateDialog = (index:number):void => {
-
-                var items = CurrentView.Data.Pages[CurrentView.Page].picture[0];
-
-                $mdDialog.show({
-                    controller: 'PictureUpdateDialogController',
-                    templateUrl: '/backend/partials/edit/item/picture/pictureupdatedialog',
-                    targetEvent: null,
-                    locals: {
-                        items: items
-                    }
                 }).then((answer:any):void => { // Answer
-                    CurrentView.Data.Pages[CurrentView.Page].picture[0] = answer.items;
+                    CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
                 }, ():void => { // Cancel
                 });
             };
+
+
 
             $scope.showButtonUpdateDialog = (index:number):void => {
 
@@ -1238,6 +1242,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
                 }, ():void => { // Cancel
                 });
+
             };
 
             $scope.showTextDeleteDialog = (index:number):void => {
@@ -1307,6 +1312,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                     CurrentView.Data.Pages[CurrentView.Page].picture = _.compact(CurrentView.Data.Pages[CurrentView.Page].picture);
                 }, ():void => {
                 });
+
             };
 
             $scope.showButtonDeleteDialog = (index:number):void => {
@@ -1315,12 +1321,11 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                     controller: 'ButtonDeleteDialogController',
                     templateUrl: '/backend/partials/edit/item/button/buttondeletedialog',
                     targetEvent: index
-                })
-                    .then((answer:any):void => {  // Answer
-                        CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
-                        CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
-                    }, ():void => {
-                    });
+                }).then((answer:any):void => {  // Answer
+                    CurrentView.Data.Pages[CurrentView.Page].items[index] = null;
+                    CurrentView.Data.Pages[CurrentView.Page].items = _.compact(CurrentView.Data.Pages[CurrentView.Page].items);
+                }, ():void => {
+                });
 
             };
 
@@ -1386,8 +1391,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
              };
              */
         }
-        else
-        {
+        else {
             $state.go('departments');
         }
     }]);
@@ -1400,7 +1404,7 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
         var config:any = new Config();
         config.$get({}, (result:any):void  => {
             if (result) {
-                if (result.code == 0) {
+                if (result.code === 0) {
                     $scope.config = result.value;
                 } else {
                     $mdToast.show($mdToast.simple().content(result.message));
@@ -1419,7 +1423,7 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
                 var config:any = new Config();
                 config.body = $scope.config;
                 config.$update({}, (result:any):void => {
-                    if (result.code == 0) {
+                    if (result.code === 0) {
                         $mdToast.show($mdToast.simple().content('Updated.'));
                     } else {
                         $mdToast.show($mdToast.simple().content(result.message));
@@ -1469,8 +1473,8 @@ controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet', '$loc
         }
     }]);
 
-controllers.controller('LoginDialogController', ['$scope','$q', '$mdDialog','AccountQuery',
-    ($scope:any,$q:any, $mdDialog:any, AccountQuery:any):void  => {
+controllers.controller('LoginDialogController', ['$scope', '$q', '$mdDialog', 'AccountQuery',
+    ($scope:any, $q:any, $mdDialog:any, AccountQuery:any):void  => {
 
         $scope.querySearch = (querystring:any):any => {
             var deferred = $q.defer();
@@ -1497,9 +1501,6 @@ controllers.controller('LoginDialogController', ['$scope','$q', '$mdDialog','Acc
         };
 
         $scope.answer = (answer:any):void  => {
-
-            //$scope.username = $scope.searchText;
-
             $mdDialog.hide($scope);
         };
 
@@ -1604,10 +1605,6 @@ controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog', 
             $scope.progress = false;
         });
 
-        //   _.map<any,any>(Views.Data.Data, (num:any, key:any):void  => {
-        //       $scope.categories.push(key);
-        //   });
-
         $scope.hide = ():void => {
             $mdDialog.hide();
         };
@@ -1676,7 +1673,6 @@ controllers.controller('DepartmentDeleteDialogController', ['$scope', '$mdDialog
 controllers.controller('PageCreateDialogController', ['$scope', '$mdDialog',
     ($scope:any, $mdDialog:any):void  => {
 
-
         $scope.hide = ():void => {
             $mdDialog.hide();
         };
@@ -1708,10 +1704,8 @@ controllers.controller('PageDeleteDialogController', ['$scope', '$mdDialog',
 
     }]);
 
-
 controllers.controller('TextCreateDialogController', ['$scope', '$mdDialog',
     ($scope:any, $mdDialog:any):void  => {
-
 
         $scope.hide = ():void => {
             $mdDialog.hide();
@@ -1729,7 +1723,6 @@ controllers.controller('TextCreateDialogController', ['$scope', '$mdDialog',
 
 controllers.controller('CheckCreateDialogController', ['$scope', '$mdDialog',
     ($scope:any, $mdDialog:any):void  => {
-
 
         $scope.hide = ():void => {
             $mdDialog.hide();
@@ -1769,7 +1762,6 @@ controllers.controller('SelectCreateDialogController', ['$scope', '$mdDialog',
 controllers.controller('NumericCreateDialogController', ['$scope', '$mdDialog',
     ($scope:any, $mdDialog:any):void  => {
 
-
         $scope.hide = ():void => {
             $mdDialog.hide();
         };
@@ -1788,14 +1780,14 @@ controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 
     ($scope:any, $mdDialog:any, File:any):void  => {
         $scope.images = [];
 
-        $scope.processFiles = function (files) {
+        $scope.processFiles = (files:any):void => {
             $scope.images[0] = {};
             var fileReader = new FileReader();
             var image = new Image();
-            fileReader.onload = function (event) {
+            fileReader.onload = (event:any):void => {
                 var uri = event.target.result;
                 image.src = uri;
-                image.onload = function () {
+                image.onload = ():void => {
                     var file = new File();
                     file.url = uri;
                     file.$send({name: $scope.items.path});
@@ -1817,7 +1809,6 @@ controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 
             $mdDialog.hide($scope);
         };
 
-
     }]);
 
 controllers.controller('ButtonCreateDialogController', ['$scope', '$mdDialog',
@@ -1837,7 +1828,6 @@ controllers.controller('ButtonCreateDialogController', ['$scope', '$mdDialog',
         };
 
     }]);
-
 
 controllers.controller('CheckUpdateDialogController', ['$scope', '$mdDialog', 'items',
     ($scope:any, $mdDialog:any, items:any):void  => {
@@ -1900,44 +1890,23 @@ controllers.controller('NumericUpdateDialogController', ['$scope', '$mdDialog', 
 
     }]);
 
-/*
-controllers.controller('PictureUpdateDialogController', ['$scope', '$mdDialog', 'items',
-    ($scope:any, $mdDialog:any, items:any):void  => {
-
-        $scope.items = items;
-
-        $scope.hide = ():void => {
-            $mdDialog.hide();
-        };
-
-        $scope.cancel = ():void => {
-            $mdDialog.cancel();
-        };
-
-        $scope.answer = (answer:any):void => {
-            $mdDialog.hide($scope);
-        };
-
-    }]);
-*/
-
 controllers.controller('PictureUpdateDialogController', ['$scope', '$mdDialog', 'File', 'items',
     ($scope:any, $mdDialog:any, File:any, items:any):void  => {
         $scope.images = [];
 
         $scope.items = items;
 
-        $scope.processFiles = function (files) {
+        $scope.processFiles = (files:any):void => {
             $scope.images[0] = {};
             var fileReader = new FileReader();
             var image = new Image();
-            fileReader.onload = function (event) {
+            fileReader.onload = (event:any):void => {
                 var uri = event.target.result;
                 image.src = uri;
-                image.onload = function () {
+                image.onload = ():void => {
                     var file = new File();
                     file.url = uri;
-                    file.$send({name: $scope.items.path});
+                    file.$update({name: $scope.items.path});
                     $scope.$apply();
                 };
             };
@@ -1977,7 +1946,6 @@ controllers.controller('ButtonUpdateDialogController', ['$scope', '$mdDialog', '
         };
 
     }]);
-
 
 controllers.controller('TextDeleteDialogController', ['$scope', '$mdDialog',
     ($scope:any, $mdDialog:any):void  => {
