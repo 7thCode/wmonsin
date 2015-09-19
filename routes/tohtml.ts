@@ -8,6 +8,8 @@
 
 'use strict';
 
+declare function require(x: string): any;
+
 var _ = require('lodash');
 
 class ElementData {

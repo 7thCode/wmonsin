@@ -46,11 +46,8 @@ md-dialog.box-edge(flex)
             md-button.md-raised.md-primary(flow-btn type="file") Upload Images
             img(flow-img="uploader.flow.files[0]")
 
-                //img(ng-src="/get_photo/55e906b58a8a159f06037489",flex,style="width: 50%; height: 40px;")
-
-
-                md-divider
-                div.md-actions(layout="row", layout-align="space-around center")
-                    md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") 登録
+        md-divider
+        div.md-actions(layout="row", layout-align="space-around center")
+            md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") 登録
 
 

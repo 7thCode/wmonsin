@@ -8,6 +8,8 @@
 
 'use strict';
 
+declare function require(x: string): any;
+
 // Socket.IO
 var socketio = require('socket.io');
 

@@ -8,6 +8,8 @@
 
 'use strict';
 
+declare function require(x: string): any;
+
 var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
@@ -23,11 +25,11 @@ var _ = require('lodash');
 
 var mongoose = require('mongoose');
 var Grid = require('gridfs-stream');
+var PDFDocument = require('pdfkit-cjk');
 
-var Patient = require('./patient');
-var Account = require('./account');
-
-var View = require('./view');
+var Patient = require('./../model/patient');
+var Account = require('./../model/account');
+var View = require('./../model/view');
 
 var ToHtml = require('./tohtml');
 
@@ -42,8 +44,12 @@ var configure = require('./configure');
 
 var result = require('./result');
 
+var Wrapper = require('./wrapper');
+
 logger.info('Index.js Start.');
 
+
+var wrapper = new Wrapper;
 
 //var emitter = require('socket.io-emitter')({ host: '127.0.0.1', port: 6379 });
 //non csrf
@@ -57,7 +63,7 @@ logger.info('Index.js Start.');
 module.exports = router;
 
 // root user
-FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any):void => {
+wrapper.FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any):void => {
     if (!account) {
         Account.register(new Account({username: config.user, type: "Admin"}),
             config.password,
@@ -70,6 +76,7 @@ FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any):void => 
             });
     }
 });
+
 
 // view 初期化
 View.count({}, (counterror:any, count:number):void => {
@@ -107,151 +114,7 @@ function DeCipher(name:any, password:any):any {
 }
 
 
-function GetView(name:string, success:any, notfound:any, error:any):void {
-    View.findOne({"Name": name}, (finderror:any, doc:any):void => {
-        if (!finderror) {
-            if (doc) {
-                success(doc);
-            } else {
-                notfound();
-            }
-        } else {
-            error("Find Error", finderror);
-        }
-    });
-}
 
-function BasicHeader(response:any, session:any):any {
-    response.header("Access-Control-Allow-Origin", "*");
-    response.header("Pragma", "no-cache");
-    response.header("Cache-Control", "no-cache");
-    response.contentType('application/json');
-    return response;
-}
-
-function Guard(req:any, res:any, callback:(req:any, res:any) => void):void {
-    try {
-        if (req.headers["x-requested-with"] === 'XMLHttpRequest') {
-            res = BasicHeader(res, "");
-            callback(req, res);
-        } else {
-            SendWarn(res, 1, '', {});
-        }
-    } catch (e) {
-        SendFatal(res, 100000, e.message, e);
-    }
-}
-
-function Authenticate(req:any, res:any, code:number, callback:(user:any, res:any) => void):void {
-    if (req.isAuthenticated()) {
-        callback(req.user, res);
-    } else {
-        SendWarn(res, code + 2, "Unacceptable", {});
-    }
-}
-
-function FindById(res:any, code:number, model:any, id:any, callback:(res:any, object:any) => void):void {
-    model.findById(id, (error:any, object:any):void => {
-        if (!error) {
-            if (object) {
-                callback(res, object);
-            } else {
-                SendWarn(res, code + 10, "", {});
-            }
-        } else {
-            SendError(res, code + 100, "", error);
-        }
-    });
-}
-
-function FindOne(res:any, code:number, model:any, query:any, callback:(res:any, object:any) => void):void {
-    model.findOne(query, (error:any, doc:any):void => {
-        if (!error) {
-            callback(res, doc);
-        } else {
-            SendError(res, code + 100, "", error);
-        }
-    });
-}
-
-function Find(res:any, code:number, model:any, query:any, count:any, sort:any, callback:(res:any, object:any) => void):void {
-    model.find(query, count, sort, (error:any, docs:any):void => {
-        if (!error) {
-            if (docs) {
-                callback(res, docs);
-            } else {
-                SendError(res, code + 10, "", {});
-            }
-        } else {
-            SendError(res, code + 100, "", error);
-        }
-    });
-}
-
-function Save(res:any, code:number, instance:any, callback:(res:any, object:any) => void):void {
-    instance.save((error:any):void => {
-        if (!error) {
-            callback(res, instance);
-        } else {
-            SendError(res, code + 100, "", error);
-        }
-    });
-}
-
-function Remove(res:any, code:number, model:any, id:any, callback:(res:any) => void):void {
-    model.remove({_id: id}, (error:any):void => {
-        if (!error) {
-            callback(res);
-        } else {
-            SendError(res, code + 100, "", error);
-        }
-    });
-}
-
-function If(res:any, code:number, condition:boolean, callback:(res:any) => void):void {
-    if (condition) {
-        callback(res);
-    } else {
-        SendWarn(res, code + 1, "", {});
-    }
-}
-
-function SendWarn(res:any, code:number, message:any, object:any):void {
-    logger.warn(message + " " + code);
-    res.send(JSON.stringify(new result(code, message, object)));
-}
-
-function SendError(res:any, code:number, message:any, object:any):void {
-    logger.error(message + " " + code);
-    res.send(JSON.stringify(new result(code, message, object)));
-}
-
-function SendFatal(res:any, code:number, message:any, object:any):void {
-    logger.fatal(message + " " + code);
-    res.send(JSON.stringify(new result(code, message, object)));
-}
-
-function SendResult(res:any, code:number, message:any, object:any):void {
-    if (code != 0) {
-        logger.info(message + " " + code);
-    }
-    res.send(JSON.stringify(new result(code, message, object)));
-}
-
-function StripAccount(account:any):any {
-    delete account._id;
-    delete account.hash;
-    delete account.salt;
-    return account;
-}
-
-function StripAccounts(accounts:any):any {
-    var result = [];
-    _.each(accounts, (member:any):void => {
-        result.push(StripAccount(member));
-    });
-    return result;
-}
 
 router.get('/', (req:any, res:any):void => {
     res.render('index', {deveropment: (config.state == "deveropment")});
@@ -476,11 +339,12 @@ router.get('/front/partials/write', (req:any, res:any):void => {
 /*! patient */
 /*! create */
 router.post('/patient/accept', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void => {
+
+    wrapper.Guard(req, res, (req:any, res:any):void => {
         var number:number = 1000;
         //同時に同名でないこと（自動Accept対策)
         var query = {"$and": [{'Information.name': req.body.Information.name}, {'Information.time': req.body.Information.time}]};
-        Find(res, number, Patient, query, {}, {}, (res:any, docs:any) => {
+        wrapper.Find(res, number, Patient, query, {}, {}, (res:any, docs:any) => {
             if (docs.length == 0) {
                 var patient:any = new Patient();
                 patient.Information = req.body.Information;
@@ -489,23 +353,24 @@ router.post('/patient/accept', (req:any, res:any):void => {
                 patient.Status = req.body.Status;
                 patient.Input = req.body.Input;
                 patient.Sequential = req.body.Sequential;
-                Save(res, number, patient, (res:any, patient:any) => {
-                    SendResult(res, 0, "OK", patient.Status);
+                wrapper.Save(res, number, patient, (res:any, patient:any) => {
+                    wrapper.SendResult(res, 0, "OK", patient.Status);
                 });
             } else {
-                SendResult(res, number + 10, "", {});
+                wrapper.SendResult(res, number + 10, "", {});
             }
         });
     });
+
 });
 
 /*! get */
 router.get('/patient/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    wrapper.Guard(req, res, (req:any, res:any) => {
         var number:number = 2000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            FindById(res, number, Patient, req.params.id, (res, patient) => {
-                SendResult(res, 0, "OK", patient);
+        wrapper.Authenticate(req, res, number, (user:any, res:any) => {
+            wrapper.FindById(res, number, Patient, req.params.id, (res, patient) => {
+                wrapper.SendResult(res, 0, "OK", patient);
             });
         });
     });
@@ -513,15 +378,15 @@ router.get('/patient/:id', (req:any, res:any):void => {
 
 /*! update */
 router.put('/patient/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any) => {
+    wrapper.Guard(req, res, (req:any, res:any) => {
         var number:number = 3000;
-        Authenticate(req, res, number, (user:any, res:any) => {
-            FindById(res, number, Patient, req.params.id, (res, patient) => {
+        wrapper.Authenticate(req, res, number, (user:any, res:any) => {
+            wrapper.FindById(res, number, Patient, req.params.id, (res, patient) => {
                 patient.Status = req.body.Status;
                 patient.Input = req.body.Input;
                 patient.Sequential = req.body.Sequential;
-                Save(res, number, patient, (res:any, patient:any) => {
-                    SendResult(res, 0, "OK", patient);
+                wrapper.Save(res, number, patient, (res:any, patient:any) => {
+                    wrapper.SendResult(res, 0, "OK", patient);
                 });
             });
         });
@@ -530,12 +395,12 @@ router.put('/patient/:id', (req:any, res:any):void => {
 
 /*! delete */
 router.delete('/patient/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 4000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
-            If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                Remove(res, number, Patient, req.params.id, (res:any):void  => {
-                    SendResult(res, 0, "OK", {});
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                wrapper.Remove(res, number, Patient, req.params.id, (res:any):void  => {
+                    wrapper.SendResult(res, 0, "OK", {});
                 });
             });
         });
@@ -544,12 +409,12 @@ router.delete('/patient/:id', (req:any, res:any):void => {
 
 /*! query */
 router.get('/patient/query/:query', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 5000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             var query = JSON.parse(decodeURIComponent(req.params.query));
-            Find(res, number, Patient, query, {}, {sort: {Date: -1}}, (res:any, docs:any):void  => {
-                SendResult(res, 0, "OK", docs);
+            wrapper.Find(res, number, Patient, query, {}, {sort: {Date: -1}}, (res:any, docs:any):void  => {
+                wrapper.SendResult(res, 0, "OK", docs);
             });
         });
     });
@@ -557,19 +422,19 @@ router.get('/patient/query/:query', (req:any, res:any):void => {
 
 /*! query */
 router.get('/patient/count/:query', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 6000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             var query = JSON.parse(decodeURIComponent(req.params.query));
             Patient.count(query, (error:any, docs:any):void => {
                 if (!error) {
                     if (docs) {
-                        SendResult(res, 0, "OK", docs);
+                        wrapper.SendResult(res, 0, "OK", docs);
                     } else {
-                        SendResult(res, 0, "OK", 0);
+                        wrapper.SendResult(res, 0, "OK", 0);
                     }
                 } else {
-                    SendResult(res, number + 100, "", error);
+                    wrapper.SendResult(res, number + 100, "", error);
                 }
             });
         });
@@ -578,25 +443,25 @@ router.get('/patient/count/:query', (req:any, res:any):void => {
 
 /*! status */
 router.get('/patient/status/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 7000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
-            FindById(res, number, Patient, req.params.id, (res:any, patient:any):void  => {
-                SendResult(res, 0, "OK", patient.Status);
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+            wrapper.FindById(res, number, Patient, req.params.id, (res:any, patient:any):void  => {
+                wrapper.SendResult(res, 0, "OK", patient.Status);
             });
         });
     });
 });
 
 router.put('/patient/status/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 8000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
-            If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                FindById(res, number, Patient, req.params.id, (res:any, patient:any):void  => {
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                wrapper.FindById(res, number, Patient, req.params.id, (res:any, patient:any):void  => {
                     patient.Status = req.body.Status;
-                    Save(res, number, patient, (res:any, patient:any):void  => {
-                        SendResult(res, 0, "OK", patient.Status);
+                    wrapper.Save(res, number, patient, (res:any, patient:any):void  => {
+                        wrapper.SendResult(res, 0, "OK", patient.Status);
                     });
                 });
             });
@@ -607,21 +472,21 @@ router.put('/patient/status/:id', (req:any, res:any):void => {
 /*! account */
 /*! create */
 router.post('/account/create', (request:any, response:any):void => {
-    Guard(request, response, (request:any, response:any):void  => {
+    wrapper.Guard(request, response, (request:any, response:any):void  => {
         var number:number = 9000;
-        Authenticate(request, response, number, (user:any, res:any):void  => {
-            If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                FindOne(res, number, Account, {username: request.body.username.toLowerCase()}, (res:any, account:any):void  => {
+        wrapper.Authenticate(request, response, number, (user:any, res:any):void  => {
+            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                wrapper.FindOne(res, number, Account, {username: request.body.username.toLowerCase()}, (res:any, account:any):void  => {
                     if (!account) {
                         Account.register(new Account({username: request.body.username, type: request.body.type}),
                             request.body.password,
                             (error:any, account:any):void => {
                                 if (!error) {
-                                    SendResult(res, 0, "OK", account);
+                                    wrapper.SendResult(res, 0, "OK", account);
                                 }
                             });
                     } else {
-                        SendResult(res, 1, "Already found", {});
+                        wrapper.SendResult(res, 1, "Already found", {});
                     }
                 });
             });
@@ -631,9 +496,9 @@ router.post('/account/create', (request:any, response:any):void => {
 
 /*! logout */
 router.post('/account/logout', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         req.logout();
-        SendResult(res, 0, "OK", {});
+        wrapper.SendResult(res, 0, "OK", {});
     });
 });
 
@@ -646,30 +511,30 @@ router.post('/account/login', (request:any, response:any, next:any):void  => {
                 if (user) {
                     request.login(user, (error:any):void => {
                         if (!error) {
-                            SendResult(response, 0, "OK", user);
+                            wrapper.SendResult(response, 0, "OK", user);
                         } else {
-                            SendResult(response, number + 1, "", {});
+                            wrapper.SendResult(response, number + 1, "", {});
                         }
                     });
                 } else {
-                    SendResult(response, number + 2, "", {});
+                    wrapper.SendResult(response, number + 2, "", {});
                 }
             } else {
-                SendResult(response, number + 3, "", {});
+                wrapper.SendResult(response, number + 3, "", {});
             }
         } catch (e) {
-            SendResult(response, 100000, e.message, e);
+            wrapper.SendResult(response, 100000, e.message, e);
         }
     })(request, response, next);
 });
 
 /*! get */
 router.get('/account/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 11000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
-            FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
-                SendResult(res, 0, "OK", account);
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+            wrapper.FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
+                wrapper.SendResult(res, 0, "OK", account);
             });
         });
     });
@@ -677,15 +542,15 @@ router.get('/account/:id', (req:any, res:any):void => {
 
 /*! update */
 router.put('/account/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 12000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
-            If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                wrapper.FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
                     account.username = req.body.username;
                     account.type = req.body.type;
-                    Save(res, number, account, (res:any, account:any):void  => {
-                        SendResult(res, 0, "OK", account);
+                    wrapper.Save(res, number, account, (res:any, account:any):void  => {
+                        wrapper.SendResult(res, 0, "OK", account);
                     });
                 });
             });
@@ -695,12 +560,12 @@ router.put('/account/:id', (req:any, res:any):void => {
 
 /*! delete */
 router.delete('/account/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 13000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
-            If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                Remove(res, number, Account, req.params.id, (res:any):void  => {
-                    SendResult(res, 0, "OK", {});
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                wrapper.Remove(res, number, Account, req.params.id, (res:any):void  => {
+                    wrapper.SendResult(res, 0, "OK", {});
                 });
             });
         });
@@ -709,12 +574,12 @@ router.delete('/account/:id', (req:any, res:any):void => {
 
 /*! query */
 router.get('/account/query/:query', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 14000;
         // Authenticate(req, res, number, (user:any, res:any) => {
         var query:any = JSON.parse(decodeURIComponent(req.params.query));
-        Find(res, number, Account, query, {}, {}, (res:any, docs:any):void  => {
-            SendResult(res, 0, "OK", StripAccounts(docs));
+        wrapper.Find(res, number, Account, query, {}, {}, (res:any, docs:any):void  => {
+            wrapper.SendResult(res, 0, "OK", wrapper.StripAccounts(docs));
         });
         //});
     });
@@ -722,18 +587,18 @@ router.get('/account/query/:query', (req:any, res:any):void => {
 
 /*! update */
 router.put('/account/password/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 15000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             //  If(res, number, (user.type != "Viewer"), (res:any) => {
-            FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
+            wrapper.FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
                 account.setPassword(req.body.password, (error:any):void  => {
                     if (!error) {
-                        Save(res, number, account, (res:any, account:any):void  => {
-                            SendResult(res, 0, "OK", account);
+                        wrapper.Save(res, number, account, (res:any, account:any):void  => {
+                            wrapper.SendResult(res, 0, "OK", account);
                         });
                     } else {
-                        SendResult(res, number + 200, "", error);
+                        wrapper.SendResult(res, number + 200, "", error);
                     }
                 });
             });
@@ -745,26 +610,26 @@ router.put('/account/password/:id', (req:any, res:any):void => {
 /*! config */
 /*! get */
 router.get('/config', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 16000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
-            SendResult(res, 0, "OK", config);
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+            wrapper.SendResult(res, 0, "OK", config);
         });
     });
 });
 
 /*! update */
 router.put('/config', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 17000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
-            If(res, number, (user.type != "Viewer"), (res:any):void  => {
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
                 config = req.body.body;
                 fs.writeFile('config/config.json', JSON.stringify(config), (error:any):void => {
                     if (!error) {
-                        SendResult(res, 0, "OK", config);
+                        wrapper.SendResult(res, 0, "OK", config);
                     } else {
-                        SendResult(res, number + 1, "", error);
+                        wrapper.SendResult(res, number + 1, "", error);
                     }
                 });
             });
@@ -775,38 +640,38 @@ router.put('/config', (req:any, res:any):void => {
 /*! views */
 /*! create view */
 router.post('/view', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 18000;
         var view:any = new View();
         var data:any = req.body.data;
         var viewdata:any = JSON.parse(data);
         view.Pages = viewdata.Pages;
         view.Name = viewdata.Name;
-        Save(res, number, view, (res:any, view:any):void  => {
-            SendResult(res, 0, "OK", view);
+        wrapper.Save(res, number, view, (res:any, view:any):void  => {
+            wrapper.SendResult(res, 0, "OK", view);
         });
     });
 });
 
 router.post('/view/create', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 19000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
-            If(res, number, (user.type != "Viewer"), (res:any):void  => {
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
                 View.count({Name: req.body.Name}, (error:any, count:number):void => {
                     if (!error) {
                         if (count == 0) {
                             var view:any = new View();
                             view.Name = req.body.Name;
                             view.Pages = req.body.Pages;
-                            Save(res, number, view, (res:any, view:any):void  => {
-                                SendResult(res, 0, "OK", view);
+                            wrapper.Save(res, number, view, (res:any, view:any):void  => {
+                                wrapper.SendResult(res, 0, "OK", view);
                             });
                         } else {
-                            SendResult(res, number + 1, "Already Found.", {});
+                            wrapper.SendResult(res, number + 1, "Already Found.", {});
                         }
                     } else {
-                        SendResult(res, number + 20, "", error);
+                        wrapper.SendResult(res, number + 20, "", error);
                     }
                 });
             });
@@ -816,25 +681,25 @@ router.post('/view/create', (req:any, res:any):void => {
 
 /*! get view */
 router.get('/view/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 20000;
-        FindById(res, number, View, req.params.id, (res:any, view:any):void  => {
-            SendResult(res, 0, "OK", view);
+        wrapper.FindById(res, number, View, req.params.id, (res:any, view:any):void  => {
+            wrapper.SendResult(res, 0, "OK", view);
         });
     });
 });
 
 /*! update */
 router.put('/view/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 21000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
-            If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                FindById(res, number, View, req.params.id, (res:any, view:any):void => {
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                wrapper.FindById(res, number, View, req.params.id, (res:any, view:any):void => {
                     view.Name = req.body.Name;
                     view.Pages = req.body.Pages;
-                    Save(res, number, view, (res:any, object:any):void  => {
-                        SendResult(res, 0, "OK", view);
+                    wrapper.Save(res, number, view, (res:any, object:any):void  => {
+                        wrapper.SendResult(res, 0, "OK", view);
                     });
                 });
             });
@@ -844,12 +709,12 @@ router.put('/view/:id', (req:any, res:any):void => {
 
 /*! delete */
 router.delete('/view/:id', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void  => {
+    wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 22000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
-            If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                Remove(res, number, View, req.params.id, (res:any):void  => {
-                    SendResult(res, 0, "OK", {});
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                wrapper.Remove(res, number, View, req.params.id, (res:any):void  => {
+                    wrapper.SendResult(res, 0, "OK", {});
                 });
             });
         });
@@ -858,12 +723,12 @@ router.delete('/view/:id', (req:any, res:any):void => {
 
 /*! query */
 router.get('/view/query/:query', (req:any, res:any):void => {
-    Guard(req, res, (req:any, res:any):void => {
+    wrapper.Guard(req, res, (req:any, res:any):void => {
         var number:number = 23000;
-        Authenticate(req, res, number, (user:any, res:any):void  => {
+        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             var query:any = JSON.parse(decodeURIComponent(req.params.query));
-            Find(res, number, View, {}, {}, {}, (res:any, views:any):void  => {
-                SendResult(res, 0, "OK", views);
+            wrapper.Find(res, number, View, {}, {}, {}, (res:any, views:any):void  => {
+                wrapper.SendResult(res, 0, "OK", views);
             });
         });
     });
@@ -899,6 +764,67 @@ router.get('/view/query/:query', (req:any, res:any):void => {
  }
  });
  */
+
+router.get('/pdf/:id', (request:any, response:any, next:any):void => {
+
+
+    Patient.findById(request.params.id, (error:any, patient:any):void => {
+        if (!error) {
+            if (patient) {
+                var doc = new PDFDocument;
+
+                doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(patient.Information.kana);
+                doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(patient.Information.time);
+                doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(patient.Information.name);
+                _.each(patient.Input, (item) => {
+                    switch(item.type)
+                    {
+                      case "text":
+
+                          doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.name);
+                          doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.value);
+                          break;
+                        case "select":
+                            doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.name);
+                            doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.value);
+                            break;
+                        case "check":
+                            if (item.value)
+                            {
+                                doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.name);
+                                doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.value);
+                            }
+                            break;
+                        case "numeric":
+
+                            doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.name);
+                            doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.value);
+                            break;
+
+                            default :break;
+                    }
+                });
+
+                //doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text('Some text with an embedded font!', 100, 100);
+                //doc.addPage().fontSize(12).text('Here is ああ vector graphics...', 100, 100);
+                //doc.save().moveTo(100, 150).lineTo(100, 250).lineTo(200, 250).fill("#FF3300");
+                //doc.scale(0.6).translate(470, -380).path('M 250,75 L 323,301 131,161 369,161 177,301 z').fill('red', 'even-odd').restore();
+                //doc.addPage().fillColor("blue").text('Here is a　ああ link!', 100, 100).underline(100, 100, 160, 27, {
+                //    color: "#0000FF"
+                //}).link(100, 100, 160, 27, 'http://google.com/');
+
+                doc.write('output.pdf');
+
+                response.end("hoge");
+
+            } else {
+                next();
+            }
+        } else {
+            next();
+        }
+    })
+});
 
 router.get('/file/:name', (request:any, response:any, next:any):void => {
     try {
@@ -939,9 +865,9 @@ router.get('/file/:name', (request:any, response:any, next:any):void => {
 });
 
 router.post('/file/:name', (request:any, response:any):void => {
-    Guard(request, response, (request:any, response:any):void => {
+    wrapper.Guard(request, response, (request:any, response:any):void => {
         var number:number = 24000;
-        Authenticate(request, response, number, (user:any, response:any):void  => {
+        wrapper.Authenticate(request, response, number, (user:any, response:any):void  => {
             var conn = mongoose.createConnection(config.connection);
             if (conn) {
                 conn.once('open', (error:any):void  => {
@@ -979,43 +905,43 @@ router.post('/file/:name', (request:any, response:any):void => {
                                                         writestream.end();
                                                         writestream.on('close', (file:any):void => {
                                                             conn.db.close();
-                                                            SendResult(response, 0, "OK", {});
+                                                            wrapper.SendResult(response, 0, "OK", {});
                                                         });
                                                     } else {
-                                                        SendFatal(response, number + 40, "stream not open", {});
+                                                        wrapper.SendFatal(response, number + 40, "stream not open", {});
                                                     }
                                                 } else {
-                                                    SendWarn(response, number + 1, "already found", {});
+                                                    wrapper.SendWarn(response, number + 1, "already found", {});
                                                 }
                                             } else {
-                                                SendError(response, number + 100, "find error " + error.message, error);
+                                                wrapper.SendError(response, number + 100, "find error " + error.message, error);
                                             }
                                         });
                                     } else {
-                                        SendFatal(response, number + 30, "no collection", {});
+                                        wrapper.SendFatal(response, number + 30, "no collection", {});
                                     }
                                 } else {
-                                    SendError(response, number + 100, "collection error " + error.message, error);
+                                    wrapper.SendError(response, number + 100, "collection error " + error.message, error);
                                 }
                             });
                         } else {
-                            SendFatal(response, number + 20, "no gfs", {});
+                            wrapper.SendFatal(response, number + 20, "no gfs", {});
                         }
                     } else {
-                        SendError(response, number + 100, "open error " + error.message, error);
+                        wrapper.SendError(response, number + 100, "open error " + error.message, error);
                     }
                 });
             } else {
-                SendError(response, number + 10, "connection error", {});
+                wrapper.SendError(response, number + 10, "connection error", {});
             }
         });
     });
 });
 
 router.put('/file/:name', (request:any, response:any):void => {
-    Guard(request, response, (request:any, response:any):void => {
+    wrapper.Guard(request, response, (request:any, response:any):void => {
         var number:number = 25000;
-        Authenticate(request, response, number, (user:any, response:any):void => {
+        wrapper.Authenticate(request, response, number, (user:any, response:any):void => {
             var conn = mongoose.createConnection(config.connection);
             if (conn) {
                 conn.once('open', (error:any):void  => {
@@ -1054,44 +980,44 @@ router.put('/file/:name', (request:any, response:any):void => {
                                                             writestream.end();
                                                             writestream.on('close', (file:any):void => {
                                                                 conn.db.close();
-                                                                SendResult(response, 0, "OK", {});
+                                                                wrapper.SendResult(response, 0, "OK", {});
                                                             });
                                                         } else {
-                                                            SendFatal(response, number + 40, "stream not open", {});
+                                                            wrapper.SendFatal(response, number + 40, "stream not open", {});
                                                         }
                                                     });
                                                 } else {
-                                                    SendWarn(response, number + 1, "not found", {});
+                                                    wrapper.SendWarn(response, number + 1, "not found", {});
                                                 }
                                             } else {
-                                                SendError(response, number + 100, "find error" + error.message, error);
+                                                wrapper.SendError(response, number + 100, "find error" + error.message, error);
                                             }
                                         });
                                     } else {
-                                        SendFatal(response, number + 30, "no collection", {});
+                                        wrapper.SendFatal(response, number + 30, "no collection", {});
                                     }
                                 } else {
-                                    SendError(response, number + 100, "collection error " + error.message, error);
+                                    wrapper.SendError(response, number + 100, "collection error " + error.message, error);
                                 }
                             });
                         } else {
-                            SendFatal(response, number + 20, "no gfs", {});
+                            wrapper.SendFatal(response, number + 20, "no gfs", {});
                         }
                     } else {
-                        SendError(response, number + 100, "open error " + error.message, error);
+                        wrapper.SendError(response, number + 100, "open error " + error.message, error);
                     }
                 });
             } else {
-                SendError(response, number + 10, "connection error", {});
+                wrapper.SendError(response, number + 10, "connection error", {});
             }
         });
     });
 });
 
 router.delete('/file/:name', (request:any, response:any):void => {
-    Guard(request, response, (request:any, response:any):void => {
+    wrapper.Guard(request, response, (request:any, response:any):void => {
         var number:number = 26000;
-        Authenticate(request, response, number, (user:any, response:any) => {
+        wrapper.Authenticate(request, response, number, (user:any, response:any) => {
             var conn = mongoose.createConnection(config.connection);
             if (conn) {
                 conn.once('open', (error:any):void => {
@@ -1105,31 +1031,31 @@ router.delete('/file/:name', (request:any, response:any):void => {
                                             if (!error) {
                                                 if (item) {
                                                     collection.remove({filename: request.params.name}, ():void => {
-                                                        SendResult(response, 0, "OK", {});
+                                                        wrapper.SendResult(response, 0, "OK", {});
                                                     });
                                                 } else {
-                                                    SendWarn(response, number + 1, "not found", {});
+                                                    wrapper.SendWarn(response, number + 1, "not found", {});
                                                 }
                                             } else {
-                                                SendError(response, number + 100, "find error " + error.message, error);
+                                                wrapper.SendError(response, number + 100, "find error " + error.message, error);
                                             }
                                         });
                                     } else {
-                                        SendFatal(response, number + 30, "connection error", {});
+                                        wrapper.SendFatal(response, number + 30, "connection error", {});
                                     }
                                 } else {
-                                    SendError(response, number + 100, "connection error " + error.message, error);
+                                    wrapper.SendError(response, number + 100, "connection error " + error.message, error);
                                 }
                             });
                         } else {
-                            SendFatal(response, number + 20, "gfs error", {});
+                            wrapper.SendFatal(response, number + 20, "gfs error", {});
                         }
                     } else {
-                        SendError(response, number + 100, "open error " + error.message, error);
+                        wrapper.SendError(response, number + 100, "open error " + error.message, error);
                     }
                 });
             } else {
-                SendError(response, number + 10, "connection error", {});
+                wrapper.SendError(response, number + 10, "connection error", {});
             }
         });
     });
@@ -1521,7 +1447,8 @@ router.get('/front/partials/browse2/:name', function (req, res, next) {
      }
      };
      */
-    GetView(req.params.name, (view:any):void => {
+
+    wrapper.GetView(req.params.name, (view:any):void => {
         var hoge = tohtml.render(view.Data.content);
         res.send(tohtml.render(view.Data.content));
     }, () => {

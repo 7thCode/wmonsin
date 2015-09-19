@@ -3,7 +3,7 @@
     {
       "type": "dateFile",
       "category": "request",
-      "filename": "request.log",
+      "filename": "logs/request.log",
       "pattern": "-dd"
     }
   ]

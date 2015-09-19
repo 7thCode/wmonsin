@@ -7,6 +7,8 @@
 
 'use strict';
 
+declare function require(x: string): any;
+
 var express = require('express');
 var morgan = require('morgan');
 var app = express();
@@ -163,7 +165,8 @@ app.use(session({
         maxAge: 365 * 24 * 60 * 60 * 1000
     },
     store: new MongoStore({
-        mongooseConnection: mongoose.connection
+        mongooseConnection: mongoose.connection,
+        clear_interval: 60 * 60
     })
 }));
 
@@ -185,7 +188,7 @@ passport.deserializeUser(function (obj, done) {
     done(null, obj);
 });
 
-var Account = require('./routes/account');
+var Account = require('./model/account');
 passport.use(new LocalStrategy(Account.authenticate()));
 if (Account) {
     logger.info('Account Ok.');
@@ -200,7 +203,10 @@ logger.info('-----------------------Start---------------------');
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
-    next(err);
+    res.render('error', {
+        message: err.message,
+        error: err
+    });
 });
 
 if (app.get('env') === 'development') {
