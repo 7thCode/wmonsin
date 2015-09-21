@@ -1448,6 +1448,21 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
             });
         };
 
+
+        $scope.showTotalSheet = ($event:any):void  => {
+            $scope.icon = "vertical_align_bottom";
+            $mdBottomSheet.show({
+                templateUrl: '/backend/partials/patient/totalsheet',
+                controller: 'PatientTotalSheetControl',
+                targetEvent: $event
+            }).then((clickedItem:any):void  => {
+                $scope.icon = "vertical_align_top";
+            }, ():void  => {
+                $scope.icon = "vertical_align_top"
+            });
+        };
+
+
     }]);
 
 controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet', '$location', 'CurrentPatient',
@@ -1463,6 +1478,17 @@ controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet', '$loc
                 window.open("/pdf/" + CurrentPatient.id, CurrentPatient.name, "location=no");
             };
         }
+    }]);
+
+controllers.controller('PatientTotalSheetControl', ['$scope', '$mdBottomSheet', '$location',
+    ($scope:any, $mdBottomSheet:any, $location:any):void  => {
+
+        $scope.items = [];
+
+        $scope.ItemClick = ($index:any):void  => {
+            $mdBottomSheet.hide($scope.items[$index]);
+        };
+
     }]);
 
 controllers.controller('LoginDialogController', ['$scope', '$q', '$mdDialog', 'AccountQuery',

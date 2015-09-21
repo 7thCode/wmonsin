@@ -25,7 +25,7 @@ var _ = require('lodash');
 
 var mongoose = require('mongoose');
 var Grid = require('gridfs-stream');
-var PDFDocument = require('pdfkit-cjk');
+
 
 var Patient = require('./../model/patient');
 var Account = require('./../model/account');
@@ -41,6 +41,8 @@ var passport = require('passport');
 var router = express.Router();
 
 var configure = require('./configure');
+
+var formatpdf = require('./formatpdf');
 
 var result = require('./result');
 
@@ -76,6 +78,45 @@ wrapper.FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any):
             });
     }
 });
+
+
+var conn = mongoose.createConnection(config.connection);
+if (conn) {
+    conn.once('open', (error:any):void  => {
+        if (!error) {
+            var gfs = Grid(conn.db, mongoose.mongo);
+            if (gfs) {
+                conn.db.collection('fs.files', (error:any, collection:any):void => {
+                    if (!error) {
+                        if (collection) {
+                            collection.findOne({filename: "schema1.png"}, (error:any, item:any):void => {
+                                if (!error) {
+                                    if (!item) {
+                                        var readstream = fs.createReadStream('public/images/schema1.png');
+                                        var writestream = gfs.createWriteStream({filename: "schema1.png"});
+                                        if (writestream) {
+                                            readstream.pipe(writestream);
+
+                                            //writestream.write(chunk);
+                                           // writestream.end();
+                                            writestream.on('close', (file:any):void => {
+                                                conn.db.close();
+                                            });
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    });
+}
+
+
+
+
 
 
 // view 初期化
@@ -732,6 +773,8 @@ router.get('/view/query/:query', (req:any, res:any):void => {
     });
 });
 
+
+
 router.get('/pdf/:id', (request:any, response:any, next:any):void => {
     //wrapper.Guard(request, response, (request:any, response:any):void  => {
 
@@ -739,40 +782,13 @@ router.get('/pdf/:id', (request:any, response:any, next:any):void => {
         if (!error) {
             if (patient) {
 
-                var font = "public/font/ttf/ipaexg.ttf";
-                var doc = new PDFDocument;
-                doc.font(font).fontSize(12).text(patient.Information.kana);
-                doc.font(font).fontSize(12).text(patient.Information.time);
-                doc.font(font).fontSize(12).text(patient.Information.name);
-                _.each(patient.Input, (item) => {
-                    switch (item.type) {
-                        case "text":
-                            doc.font(font).fontSize(12).text(item.name);
-                            doc.font(font).fontSize(12).text(item.value);
-                            break;
-                        case "select":
-                            doc.font(font).fontSize(12).text(item.name);
-                            doc.font(font).fontSize(12).text(item.value);
-                            break;
-                        case "check":
-                            if (item.value) {
-                                doc.font(font).fontSize(12).text(item.name);
-                                doc.font(font).fontSize(12).text(item.value);
-                            }
-                            break;
-                        case "numeric":
-                            doc.font(font).fontSize(12).text(item.name);
-                            doc.font(font).fontSize(12).text(item.value);
-                            break;
-                        default :
-                            break;
-                    }
-                });
+                var format = new formatpdf;
+
+                var doc = format.write(patient);
 
                 doc.write('public/output/output.pdf', () => {
                     var responsePDF = fs.createReadStream('public/output/output.pdf');
                     responsePDF.pipe(response);
-                    // wrapper.SendResult(response, 0, "OK", 'public/output/output.pdf');
                 });
 
             } else {

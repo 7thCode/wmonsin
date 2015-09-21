@@ -44,7 +44,9 @@ class Wrapper {
         try {
             if (req.headers["x-requested-with"] === 'XMLHttpRequest') {
                 res = this.BasicHeader(res, "");
+                logger.trace("begin Guard");
                 callback(req, res);
+                logger.trace("end Guard");
             } else {
                 this.SendWarn(res, 1, 'CSRF Attack.', {});
             }
@@ -55,7 +57,9 @@ class Wrapper {
 
     public Authenticate(req:any, res:any, code:number, callback:(user:any, res:any) => void):void {
         if (req.isAuthenticated()) {
+            logger.trace("begin Authenticate");
             callback(req.user, res);
+            logger.trace("end Authenticate");
         } else {
             this.SendWarn(res, code + 2, "Unacceptable", {});
         }
@@ -65,7 +69,9 @@ class Wrapper {
         model.findById(id, (error:any, object:any):void => {
             if (!error) {
                 if (object) {
+                    logger.trace("begin FindById");
                     callback(res, object);
+                    logger.trace("end FindById");
                 } else {
                     this.SendWarn(res, code + 10, "", {});
                 }
@@ -78,7 +84,9 @@ class Wrapper {
     public  FindOne(res:any, code:number, model:any, query:any, callback:(res:any, object:any) => void):void {
         model.findOne(query, (error:any, doc:any):void => {
             if (!error) {
+                logger.trace("begin FindOne");
                 callback(res, doc);
+                logger.trace("end FindOne");
             } else {
                 this.SendError(res, code + 100, "", error);
             }
@@ -89,7 +97,9 @@ class Wrapper {
         model.find(query, count, sort, (error:any, docs:any):void => {
             if (!error) {
                 if (docs) {
+                    logger.trace("begin Find");
                     callback(res, docs);
+                    logger.trace("end Find");
                 } else {
                     this.SendError(res, code + 10, "", {});
                 }
@@ -102,7 +112,9 @@ class Wrapper {
     public Save(res:any, code:number, instance:any, callback:(res:any, object:any) => void):void {
         instance.save((error:any):void => {
             if (!error) {
+                logger.trace("begin Save");
                 callback(res, instance);
+                logger.trace("end Save");
             } else {
                 this.SendError(res, code + 100, "", error);
             }
@@ -112,7 +124,9 @@ class Wrapper {
     public Remove(res:any, code:number, model:any, id:any, callback:(res:any) => void):void {
         model.remove({_id: id}, (error:any):void => {
             if (!error) {
+                logger.trace("begin Remove");
                 callback(res);
+                logger.trace("end Remove");
             } else {
                 this.SendError(res, code + 100, "", error);
             }
@@ -121,7 +135,9 @@ class Wrapper {
 
     public If(res:any, code:number, condition:boolean, callback:(res:any) => void):void {
         if (condition) {
+            logger.trace("begin If");
             callback(res);
+            logger.trace("end If");
         } else {
             this.SendWarn(res, code + 1, "", {});
         }
