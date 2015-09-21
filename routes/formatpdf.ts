@@ -13,10 +13,19 @@ class FormatPDF {
 
     private doc = null;
     private font = "";
+    private pagehight = 0;
+    private originx = 40;
+    private originy = 40;
+    private nameboxwidth = 200;
+    private valueboxwidth = 300;
+    private boxhight = 20;
+    private stringoffsetx = 3;
+    private stringoffsety = 2;
 
     constructor() {
         this.font = "public/font/ttf/ipaexg.ttf";
         this.doc = new PDFDocument;
+        this.pagehight = 660;
     }
 
     public write(patient:any):any {
@@ -25,71 +34,68 @@ class FormatPDF {
         this.doc.info['Author'] = 'WMONSIN';
         this.doc.info['Subject'] = patient.Information.kana;
 
-        var x = 40;
-        var y = 40;
-        var t = 200;
-        var h = 20;
-        var xs = 3;
-        var ys = 2;
+        this.originy += 20;
+        this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
+        this.doc.font(this.font).fontSize(12).text("氏名", this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
+        this.doc.rect(this.originx + this.nameboxwidth,this.originy, this.valueboxwidth, this.boxhight);
+        this.doc.font(this.font).fontSize(12).text(patient.Information.kana, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
 
-        y += 20;
-        this.doc.rect(x, y, t, h);
-        this.doc.font(this.font).fontSize(12).text("氏名", x + xs, y + ys);
-        this.doc.rect(x + t, y, t, h);
-        this.doc.font(this.font).fontSize(12).text(patient.Information.kana, x + xs + t, y + ys);
+        this.originy += 20;
+        this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
+        this.doc.font(this.font).fontSize(12).text("かな", this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
+        this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
+        this.doc.font(this.font).fontSize(12).text(patient.Information.name, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
 
-        y += 20;
-        this.doc.rect(x, y, t, h);
-        this.doc.font(this.font).fontSize(12).text("氏名", x + xs, y + ys);
-        this.doc.rect(x + t, y, t, h);
-        this.doc.font(this.font).fontSize(12).text(patient.Information.name, x + xs + t, y + ys);
-
-        y += 20;
-        this.doc.rect(x, y, t, h);
-        this.doc.font(this.font).fontSize(12).text("時刻", x + xs, y + ys);
-        this.doc.rect(x + t, y, t, h);
-        this.doc.font(this.font).fontSize(12).text(patient.Information.time, x + xs + t, y + ys);
+        this.originy += 20;
+        this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
+        this.doc.font(this.font).fontSize(12).text("日時", this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
+        this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
+        var date = patient.Date.getFullYear() + "/" + (patient.Date.getMonth() + 1) + "/" + patient.Date.getDate()  ;
+        var time = patient.Date.getHours() + ":" + patient.Date.getMinutes() + ":" + patient.Date.getSeconds();
+        this.doc.font(this.font).fontSize(12).text(date + " " + time , this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
 
         _.each(patient.Input, (item) => {
 
             switch (item.type) {
                 case "text":
-                    y += 20;
-                    this.doc.rect(x, y, t, h);
-                    this.doc.font(this.font).fontSize(12).text(item.name, x + xs, y + ys);
-                    this.doc.rect(x + t, y, t, h);
-                    this.doc.font(this.font).fontSize(12).text(item.value, x + xs + t, y + ys);
+                    this.originy += 20;
+                    this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
+                    this.doc.font(this.font).fontSize(12).text(item.name, this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
+                    this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
+                    this.doc.font(this.font).fontSize(12).text(item.value, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
                     break;
                 case "select":
-                    y += 20;
-                    this.doc.rect(x, y, t, h);
-                    this.doc.font(this.font).fontSize(12).text(item.name, x + xs, y + ys);
-                    this.doc.rect(x + t, y, t, h);
-                    this.doc.font(this.font).fontSize(12).text(item.value, x + xs + t, y + ys);
+                    this.originy += 20;
+                    this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
+                    this.doc.font(this.font).fontSize(12).text(item.name, this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
+                    this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
+                    this.doc.font(this.font).fontSize(12).text(item.value, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
                     break;
                 case "check":
                     if (item.value) {
-                        y += 20;
-                        this.doc.rect(x, y, t, h);
-                        this.doc.font(this.font).fontSize(12).text(item.name, x + xs, y + ys);
-                        this.doc.rect(x + t, y, t, h);
-                        this.doc.font(this.font).fontSize(12).text(item.value, x + xs + t, y + ys);
+                        this.originy += 20;
+                        this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
+                        this.doc.font(this.font).fontSize(12).text(item.name, this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
+                        this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
+                        this.doc.font(this.font).fontSize(12).text(item.value, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
                     }
                     break;
                 case "numeric":
-                    y += 20;
-                    this.doc.rect(x, y, t, h);
-                    this.doc.font(this.font).fontSize(12).text(item.name, x + xs, y + ys);
-                    this.doc.rect(x + t, y, t, h);
-                    this.doc.font(this.font).fontSize(12).text(item.value, x + xs + t, y + ys);
+                    this.originy += 20;
+                    this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
+                    this.doc.font(this.font).fontSize(12).text(item.name, this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
+                    this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
+                    this.doc.font(this.font).fontSize(12).text(item.value, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
                     break;
                 default :
                     break;
             }
 
-            if (y > 1000)
+            if (this.originy > this.pagehight)
             {
-               this.doc.addPage();
+                this.originy = 20;
+                this.doc.stroke();
+                this.doc.addPage();
             }
 
         });
