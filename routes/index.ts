@@ -5,7 +5,6 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-
 'use strict';
 
 declare function require(x:string):any;
@@ -25,7 +24,6 @@ var _ = require('lodash');
 
 var mongoose = require('mongoose');
 var Grid = require('gridfs-stream');
-
 
 var Patient = require('./../model/patient');
 var Account = require('./../model/account');
@@ -67,13 +65,14 @@ module.exports = router;
 // root user
 wrapper.FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any):void => {
     if (!account) {
+        logger.trace("Creating init user");
         Account.register(new Account({username: config.user, type: "Admin"}),
             config.password,
             function (error, account) {
                 if (!error) {
-
+                    logger.trace("Created");
                 } else {
-
+                    logger.trace("Error");
                 }
             });
     }
@@ -92,15 +91,14 @@ if (conn) {
                             collection.findOne({filename: "schema1.png"}, (error:any, item:any):void => {
                                 if (!error) {
                                     if (!item) {
+                                        logger.trace("Creating init schema");
                                         var readstream = fs.createReadStream('public/images/schema1.png');
                                         var writestream = gfs.createWriteStream({filename: "schema1.png"});
                                         if (writestream) {
                                             readstream.pipe(writestream);
-
-                                            //writestream.write(chunk);
-                                           // writestream.end();
                                             writestream.on('close', (file:any):void => {
                                                 conn.db.close();
+                                                logger.trace("Created");
                                             });
                                         }
                                     }
@@ -116,14 +114,17 @@ if (conn) {
 
 // view 初期化
 View.count({}, (counterror:any, count:number):void => {
+
     if (!counterror) {
         if (count <= 0) {
+            logger.trace("Creating init View");
             var ev = new emitter;
             ev.on("view", function (data) {
                 var view = new View();
                 view.Name = data.Name;
                 view.Pages = data.Pages;
                 view.save(function (error) {
+                    logger.trace("Created init View");
                 });
             });
 
@@ -148,7 +149,6 @@ function DeCipher(name:any, password:any):any {
     decrypted += decipher.final('utf8');
     return decrypted;
 }
-
 
 router.get('/', (req:any, res:any):void => {
     res.render('index', {deveropment: (config.state == "deveropment")});
@@ -198,7 +198,6 @@ router.get('/backend/partials/patient/description/:id', (req:any, res:any, next:
         }
     });
 });
-
 
 router.get('/backend/partials/patient/patientacceptdialog', (req:any, res:any):void => {
     res.render('backend/partials/patient/patientacceptdialog');
@@ -373,7 +372,7 @@ router.get('/front/partials/write', (req:any, res:any):void => {
 /*! patient */
 /*! create */
 router.post('/patient/accept', (req:any, res:any):void => {
-
+    logger.trace("begin /patient/accept");
     wrapper.Guard(req, res, (req:any, res:any):void => {
         var number:number = 1000;
         //同時に同名でないこと（自動Accept対策)
@@ -389,6 +388,7 @@ router.post('/patient/accept', (req:any, res:any):void => {
                 patient.Sequential = req.body.Sequential;
                 wrapper.Save(res, number, patient, (res:any, patient:any) => {
                     wrapper.SendResult(res, 0, "OK", patient.Status);
+                    logger.trace("end /patient/accept");
                 });
             } else {
                 wrapper.SendResult(res, number + 10, "", {});
@@ -400,11 +400,13 @@ router.post('/patient/accept', (req:any, res:any):void => {
 
 /*! get */
 router.get('/patient/:id', (req:any, res:any):void => {
+    logger.trace("begin /patient/:id");
     wrapper.Guard(req, res, (req:any, res:any) => {
         var number:number = 2000;
         wrapper.Authenticate(req, res, number, (user:any, res:any) => {
             wrapper.FindById(res, number, Patient, req.params.id, (res, patient) => {
                 wrapper.SendResult(res, 0, "OK", patient);
+                logger.trace("end /patient/:id");
             });
         });
     });
@@ -412,6 +414,7 @@ router.get('/patient/:id', (req:any, res:any):void => {
 
 /*! update */
 router.put('/patient/:id', (req:any, res:any):void => {
+    logger.trace("begin /patient/:id");
     wrapper.Guard(req, res, (req:any, res:any) => {
         var number:number = 3000;
         wrapper.Authenticate(req, res, number, (user:any, res:any) => {
@@ -421,6 +424,7 @@ router.put('/patient/:id', (req:any, res:any):void => {
                 patient.Sequential = req.body.Sequential;
                 wrapper.Save(res, number, patient, (res:any, patient:any) => {
                     wrapper.SendResult(res, 0, "OK", patient);
+                    logger.trace("end /patient/:id");
                 });
             });
         });
@@ -429,12 +433,14 @@ router.put('/patient/:id', (req:any, res:any):void => {
 
 /*! delete */
 router.delete('/patient/:id', (req:any, res:any):void => {
+    logger.trace("begin /patient/:id");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 4000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
                 wrapper.Remove(res, number, Patient, req.params.id, (res:any):void  => {
                     wrapper.SendResult(res, 0, "OK", {});
+                    logger.trace("end /patient/:id");
                 });
             });
         });
@@ -443,12 +449,14 @@ router.delete('/patient/:id', (req:any, res:any):void => {
 
 /*! query */
 router.get('/patient/query/:query', (req:any, res:any):void => {
+    logger.trace("begin /patient/query/:query");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 5000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             var query = JSON.parse(decodeURIComponent(req.params.query));
             wrapper.Find(res, number, Patient, query, {}, {sort: {Date: -1}}, (res:any, docs:any):void  => {
                 wrapper.SendResult(res, 0, "OK", docs);
+                logger.trace("end /patient/query/:query");
             });
         });
     });
@@ -456,6 +464,7 @@ router.get('/patient/query/:query', (req:any, res:any):void => {
 
 /*! query */
 router.get('/patient/count/:query', (req:any, res:any):void => {
+    logger.trace("begin /patient/count/:query");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 6000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
@@ -464,6 +473,7 @@ router.get('/patient/count/:query', (req:any, res:any):void => {
                 if (!error) {
                     if (docs) {
                         wrapper.SendResult(res, 0, "OK", docs);
+                        logger.trace("end /patient/count/:query");
                     } else {
                         wrapper.SendResult(res, 0, "OK", 0);
                     }
@@ -477,17 +487,20 @@ router.get('/patient/count/:query', (req:any, res:any):void => {
 
 /*! status */
 router.get('/patient/status/:id', (req:any, res:any):void => {
+    logger.trace("begin /patient/status/:id");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 7000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             wrapper.FindById(res, number, Patient, req.params.id, (res:any, patient:any):void  => {
                 wrapper.SendResult(res, 0, "OK", patient.Status);
+                logger.trace("end /patient/status/:id");
             });
         });
     });
 });
 
 router.put('/patient/status/:id', (req:any, res:any):void => {
+    logger.trace("begin /patient/status/:id");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 8000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
@@ -496,6 +509,7 @@ router.put('/patient/status/:id', (req:any, res:any):void => {
                     patient.Status = req.body.Status;
                     wrapper.Save(res, number, patient, (res:any, patient:any):void  => {
                         wrapper.SendResult(res, 0, "OK", patient.Status);
+                        logger.trace("end /patient/status/:id");
                     });
                 });
             });
@@ -506,6 +520,7 @@ router.put('/patient/status/:id', (req:any, res:any):void => {
 /*! account */
 /*! create */
 router.post('/account/create', (request:any, response:any):void => {
+    logger.trace("begin /account/create");
     wrapper.Guard(request, response, (request:any, response:any):void  => {
         var number:number = 9000;
         wrapper.Authenticate(request, response, number, (user:any, res:any):void  => {
@@ -517,6 +532,7 @@ router.post('/account/create', (request:any, response:any):void => {
                             (error:any, account:any):void => {
                                 if (!error) {
                                     wrapper.SendResult(res, 0, "OK", account);
+                                    logger.trace("end /account/create");
                                 }
                             });
                     } else {
@@ -530,9 +546,11 @@ router.post('/account/create', (request:any, response:any):void => {
 
 /*! logout */
 router.post('/account/logout', (req:any, res:any):void => {
+    logger.trace("begin /account/logout");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         req.logout();
         wrapper.SendResult(res, 0, "OK", {});
+        logger.trace("end /account/logout");
     });
 });
 
@@ -543,9 +561,11 @@ router.post('/account/login', (request:any, response:any, next:any):void  => {
         try {
             if (!error) {
                 if (user) {
+                    logger.trace("begin /account/login");
                     request.login(user, (error:any):void => {
                         if (!error) {
                             wrapper.SendResult(response, 0, "OK", user);
+                            logger.trace("end /account/login");
                         } else {
                             wrapper.SendResult(response, number + 1, "", {});
                         }
@@ -564,11 +584,13 @@ router.post('/account/login', (request:any, response:any, next:any):void  => {
 
 /*! get */
 router.get('/account/:id', (req:any, res:any):void => {
+    logger.trace("begin /account/:id");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 11000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             wrapper.FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
                 wrapper.SendResult(res, 0, "OK", account);
+                logger.trace("end /account/:id");
             });
         });
     });
@@ -576,6 +598,7 @@ router.get('/account/:id', (req:any, res:any):void => {
 
 /*! update */
 router.put('/account/:id', (req:any, res:any):void => {
+    logger.trace("begin /account/:id");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 12000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
@@ -585,6 +608,7 @@ router.put('/account/:id', (req:any, res:any):void => {
                     account.type = req.body.type;
                     wrapper.Save(res, number, account, (res:any, account:any):void  => {
                         wrapper.SendResult(res, 0, "OK", account);
+                        logger.trace("end /account/:id");
                     });
                 });
             });
@@ -594,12 +618,14 @@ router.put('/account/:id', (req:any, res:any):void => {
 
 /*! delete */
 router.delete('/account/:id', (req:any, res:any):void => {
+    logger.trace("begin /account/:id");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 13000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
                 wrapper.Remove(res, number, Account, req.params.id, (res:any):void  => {
                     wrapper.SendResult(res, 0, "OK", {});
+                    logger.trace("end /account/:id");
                 });
             });
         });
@@ -608,12 +634,14 @@ router.delete('/account/:id', (req:any, res:any):void => {
 
 /*! query */
 router.get('/account/query/:query', (req:any, res:any):void => {
+    logger.trace("begin /account/query/:query");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 14000;
         // Authenticate(req, res, number, (user:any, res:any) => {
         var query:any = JSON.parse(decodeURIComponent(req.params.query));
         wrapper.Find(res, number, Account, query, {}, {}, (res:any, docs:any):void  => {
             wrapper.SendResult(res, 0, "OK", wrapper.StripAccounts(docs));
+            logger.trace("end /account/query/:query");
         });
         //});
     });
@@ -621,6 +649,7 @@ router.get('/account/query/:query', (req:any, res:any):void => {
 
 /*! update */
 router.put('/account/password/:id', (req:any, res:any):void => {
+    logger.trace("begin /account/query/:query");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 15000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
@@ -644,16 +673,19 @@ router.put('/account/password/:id', (req:any, res:any):void => {
 /*! config */
 /*! get */
 router.get('/config', (req:any, res:any):void => {
+    logger.trace("begin /config");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 16000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             wrapper.SendResult(res, 0, "OK", config);
+            logger.trace("end /config");
         });
     });
 });
 
 /*! update */
 router.put('/config', (req:any, res:any):void => {
+    logger.trace("begin /config");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 17000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
@@ -662,6 +694,7 @@ router.put('/config', (req:any, res:any):void => {
                 fs.writeFile('config/config.json', JSON.stringify(config), (error:any):void => {
                     if (!error) {
                         wrapper.SendResult(res, 0, "OK", config);
+                        logger.trace("end /config");
                     } else {
                         wrapper.SendResult(res, number + 1, "", error);
                     }
@@ -674,6 +707,7 @@ router.put('/config', (req:any, res:any):void => {
 /*! views */
 /*! create view */
 router.post('/view', (req:any, res:any):void => {
+    logger.trace("begin /view");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 18000;
         var view:any = new View();
@@ -683,11 +717,13 @@ router.post('/view', (req:any, res:any):void => {
         view.Name = viewdata.Name;
         wrapper.Save(res, number, view, (res:any, view:any):void  => {
             wrapper.SendResult(res, 0, "OK", view);
+            logger.trace("end /view");
         });
     });
 });
 
 router.post('/view/create', (req:any, res:any):void => {
+    logger.trace("begin /view/create");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 19000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
@@ -700,6 +736,7 @@ router.post('/view/create', (req:any, res:any):void => {
                             view.Pages = req.body.Pages;
                             wrapper.Save(res, number, view, (res:any, view:any):void  => {
                                 wrapper.SendResult(res, 0, "OK", view);
+                                logger.trace("end /view/create");
                             });
                         } else {
                             wrapper.SendResult(res, number + 1, "Already Found.", {});
@@ -715,6 +752,7 @@ router.post('/view/create', (req:any, res:any):void => {
 
 /*! get view */
 router.get('/view/:id', (req:any, res:any):void => {
+    logger.trace("begin /view/:id");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 20000;
         wrapper.FindById(res, number, View, req.params.id, (res:any, view:any):void  => {
@@ -725,6 +763,7 @@ router.get('/view/:id', (req:any, res:any):void => {
 
 /*! update */
 router.put('/view/:id', (req:any, res:any):void => {
+    logger.trace("begin /view/:id");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 21000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
@@ -734,6 +773,7 @@ router.put('/view/:id', (req:any, res:any):void => {
                     view.Pages = req.body.Pages;
                     wrapper.Save(res, number, view, (res:any, object:any):void  => {
                         wrapper.SendResult(res, 0, "OK", view);
+                        logger.trace("end /view/:id");
                     });
                 });
             });
@@ -743,12 +783,14 @@ router.put('/view/:id', (req:any, res:any):void => {
 
 /*! delete */
 router.delete('/view/:id', (req:any, res:any):void => {
+    logger.trace("begin /view/:id");
     wrapper.Guard(req, res, (req:any, res:any):void  => {
         var number:number = 22000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
                 wrapper.Remove(res, number, View, req.params.id, (res:any):void  => {
                     wrapper.SendResult(res, 0, "OK", {});
+                    logger.trace("end /view/:id");
                 });
             });
         });
@@ -757,44 +799,48 @@ router.delete('/view/:id', (req:any, res:any):void => {
 
 /*! query */
 router.get('/view/query/:query', (req:any, res:any):void => {
+    logger.trace("begin /view/:id");
     wrapper.Guard(req, res, (req:any, res:any):void => {
         var number:number = 23000;
         wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
             var query:any = JSON.parse(decodeURIComponent(req.params.query));
             wrapper.Find(res, number, View, {}, {}, {}, (res:any, views:any):void  => {
                 wrapper.SendResult(res, 0, "OK", views);
+                logger.trace("end /view/:id");
             });
         });
     });
 });
 
 
-
 router.get('/pdf/:id', (request:any, response:any, next:any):void => {
-    //wrapper.Guard(request, response, (request:any, response:any):void  => {
-
-    Patient.findById(request.params.id, (error:any, patient:any):void => {
-        if (!error) {
-            if (patient) {
-
-                var format = new formatpdf;
-
-                var doc = format.write(patient);
-
-                doc.write('public/output/output.pdf', () => {
-                    var responsePDF = fs.createReadStream('public/output/output.pdf');
-                    responsePDF.pipe(response);
-                });
-
+    try {
+        logger.trace("begin /pdf/:id");
+        Patient.findById(request.params.id, (error:any, patient:any):void => {
+            if (!error) {
+                if (patient) {
+                    var format = new formatpdf;
+                    var doc = format.write(patient);
+                    doc.write('public/output/output.pdf', () => {
+                        var responsePDF = fs.createReadStream('public/output/output.pdf');
+                        responsePDF.pipe(response);
+                        logger.trace("end /pdf/:id");
+                    });
+                } else {
+                    next();
+                }
             } else {
+                next();
             }
-        } else {
-        }
-    });
+        });
+    } catch (e) {
+        next();
+    }
 });
 
 router.get('/file/:name', (request:any, response:any, next:any):void => {
     try {
+        logger.trace("begin /file/:name");
         var conn = mongoose.createConnection(config.connection);
         conn.once('open', (error:any):void => {
             if (!error) {
@@ -813,25 +859,42 @@ router.get('/file/:name', (request:any, response:any, next:any):void => {
                                                     readstream.pipe(response);
                                                     readstream.on('close', (file:any):void => {
                                                         conn.db.close();
+                                                        logger.trace("end /file/:name");
                                                     });
+                                                } else {
+                                                    next();
                                                 }
+                                            } else {
+                                                next();
                                             }
                                         } else {
                                             next();
                                         }
+                                    } else {
+                                        next();
                                     }
-                                })
+                                });
+                            } else {
+                                next();
                             }
+                        } else {
+                            next();
                         }
                     });
+                } else {
+                    next();
                 }
+            } else {
+                next();
             }
         });
     } catch (e) {
+        next();
     }
 });
 
 router.post('/file/:name', (request:any, response:any):void => {
+    logger.trace("begin /file/:name");
     wrapper.Guard(request, response, (request:any, response:any):void => {
         var number:number = 24000;
         wrapper.Authenticate(request, response, number, (user:any, response:any):void  => {
@@ -873,6 +936,7 @@ router.post('/file/:name', (request:any, response:any):void => {
                                                         writestream.on('close', (file:any):void => {
                                                             conn.db.close();
                                                             wrapper.SendResult(response, 0, "OK", {});
+                                                            logger.trace("end /file/:name");
                                                         });
                                                     } else {
                                                         wrapper.SendFatal(response, number + 40, "stream not open", {});
@@ -906,6 +970,7 @@ router.post('/file/:name', (request:any, response:any):void => {
 });
 
 router.put('/file/:name', (request:any, response:any):void => {
+    logger.trace("begin /file/:name");
     wrapper.Guard(request, response, (request:any, response:any):void => {
         var number:number = 25000;
         wrapper.Authenticate(request, response, number, (user:any, response:any):void => {
@@ -948,6 +1013,7 @@ router.put('/file/:name', (request:any, response:any):void => {
                                                             writestream.on('close', (file:any):void => {
                                                                 conn.db.close();
                                                                 wrapper.SendResult(response, 0, "OK", {});
+                                                                logger.trace("end /file/:name");
                                                             });
                                                         } else {
                                                             wrapper.SendFatal(response, number + 40, "stream not open", {});
@@ -982,6 +1048,7 @@ router.put('/file/:name', (request:any, response:any):void => {
 });
 
 router.delete('/file/:name', (request:any, response:any):void => {
+    logger.trace("begin /file/:name");
     wrapper.Guard(request, response, (request:any, response:any):void => {
         var number:number = 26000;
         wrapper.Authenticate(request, response, number, (user:any, response:any) => {
@@ -999,6 +1066,7 @@ router.delete('/file/:name', (request:any, response:any):void => {
                                                 if (item) {
                                                     collection.remove({filename: request.params.name}, ():void => {
                                                         wrapper.SendResult(response, 0, "OK", {});
+                                                        logger.trace("end /file/:name");
                                                     });
                                                 } else {
                                                     wrapper.SendWarn(response, number + 1, "not found", {});
