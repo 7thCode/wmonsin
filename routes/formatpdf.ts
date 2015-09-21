@@ -26,6 +26,20 @@ class FormatPDF {
         this.font = "public/font/ttf/ipaexg.ttf";
         this.doc = new PDFDocument;
         this.pagehight = 660;
+        this.originx = 40;
+        this.originy = 40;
+        this.nameboxwidth = 200;
+        this.valueboxwidth = 300;
+        this.boxhight = 20;
+        this.stringoffsetx = 3;
+        this.stringoffsety = 2;
+    }
+
+    private TextBox(text:string, value:string):void {
+        this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
+        this.doc.font(this.font).fontSize(12).text(text, this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
+        this.doc.rect(this.originx + this.nameboxwidth,this.originy, this.valueboxwidth, this.boxhight);
+        this.doc.font(this.font).fontSize(12).text(value, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
     }
 
     public write(patient:any):any {
@@ -35,57 +49,36 @@ class FormatPDF {
         this.doc.info['Subject'] = patient.Information.kana;
 
         this.originy += 20;
-        this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
-        this.doc.font(this.font).fontSize(12).text("氏名", this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
-        this.doc.rect(this.originx + this.nameboxwidth,this.originy, this.valueboxwidth, this.boxhight);
-        this.doc.font(this.font).fontSize(12).text(patient.Information.kana, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
+        this.TextBox("かな",patient.Information.kana);
 
         this.originy += 20;
-        this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
-        this.doc.font(this.font).fontSize(12).text("かな", this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
-        this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
-        this.doc.font(this.font).fontSize(12).text(patient.Information.name, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
+        this.TextBox("氏名",patient.Information.name);
 
         this.originy += 20;
-        this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
-        this.doc.font(this.font).fontSize(12).text("日時", this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
-        this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
         var date = patient.Date.getFullYear() + "/" + (patient.Date.getMonth() + 1) + "/" + patient.Date.getDate()  ;
         var time = patient.Date.getHours() + ":" + patient.Date.getMinutes() + ":" + patient.Date.getSeconds();
-        this.doc.font(this.font).fontSize(12).text(date + " " + time , this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
+        this.TextBox("日時",date + " " + time);
 
         _.each(patient.Input, (item) => {
 
             switch (item.type) {
                 case "text":
                     this.originy += 20;
-                    this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
-                    this.doc.font(this.font).fontSize(12).text(item.name, this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
-                    this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
-                    this.doc.font(this.font).fontSize(12).text(item.value, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
+                    this.TextBox(item.name,item.value);
                     break;
                 case "select":
                     this.originy += 20;
-                    this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
-                    this.doc.font(this.font).fontSize(12).text(item.name, this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
-                    this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
-                    this.doc.font(this.font).fontSize(12).text(item.value, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
+                    this.TextBox(item.name,item.value);
                     break;
                 case "check":
                     if (item.value) {
                         this.originy += 20;
-                        this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
-                        this.doc.font(this.font).fontSize(12).text(item.name, this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
-                        this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
-                        this.doc.font(this.font).fontSize(12).text(item.value, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
+                        this.TextBox(item.name,item.value);
                     }
                     break;
                 case "numeric":
                     this.originy += 20;
-                    this.doc.rect(this.originx, this.originy, this.nameboxwidth, this.boxhight);
-                    this.doc.font(this.font).fontSize(12).text(item.name, this.originx + this.stringoffsetx, this.originy + this.stringoffsety);
-                    this.doc.rect(this.originx + this.nameboxwidth, this.originy, this.valueboxwidth, this.boxhight);
-                    this.doc.font(this.font).fontSize(12).text(item.value, this.originx + this.stringoffsetx + this.nameboxwidth, this.originy + this.stringoffsety);
+                    this.TextBox(item.name,item.value);
                     break;
                 default :
                     break;

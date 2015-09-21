@@ -175,6 +175,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 //passport
 
+//var csrf = require('csurf');
+//app.use(csrf());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
