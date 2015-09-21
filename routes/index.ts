@@ -114,11 +114,6 @@ if (conn) {
     });
 }
 
-
-
-
-
-
 // view 初期化
 View.count({}, (counterror:any, count:number):void => {
     if (!counterror) {
