@@ -11,11 +11,9 @@ md-content.background
             h4 {{Information.time}}
             h3 {{Information.kana}} [ {{Information.name}} ]
         md-card-content
-
-
             div(layout="row")
                 div
-                    md-button.md-fab.md-warn(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'")
+                    md-button.md-fab.md-warn(ng-click="showSheet()", aria-label="Tool", ng-if="type == 'Admin' || type == 'Editor'")
                         ng-md-icon.iconfill(icon="{{icon}}", size="46", options='{"rotation": "none"}')
                         md-tooltip ツール...
                 div

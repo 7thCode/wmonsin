@@ -72,6 +72,7 @@ controllers.factory('AccountQuery', ['$resource',
 controllers.factory('Account', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
         return $resource('/account/:id', {}, {
+            get: {method: 'GET'},
             update: {method: 'PUT'},
             remove: {method: 'DELETE'}
         });
@@ -154,7 +155,7 @@ controllers.factory('File', ['$resource',
     ($resource):angular.resource.IResource<any> => {
         return $resource('/file/:name', {name: '@name'}, {
             send: {method: 'POST'},
-            update : {method: 'PUT'}
+            update: {method: 'PUT'}
         });
     }]);
 
@@ -317,7 +318,7 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
 
     }]);
 
-controllers.controller('PatientsController', ['$scope', '$state','$stateParams', '$q', "$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
+controllers.controller('PatientsController', ['$scope', '$state', '$stateParams', '$q', "$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
     ($scope:any, $state:any, $stateParams, $q:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientAccept:any, PatientQuery:any, PatientCount:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
 
         if (CurrentAccount.username !== "") {
@@ -333,7 +334,7 @@ controllers.controller('PatientsController', ['$scope', '$state','$stateParams',
             $scope.showPatientDescription = (id:any):void => {
                 CurrentPatient.id = id;
                 $stateParams.id = id;
-                $state.go('description',{id:id});
+                $state.go('description', {id: id});
             };
 
             $scope.icon = "vertical_align_top";
@@ -464,8 +465,8 @@ controllers.controller('PatientsController', ['$scope', '$state','$stateParams',
         }
     }]);
 
-controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$mdToast', 'Patient', 'PatientStatus', 'CurrentAccount', 'CurrentPatient', 'Global',
-    ($scope:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientStatus:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
+controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$mdToast', 'Patient', 'PatientStatus', 'CurrentAccount', 'CurrentPatient', 'Pdf', 'Global',
+    ($scope:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientStatus:any, CurrentAccount:any, CurrentPatient:any, Pdf:any, Global:any):void => {
 
         if (CurrentPatient) {
             $scope.selectedIndex = 0;
@@ -479,10 +480,10 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                 _.each<any>(data.value.Input, (value:any, index:any, array:any[]):void => {
                                     if (value.type === "picture") {
 
-                                            var canvas:any = new fabric.Canvas('schema-' + value.name);
-                                            canvas.loadFromJSON(JSON.stringify(value.value), canvas.renderAll.bind(canvas), (o:any, object:any):void => {
-                                                var a = 1;
-                                            });
+                                        var canvas:any = new fabric.Canvas('schema-' + value.name);
+                                        canvas.loadFromJSON(JSON.stringify(value.value), canvas.renderAll.bind(canvas), (o:any, object:any):void => {
+                                            var a = 1;
+                                        });
 
                                     }
                                     $scope.Input.push(value);
@@ -540,6 +541,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                 var canvas:any = document.getElementById(name);
                 Canvas2Image.saveAsPNG(canvas);
             };
+
 
             $scope.$watch('IsDone', ():void => {
                 if ($scope.IsDone !== null) {// avoid initalizeation.
@@ -1118,7 +1120,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                     };
 
                     CurrentView.Data.Pages[CurrentView.Page].picture[0] = control;
-          //          CurrentView.Data.Pages[CurrentView.Page].picture[0] = answer.items;
+                    //          CurrentView.Data.Pages[CurrentView.Page].picture[0] = answer.items;
                 }, ():void => { // Cancel
                 });
             };
@@ -1224,7 +1226,6 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                 }, ():void => { // Cancel
                 });
             };
-
 
 
             $scope.showButtonUpdateDialog = (index:number):void => {
@@ -1449,26 +1450,17 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
 
     }]);
 
-controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet', '$location', 'CurrentPatient', 'Pdf',
-    ($scope:any, $mdBottomSheet:any, $location:any, CurrentPatient:any, Pdf:any):void  => {
+controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet', '$location', 'CurrentPatient',
+    ($scope:any, $mdBottomSheet:any, $location:any, CurrentPatient:any):void  => {
 
         if (CurrentPatient) {
             $scope.items = [
-                {name: 'Archive', icon: 'archive'},
-                {name: 'Mail', icon: 'mail'},
-                {name: 'Message', icon: 'message'},
-                {name: 'Copy', icon: 'content_copy'},
-                {name: 'Create', icon: 'create'},
-                {name: 'Inbox', icon: 'inbox'}
+                {name: 'PDF', icon: 'content_copy'}
             ];
 
             $scope.ItemClick = ($index:any):void  => {
                 $mdBottomSheet.hide($scope.items[$index]);
-                var pdf:any = new Pdf();
-                pdf.$get({id: CurrentPatient.id}, (data:any):void => {
-                    window.location.href = "/output/" + data.value;
-                    //$location.path("http://localhost:3000/pdf/" + CurrentPatient.id);
-                });
+                window.open("/pdf/" + CurrentPatient.id, CurrentPatient.name, "location=no");
             };
         }
     }]);

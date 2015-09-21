@@ -8,7 +8,7 @@
 
 'use strict';
 
-declare function require(x: string): any;
+declare function require(x:string):any;
 
 var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
@@ -114,8 +114,6 @@ function DeCipher(name:any, password:any):any {
 }
 
 
-
-
 router.get('/', (req:any, res:any):void => {
     res.render('index', {deveropment: (config.state == "deveropment")});
 });
@@ -151,11 +149,11 @@ router.get('/backend/partials/patient/patients', (req:any, res:any):void => {
 });
 
 router.get('/backend/partials/patient/description/:id', (req:any, res:any, next:any):void => {
-    var id =req.params.id;
+    var id = req.params.id;
     Patient.findById(id, (error:any, patient:any):void => {
         if (!error) {
             if (patient) {
-                res.render('backend/partials/patient/description', {patient:patient});
+                res.render('backend/partials/patient/description', {patient: patient});
             } else {
                 next();
             }
@@ -734,96 +732,54 @@ router.get('/view/query/:query', (req:any, res:any):void => {
     });
 });
 
-/*! PDF */
-/*
- router.get('/pdf/:id', function (request, response, next) {
- try {
- var number:number = 24000;
- response.header('Content-type', 'application/pdf');
- var id:string = request.params.id;
- phantom.create(function (ph) {
- ph.createPage(function (page) {
- page.set('viewportSize', {width: 1200, height: 1200}, function (err) {
- page.open("http://localhost:3000/document/" + id, function (error, status) {
- page.render("public/output/output" + id + ".pdf", function (error) {
- if (!error) {
- ph.exit();
- SendResult(response, 0, "OK", "output" + id + ".pdf");
- }
- else {
- SendResult(response, number + 1, "", error);
- }
- });
- });
- });
- });
- });
- }
- catch (e) {
- SendResult(response, 100000, e.message, e);
- }
- });
- */
-
 router.get('/pdf/:id', (request:any, response:any, next:any):void => {
-
+    //wrapper.Guard(request, response, (request:any, response:any):void  => {
 
     Patient.findById(request.params.id, (error:any, patient:any):void => {
         if (!error) {
             if (patient) {
+
+                var font = "public/font/ttf/ipaexg.ttf";
                 var doc = new PDFDocument;
-
-                doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(patient.Information.kana);
-                doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(patient.Information.time);
-                doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(patient.Information.name);
+                doc.font(font).fontSize(12).text(patient.Information.kana);
+                doc.font(font).fontSize(12).text(patient.Information.time);
+                doc.font(font).fontSize(12).text(patient.Information.name);
                 _.each(patient.Input, (item) => {
-                    switch(item.type)
-                    {
-                      case "text":
-
-                          doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.name);
-                          doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.value);
-                          break;
+                    switch (item.type) {
+                        case "text":
+                            doc.font(font).fontSize(12).text(item.name);
+                            doc.font(font).fontSize(12).text(item.value);
+                            break;
                         case "select":
-                            doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.name);
-                            doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.value);
+                            doc.font(font).fontSize(12).text(item.name);
+                            doc.font(font).fontSize(12).text(item.value);
                             break;
                         case "check":
-                            if (item.value)
-                            {
-                                doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.name);
-                                doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.value);
+                            if (item.value) {
+                                doc.font(font).fontSize(12).text(item.name);
+                                doc.font(font).fontSize(12).text(item.value);
                             }
                             break;
                         case "numeric":
-
-                            doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.name);
-                            doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text(item.value);
+                            doc.font(font).fontSize(12).text(item.name);
+                            doc.font(font).fontSize(12).text(item.value);
                             break;
-
-                            default :break;
+                        default :
+                            break;
                     }
                 });
 
-                //doc.font('public/font/ttf/ipaexg.ttf').fontSize(12).text('Some text with an embedded font!', 100, 100);
-                //doc.addPage().fontSize(12).text('Here is ああ vector graphics...', 100, 100);
-                //doc.save().moveTo(100, 150).lineTo(100, 250).lineTo(200, 250).fill("#FF3300");
-                //doc.scale(0.6).translate(470, -380).path('M 250,75 L 323,301 131,161 369,161 177,301 z').fill('red', 'even-odd').restore();
-                //doc.addPage().fillColor("blue").text('Here is a　ああ link!', 100, 100).underline(100, 100, 160, 27, {
-                //    color: "#0000FF"
-                //}).link(100, 100, 160, 27, 'http://google.com/');
-
-                doc.write('output.pdf');
-
-                response.end("hoge");
+                doc.write('public/output/output.pdf', () => {
+                    var responsePDF = fs.createReadStream('public/output/output.pdf');
+                    responsePDF.pipe(response);
+                    // wrapper.SendResult(response, 0, "OK", 'public/output/output.pdf');
+                });
 
             } else {
-                next();
             }
         } else {
-            next();
         }
-    })
+    });
 });
 
 router.get('/file/:name', (request:any, response:any, next:any):void => {
