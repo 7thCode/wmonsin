@@ -4,15 +4,17 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
+- var content = {config:"設定", regist:"登録", login:"ログイン", name:"名前", password:"パスワード", required:"必ず入力してください", toolong:"もうすこし短くしてください", editor:"ドクター(編集権限)", viewer:"ナース(参照権限)",update:"更新", save:"保存", cancel:"キャンセル", changepass:"パスワード変更" }
+
 md-content.background
     md-card
         md-card-content
-            h1.md-headline 設定
+            h1.md-headline #{content.config}
 
         md-card-content(layout="row")
             md-button.md-fab.md-accent(ng-click='showNotificationDialog()', aria-label="", ng-if="type == 'Admin' || type == 'Editor'")
                 ng-md-icon.iconfill(icon="save", size="46", id="icon")
-                md-tooltip Save
+                md-tooltip #{content.save}
 
             md-button.md-fab.md-warn(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'")
                 ng-md-icon.iconfill(icon="{{icon}}", size="46", options='{"rotation": "none"}')

@@ -78,9 +78,9 @@ gulp.task('clean', function (cb) {
 gulp.task('ftp', function () {
 
     var conn = ftp.create({
-        host: '',
-        user: '',
-        password: '',
+        host: 'server',
+        user: 'name',
+        password: 'password',
         port:22,
         parallel: 1,
         log: gutil.log
