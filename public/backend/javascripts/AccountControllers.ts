@@ -956,8 +956,8 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
         }
     }]);
 
-controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "CurrentView", "View",
-    ($scope:any, $state:any, $mdDialog:any, CurrentView:any, View:any):void  => {
+controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '$mdToast', "CurrentView", "View",
+    ($scope:any, $state:any, $mdDialog:any, $mdToast:any, CurrentView:any, View:any):void  => {
 
         if (CurrentView.Data.Pages) {
             $scope.Page = CurrentView.Data.Pages[CurrentView.Page];
@@ -980,6 +980,23 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', "
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = CurrentView.Data.Pages[CurrentView.Page].items[index + 1];
                     CurrentView.Data.Pages[CurrentView.Page].items[index + 1] = control;
                 }
+            };
+
+            $scope.DepartmentUpdate = ():void => {
+                var view:any = new View();
+                view.Name = CurrentView.Data.Name;
+                view.Pages = CurrentView.Data.Pages;
+                view.$update({id: CurrentView.Data._id}, (result:any):void => {
+                    if (result) {
+                        if (result.code === 0) {
+                            $mdToast.show($mdToast.simple().content(result.message));
+                        } else {
+                            $mdToast.show($mdToast.simple().content(result.message));
+                        }
+                    } else {
+                        $mdToast.show($mdToast.simple().content('account Updated error.'));
+                    }
+                });
             };
 
             $scope.showTextCreateDialog = ():void => {

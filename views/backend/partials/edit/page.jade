@@ -19,6 +19,10 @@ md-content.background
                         div(ng-message="required") 必ず入力してください.
                         div(ng-message="md-maxlength") もうすこし短くしてください.
 
+                md-button.md-fab(ng-click="DepartmentUpdate()", aria-label="", style="background-color:#FF1744;z-index:1;", ng-if="type != 'Viewer'")
+                    ng-md-icon.department-button1-icon(icon="save", aria-label="", size="42")
+                    md-tooltip #{content.save}
+
                 div(layout="row", layout-align="start center", ng-if="type != 'Viewer'",style="z-index:1;")
                     md-fab-speed-dial.md-fling(md-open="false", md-direction="right")
                         md-fab-trigger
