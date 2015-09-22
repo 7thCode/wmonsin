@@ -39,6 +39,7 @@
     "gulp-typescript": "^2.8.1",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
-    "rimraf": "^2.4.2"
+    "rimraf": "^2.4.2",
+    "vinyl-ftp": "^0.4.5"
   }
 }
