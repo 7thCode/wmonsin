@@ -1,3 +1,10 @@
+/**
+ wrapper.ts
+ Copyright (c) 2015 7ThCode.
+ This software is released under the MIT License.
+ http://opensource.org/licenses/mit-license.php
+ */
+
 'use strict';
 
 declare function require(x:string):any;
@@ -43,10 +50,10 @@ class Wrapper {
     public Guard(req:any, res:any, callback:(req:any, res:any) => void):void {
         try {
             if (req.headers["x-requested-with"] === 'XMLHttpRequest') {
+                logger.trace("|enter Guard ");
                 res = this.BasicHeader(res, "");
-                logger.trace("begin Guard");
                 callback(req, res);
-                logger.trace("end Guard");
+                logger.trace("|exit Guard ");
             } else {
                 this.SendWarn(res, 1, 'CSRF Attack.', {});
             }
@@ -57,9 +64,9 @@ class Wrapper {
 
     public Authenticate(req:any, res:any, code:number, callback:(user:any, res:any) => void):void {
         if (req.isAuthenticated()) {
-            logger.trace("begin Authenticate");
+            logger.trace("|enter Authenticate " + code);
             callback(req.user, res);
-            logger.trace("end Authenticate");
+            logger.trace("|exit Authenticate " + code);
         } else {
             this.SendWarn(res, code + 2, "Unacceptable", {});
         }
@@ -69,14 +76,14 @@ class Wrapper {
         model.findById(id, (error:any, object:any):void => {
             if (!error) {
                 if (object) {
-                    logger.trace("begin FindById");
+                    logger.trace("|enter FindById " + code);
                     callback(res, object);
-                    logger.trace("end FindById");
+                    logger.trace("|exit FindById " + code);
                 } else {
                     this.SendWarn(res, code + 10, "", {});
                 }
             } else {
-                this.SendError(res, code + 100, "", error);
+                this.SendError(res, code + 100, error.message, error);
             }
         });
     }
@@ -84,11 +91,11 @@ class Wrapper {
     public  FindOne(res:any, code:number, model:any, query:any, callback:(res:any, object:any) => void):void {
         model.findOne(query, (error:any, doc:any):void => {
             if (!error) {
-                logger.trace("begin FindOne");
+                logger.trace("|enter FindOne " + code);
                 callback(res, doc);
-                logger.trace("end FindOne");
+                logger.trace("|exit FindOne " + code);
             } else {
-                this.SendError(res, code + 100, "", error);
+                this.SendError(res, code + 100, error.message, error);
             }
         });
     }
@@ -97,14 +104,14 @@ class Wrapper {
         model.find(query, count, sort, (error:any, docs:any):void => {
             if (!error) {
                 if (docs) {
-                    logger.trace("begin Find");
+                    logger.trace("|enter Find " + code);
                     callback(res, docs);
-                    logger.trace("end Find");
+                    logger.trace("|exit Find " + code);
                 } else {
                     this.SendError(res, code + 10, "", {});
                 }
             } else {
-                this.SendError(res, code + 100, "", error);
+                this.SendError(res, code + 100, error.message, error);
             }
         });
     }
@@ -112,11 +119,11 @@ class Wrapper {
     public Save(res:any, code:number, instance:any, callback:(res:any, object:any) => void):void {
         instance.save((error:any):void => {
             if (!error) {
-                logger.trace("begin Save");
+                logger.trace("|enter Save " + code);
                 callback(res, instance);
-                logger.trace("end Save");
+                logger.trace("|exit Save " + code);
             } else {
-                this.SendError(res, code + 100, "", error);
+                this.SendError(res, code + 100, error.message, error);
             }
         });
     }
@@ -124,20 +131,20 @@ class Wrapper {
     public Remove(res:any, code:number, model:any, id:any, callback:(res:any) => void):void {
         model.remove({_id: id}, (error:any):void => {
             if (!error) {
-                logger.trace("begin Remove");
+                logger.trace("|enter Remove " + code);
                 callback(res);
-                logger.trace("end Remove");
+                logger.trace("|exit Remove " + code);
             } else {
-                this.SendError(res, code + 100, "", error);
+                this.SendError(res, code + 100, error.message, error);
             }
         });
     }
 
     public If(res:any, code:number, condition:boolean, callback:(res:any) => void):void {
         if (condition) {
-            logger.trace("begin If");
+            logger.trace("|enter If " + code);
             callback(res);
-            logger.trace("end If");
+            logger.trace("|exit If " + code);
         } else {
             this.SendWarn(res, code + 1, "", {});
         }

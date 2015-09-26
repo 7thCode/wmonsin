@@ -5,7 +5,6 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-
 'use strict';
 
 declare function require(x: string): any;

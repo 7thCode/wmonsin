@@ -1,5 +1,8 @@
 /**
- * Created by oda on 2015/09/21.
+ formatpdf.ts
+ Copyright (c) 2015 7ThCode.
+ This software is released under the MIT License.
+ http://opensource.org/licenses/mit-license.php
  */
 
 'use strict';

@@ -7,17 +7,13 @@
 
 'use strict';
 
-declare function require(x: string): any;
+declare function require(x:string):any;
 
 var express = require('express');
 var morgan = require('morgan');
 var app = express();
 
 var fs = require('fs');
-
-//app.use(morgan());
-//var stream = fs.createWriteStream(__dirname + '/log.txt', { flags: 'a' });
-//app.use(morgan({ stream: stream }));
 
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
@@ -148,11 +144,11 @@ if (MongoStore) {
 var options = {server: {socketOptions: {connectTimeoutMS: 1000000}}};
 mongoose.connect(config.connection, options);
 
-process.on('exit', function(code) {
+process.on('exit', function (code) {
     logger.info('Stop.' + code);
 });
 
-process.on('SIGINT', function() {
+process.on('SIGINT', function () {
     logger.info('SIGINT.');
 });
 
@@ -174,6 +170,15 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 //passport
+
+if (app.get('env') === 'development') {
+    app.use(morgan({format: 'dev', immediate: true}));
+} else {
+    var stream = fs.createWriteStream(__dirname + '/logs/access.log', {flags: 'a'});
+    app.use(morgan({stream: stream}));
+}
+
+logger.fatal('Access Log OK.');
 
 //var csrf = require('csurf');
 //app.use(csrf());
@@ -199,8 +204,6 @@ if (Account) {
     logger.fatal('Account NG.');
 }
 //passport
-
-logger.info('-----------------------Start---------------------');
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

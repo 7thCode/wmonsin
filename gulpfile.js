@@ -58,6 +58,10 @@ gulp.task('js', function () {
         .pipe(gulp.dest('dist'));
 });
 
+gulp.task('clean', function (cb) {
+    rimraf('dist', cb);
+});
+
 gulp.task('jsconcat', function () {
     return gulp.src(
         [
@@ -71,10 +75,6 @@ gulp.task('jsconcat', function () {
         .pipe(concat('client.min.js'))
         .pipe(gulp.dest('dist/wmonsin/public/javascripts'))
         .pipe(gulp.dest('public/javascripts'));
-});
-
-gulp.task('clean', function (cb) {
-    rimraf('dist', cb);
 });
 
 gulp.task('ftp', function () {

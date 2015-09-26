@@ -3,7 +3,7 @@ block content
 
     body.background(ng-app="AccountApplication", ng-controller="ApplicationController")
 
-        md-toolbar(md-scroll-shrink, style="z-index:10;", hide-gt-sm)
+        md-toolbar.toolbar(md-scroll-shrink, hide-gt-sm)
             .md-toolbar-tools(layout-align="start center")
                 ng-md-icon(icon="list", size="46", ng-click="open()", style="position:relative;top:5px;fill:#18FFFF")
                 h3.md-display-1(ng-bind="username + '-' + type")
@@ -37,7 +37,7 @@ block content
                     ng-md-icon(icon="check_box", aria-label="",style="position:relative;top:5px;fill:#B3E5FC",  size="22")
                     md-button(ng-click="Logout();close();") Logout
 
-        md-toolbar(style="z-index:10;", hide-sm)
+        md-toolbar.toolbar(hide-sm)
             .md-toolbar-tools(layout="row", layout-align="end center")
                 h3.md-display-1(flex)
                     span(ng-bind="username + '-' + type")

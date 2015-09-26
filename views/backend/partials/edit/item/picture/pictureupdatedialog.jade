@@ -41,13 +41,20 @@ md-dialog.box-edge(flex)
                             div(ng-message="required") 必ず入力してください.
                             div(ng-message="md-maxlength") もうすこし短くしてください.
 
+                md-grid-list(md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6" md-row-height-gt-md="1:1" md-row-height="2:2" md-gutter="8px" md-gutter-gt-sm="8px" )
+                    md-grid-tile(ng-repeat="file in files",md-rowspan="2" md-colspan="1" md-colspan-sm="1" )
+                        img(ng-src="{{'/file/' + file.filename}}", style="width:50%;" ng-click="selectFile(file.filename);")
+                        md-grid-tile-footer {{file.filename}}
 
-                div(flow-init flow-name="uploader.flow", flow-files-added="processFiles($files)")
+                //div(flow-init flow-name="uploader.flow", flow-files-added="processFiles($files)")
                     md-button.md-raised.md-primary(flow-btn type="file") Update Images
                     img(flow-img="uploader.flow.files[0]")
 
-                div(layout="row", layout-align="start center")
-                    img(ng-src="{{'/file/' + items.path}}", flex, style="width: 50%;")
+                md-grid-list(md-cols-sm="1" md-cols-md="2" md-cols-gt-md="3" md-row-height-gt-md="1:1" md-row-height="2:2" md-gutter="8px" md-gutter-gt-sm="8px" )
+                    md-grid-tile(md-rowspan="1" md-colspan="3" md-colspan-sm="1" )
+                        img(ng-src="{{'/file/' + items.path}}", style="width: 10%;")
+
+
 
 
                 md-divider

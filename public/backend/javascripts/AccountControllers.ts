@@ -159,6 +159,15 @@ controllers.factory('File', ['$resource',
         });
     }]);
 
+
+controllers.factory('FileQuery', ['$resource',
+    ($resource):angular.resource.IResource<any> => {
+        return $resource('/file/query/:query', {query: '@query'}, {
+            query: {method: 'GET'}
+        });
+    }]);
+
+
 controllers.factory('Pdf', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
         return $resource('/pdf/:id', {}, {});
@@ -866,6 +875,7 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
 
         if (CurrentView.Data) {
 
+            $scope.Title = CurrentView.Data.Name;
             $scope.Pages = CurrentView.Data.Pages;
 
             $scope.back = () => {
@@ -1414,6 +1424,15 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
         }
     }]);
 
+controllers.controller('FilesController', ['$scope', 'FileQuery',
+    ($scope:any, FileQuery:any):void  => {
+
+        List(FileQuery, {}, (data:any):void  => {
+            $scope.files = data;
+        });
+
+    }]);
+
 /*! Dialogs  */
 
 controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBottomSheet', '$mdDialog', 'Config',
@@ -1811,11 +1830,76 @@ controllers.controller('NumericCreateDialogController', ['$scope', '$mdDialog',
 
     }]);
 
-controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 'File',
-    ($scope:any, $mdDialog:any, File:any):void  => {
+controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', '$mdToast', 'File', 'FileQuery',
+    ($scope:any, $mdDialog:any, $mdToast:any, File:any, FileQuery:any):void  => {
+
+        $scope.items = {};
+
+        List(FileQuery, {}, (data:any):void  => {
+            $scope.files = data;
+        });
+
         $scope.images = [];
 
         $scope.processFiles = (files:any):void => {
+            var filename = files[0].name;
+            List(FileQuery, {filename: filename}, (data:any):void  => {
+                if (data.length == 0) {
+                    $scope.items.path = filename;
+                    $scope.images[0] = {};
+                    var fileReader = new FileReader();
+                    var image = new Image();
+                    fileReader.onload = (event:any):void => {
+                        var uri = event.target.result;
+                        image.src = uri;
+                        image.onload = ():void => {
+                            var file = new File();
+                            file.url = uri;
+                            file.$send({name: $scope.items.path});
+                            $scope.$apply();
+                        };
+                    };
+                    fileReader.readAsDataURL(files[0].file);
+                }
+                else {
+                    $mdToast.show($mdToast.simple().content("already found."));
+                }
+            });
+        };
+
+        $scope.selectFile = (filename:string):void => {
+            $scope.items.path = filename;
+        };
+
+        $scope.hide = ():void => {
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = ():void => {
+            $mdDialog.cancel();
+        };
+
+        $scope.answer = (answer:any):void => {
+            $mdDialog.hide($scope);
+        };
+
+    }]);
+
+controllers.controller('PictureUpdateDialogController', ['$scope', '$mdDialog', 'File', 'FileQuery', 'items',
+    ($scope:any, $mdDialog:any, File:any, FileQuery:any, items:any):void  => {
+
+        $scope.items = items;
+
+        List(FileQuery, {}, (data:any):void  => {
+            $scope.files = data;
+        });
+
+        $scope.images = [];
+
+        $scope.processFiles = (files:any):void => {
+            var filename = files[0].name;
+
+            $scope.items.path = filename;
             $scope.images[0] = {};
             var fileReader = new FileReader();
             var image = new Image();
@@ -1830,6 +1914,31 @@ controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 
                 };
             };
             fileReader.readAsDataURL(files[0].file);
+
+        };
+
+        /*
+         $scope.processFiles = (files:any):void => {
+         $scope.images[0] = {};
+         var fileReader = new FileReader();
+         var image = new Image();
+         fileReader.onload = (event:any):void => {
+         var uri = event.target.result;
+         image.src = uri;
+         image.onload = ():void => {
+         var file = new File();
+         file.url = uri;
+         file.$update({name: $scope.items.path});
+         $scope.$apply();
+         };
+         };
+         fileReader.readAsDataURL(files[0].file);
+         };
+
+         */
+
+        $scope.selectFile = (filename:string):void => {
+            $scope.items.path = filename;
         };
 
         $scope.hide = ():void => {
@@ -1922,44 +2031,6 @@ controllers.controller('NumericUpdateDialogController', ['$scope', '$mdDialog', 
         $scope.answer = (answer:any):void => {
             $mdDialog.hide($scope);
         };
-
-    }]);
-
-controllers.controller('PictureUpdateDialogController', ['$scope', '$mdDialog', 'File', 'items',
-    ($scope:any, $mdDialog:any, File:any, items:any):void  => {
-        $scope.images = [];
-
-        $scope.items = items;
-
-        $scope.processFiles = (files:any):void => {
-            $scope.images[0] = {};
-            var fileReader = new FileReader();
-            var image = new Image();
-            fileReader.onload = (event:any):void => {
-                var uri = event.target.result;
-                image.src = uri;
-                image.onload = ():void => {
-                    var file = new File();
-                    file.url = uri;
-                    file.$update({name: $scope.items.path});
-                    $scope.$apply();
-                };
-            };
-            fileReader.readAsDataURL(files[0].file);
-        };
-
-        $scope.hide = ():void => {
-            $mdDialog.hide();
-        };
-
-        $scope.cancel = ():void => {
-            $mdDialog.cancel();
-        };
-
-        $scope.answer = (answer:any):void => {
-            $mdDialog.hide($scope);
-        };
-
 
     }]);
 

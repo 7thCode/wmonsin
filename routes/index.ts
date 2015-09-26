@@ -63,79 +63,96 @@ var wrapper = new Wrapper;
 module.exports = router;
 
 // root user
-wrapper.FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any):void => {
-    if (!account) {
-        logger.trace("Creating init user");
-        Account.register(new Account({username: config.user, type: "Admin"}),
-            config.password,
-            function (error, account) {
-                if (!error) {
-                    logger.trace("Created");
-                } else {
-                    logger.trace("Error");
-                }
-            });
-    }
-});
+try {
 
-
-var conn = mongoose.createConnection(config.connection);
-if (conn) {
-    conn.once('open', (error:any):void  => {
-        if (!error) {
-            var gfs = Grid(conn.db, mongoose.mongo);
-            if (gfs) {
-                conn.db.collection('fs.files', (error:any, collection:any):void => {
+    wrapper.FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any):void => {
+        if (!account) {
+            logger.trace("Creating init user");
+            Account.register(new Account({username: config.user, type: "Admin"}),
+                config.password,
+                function (error, account) {
                     if (!error) {
-                        if (collection) {
-                            collection.findOne({filename: "schema1.png"}, (error:any, item:any):void => {
-                                if (!error) {
-                                    if (!item) {
-                                        logger.trace("Creating init schema");
-                                        var readstream = fs.createReadStream('public/images/schema1.png');
-                                        var writestream = gfs.createWriteStream({filename: "schema1.png"});
-                                        if (writestream) {
-                                            readstream.pipe(writestream);
-                                            writestream.on('close', (file:any):void => {
-                                                conn.db.close();
-                                                logger.trace("Created");
-                                            });
-                                        }
-                                    }
-                                }
-                            });
-                        }
+                        logger.trace("Created");
+                    } else {
+                        logger.trace("Error");
                     }
                 });
+        }
+    });
+
+    var conn = mongoose.createConnection(config.connection);
+    if (conn) {
+        conn.once('open', (error:any):void  => {
+            if (!error) {
+                var gfs = Grid(conn.db, mongoose.mongo);
+                if (gfs) {
+                    conn.db.collection('fs.files', (error:any, collection:any):void => {
+                        if (!error) {
+                            if (collection) {
+                                collection.findOne({filename: "schema1.png"}, (error:any, item:any):void => {
+                                    if (!error) {
+                                        if (!item) {
+                                            logger.trace("Creating init schema");
+                                            var readstream = fs.createReadStream('public/images/schema1.png');
+                                            var writestream = gfs.createWriteStream({filename: "schema1.png"});
+                                            if (writestream) {
+                                                readstream.pipe(writestream);
+                                                writestream.on('close', (file:any):void => {
+                                                    conn.db.close();
+                                                    logger.trace("Created");
+                                                });
+                                            } else {
+                                                logger.error("Created schema writestream");
+                                            }
+                                        }
+                                    } else {
+                                        logger.error("Created schema find");
+                                    }
+                                });
+                            } else {
+                                logger.error("Created schema connection");
+                            }
+                        } else {
+                            logger.error("Created schema collection");
+                        }
+                    });
+                } else {
+                    logger.error("Created schema gfs");
+                }
+            } else {
+                logger.error("Created schema open");
             }
+        });
+    }
+
+    View.count({}, (counterror:any, count:number):void => {
+        if (!counterror) {
+            if (count <= 0) {
+                logger.trace("Creating init View");
+                var ev = new emitter;
+                ev.on("view", function (data) {
+                    var view = new View();
+                    view.Name = data.Name;
+                    view.Pages = data.Pages;
+                    view.save(function (error) {
+                        logger.trace("Created init View");
+                    });
+                });
+
+                var config = new configure;
+                var views = config.initView.Views;
+                _.each(views, function (data, index) {
+                    ev.emit("view", data);
+                });
+            }
+        } else {
+            logger.error("count open");
         }
     });
 }
-
-// view 初期化
-View.count({}, (counterror:any, count:number):void => {
-
-    if (!counterror) {
-        if (count <= 0) {
-            logger.trace("Creating init View");
-            var ev = new emitter;
-            ev.on("view", function (data) {
-                var view = new View();
-                view.Name = data.Name;
-                view.Pages = data.Pages;
-                view.save(function (error) {
-                    logger.trace("Created init View");
-                });
-            });
-
-            var config = new configure;
-            var views = config.initView.Views;
-            _.each(views, function (data, index) {
-                ev.emit("view", data);
-            });
-        }
-    }
-});
+catch (e) {
+    logger.fatal("init");
+}
 
 function Cipher(name:any, pass:any):any {
     var cipher:any = crypto.createCipher('aes192', pass);
@@ -154,16 +171,18 @@ router.get('/', (req:any, res:any):void => {
     res.render('index', {deveropment: (config.state == "deveropment")});
 });
 
-router.get('/document/:id', (req:any, res:any):void => {
+router.get('/document/:id', (req:any, res:any, next:any):void => {
     Patient.findById(req.params.id, (finderror:any, patient:any):void => {
         if (!finderror) {
             if (patient) {
                 res.render('document/index', {patient: patient});
             } else {
-
+                logger.error("/document/:id 1");
+                next();
             }
         } else {
-
+            logger.error("/document/:id 2");
+            next();
         }
     });
 });
@@ -191,9 +210,11 @@ router.get('/backend/partials/patient/description/:id', (req:any, res:any, next:
             if (patient) {
                 res.render('backend/partials/patient/description', {patient: patient});
             } else {
+                logger.error("/backend/partials/patient/description/:id 1");
                 next();
             }
         } else {
+            logger.error("/backend/partials/patient/description/:id 2");
             next();
         }
     });
@@ -337,6 +358,9 @@ router.get('/backend/partials/edit/page', (req:any, res:any):void => {
     res.render('backend/partials/edit/page');
 });
 
+router.get('/backend/partials/edit/files', (req:any, res:any):void => {
+    res.render('backend/partials/edit/files');
+});
 
 router.get('/backend/partials/controll/notification', (req:any, res:any):void => {
     res.render('backend/partials/controll/notification');
@@ -478,7 +502,7 @@ router.get('/patient/count/:query', (req:any, res:any):void => {
                         wrapper.SendResult(res, 0, "OK", 0);
                     }
                 } else {
-                    wrapper.SendResult(res, number + 100, "", error);
+                    wrapper.SendError(res, number + 100, error.message, error);
                 }
             });
         });
@@ -533,6 +557,8 @@ router.post('/account/create', (request:any, response:any):void => {
                                 if (!error) {
                                     wrapper.SendResult(res, 0, "OK", account);
                                     logger.trace("end /account/create");
+                                } else {
+                                    wrapper.SendError(response, number + 100, error.message, error);
                                 }
                             });
                     } else {
@@ -567,17 +593,17 @@ router.post('/account/login', (request:any, response:any, next:any):void  => {
                             wrapper.SendResult(response, 0, "OK", user);
                             logger.trace("end /account/login");
                         } else {
-                            wrapper.SendResult(response, number + 1, "", {});
+                            wrapper.SendError(response, number + 1, error.message, error);
                         }
                     });
                 } else {
                     wrapper.SendResult(response, number + 2, "", {});
                 }
             } else {
-                wrapper.SendResult(response, number + 3, "", {});
+                wrapper.SendError(response, number + 3, error.message, error);
             }
         } catch (e) {
-            wrapper.SendResult(response, 100000, e.message, e);
+            wrapper.SendFatal(response, 100000, e.message, e);
         }
     })(request, response, next);
 });
@@ -661,7 +687,7 @@ router.put('/account/password/:id', (req:any, res:any):void => {
                             wrapper.SendResult(res, 0, "OK", account);
                         });
                     } else {
-                        wrapper.SendResult(res, number + 200, "", error);
+                        wrapper.SendError(res, number + 200, error.message, error);
                     }
                 });
             });
@@ -696,7 +722,7 @@ router.put('/config', (req:any, res:any):void => {
                         wrapper.SendResult(res, 0, "OK", config);
                         logger.trace("end /config");
                     } else {
-                        wrapper.SendResult(res, number + 1, "", error);
+                        wrapper.SendError(res, number + 1, error.message, error);
                     }
                 });
             });
@@ -742,7 +768,7 @@ router.post('/view/create', (req:any, res:any):void => {
                             wrapper.SendResult(res, number + 1, "Already Found.", {});
                         }
                     } else {
-                        wrapper.SendResult(res, number + 20, "", error);
+                        wrapper.SendError(res, number + 20, error.message, error);
                     }
                 });
             });
@@ -827,13 +853,16 @@ router.get('/pdf/:id', (request:any, response:any, next:any):void => {
                         logger.trace("end /pdf/:id");
                     });
                 } else {
+                    logger.error("//pdf/:id 1");
                     next();
                 }
             } else {
+                logger.error("//pdf/:id 2");
                 next();
             }
         });
     } catch (e) {
+        logger.error("//pdf/:id 3");
         next();
     }
 });
@@ -862,33 +891,50 @@ router.get('/file/:name', (request:any, response:any, next:any):void => {
                                                         logger.trace("end /file/:name");
                                                     });
                                                 } else {
+                                                    conn.db.close();
+                                                    logger.error("/file/:name 1");
                                                     next();
                                                 }
                                             } else {
+                                                conn.db.close();
+                                                logger.error("/file/:name 2");
                                                 next();
                                             }
                                         } else {
+                                            conn.db.close();
+                                            logger.error("/file/:name 3");
                                             next();
                                         }
                                     } else {
+                                        conn.db.close();
+                                        logger.error("/file/:name 4");
                                         next();
                                     }
                                 });
                             } else {
+                                conn.db.close();
+                                logger.error("/file/:name 5");
                                 next();
                             }
                         } else {
+                            conn.db.close();
+                            logger.error("/file/:name 6");
                             next();
                         }
                     });
                 } else {
+                    conn.db.close();
+                    logger.error("/file/:name 7");
                     next();
                 }
             } else {
+                conn.db.close();
+                logger.error("/file/:name 8");
                 next();
             }
         });
     } catch (e) {
+        logger.error("/file/:name 9");
         next();
     }
 });
@@ -939,27 +985,34 @@ router.post('/file/:name', (request:any, response:any):void => {
                                                             logger.trace("end /file/:name");
                                                         });
                                                     } else {
+                                                        conn.db.close();
                                                         wrapper.SendFatal(response, number + 40, "stream not open", {});
                                                     }
                                                 } else {
+                                                    conn.db.close();
                                                     wrapper.SendWarn(response, number + 1, "already found", {});
                                                 }
                                             } else {
-                                                wrapper.SendError(response, number + 100, "find error " + error.message, error);
+                                                conn.db.close();
+                                                wrapper.SendError(response, number + 100, error.message, error);
                                             }
                                         });
                                     } else {
+                                        conn.db.close();
                                         wrapper.SendFatal(response, number + 30, "no collection", {});
                                     }
                                 } else {
-                                    wrapper.SendError(response, number + 100, "collection error " + error.message, error);
+                                    conn.db.close();
+                                    wrapper.SendError(response, number + 100, error.message, error);
                                 }
                             });
                         } else {
+                            conn.db.close();
                             wrapper.SendFatal(response, number + 20, "no gfs", {});
                         }
                     } else {
-                        wrapper.SendError(response, number + 100, "open error " + error.message, error);
+                        conn.db.close();
+                        wrapper.SendError(response, number + 100, error.message, error);
                     }
                 });
             } else {
@@ -1016,28 +1069,34 @@ router.put('/file/:name', (request:any, response:any):void => {
                                                                 logger.trace("end /file/:name");
                                                             });
                                                         } else {
+                                                            conn.db.close();
                                                             wrapper.SendFatal(response, number + 40, "stream not open", {});
                                                         }
                                                     });
                                                 } else {
+                                                    conn.db.close();
                                                     wrapper.SendWarn(response, number + 1, "not found", {});
                                                 }
                                             } else {
-                                                wrapper.SendError(response, number + 100, "find error" + error.message, error);
+                                                conn.db.close();
+                                                wrapper.SendError(response, number + 100, error.message, error);
                                             }
                                         });
                                     } else {
                                         wrapper.SendFatal(response, number + 30, "no collection", {});
                                     }
                                 } else {
-                                    wrapper.SendError(response, number + 100, "collection error " + error.message, error);
+                                    conn.db.close();
+                                    wrapper.SendError(response, number + 100, error.message, error);
                                 }
                             });
                         } else {
+                            conn.db.close();
                             wrapper.SendFatal(response, number + 20, "no gfs", {});
                         }
                     } else {
-                        wrapper.SendError(response, number + 100, "open error " + error.message, error);
+                        conn.db.close();
+                        wrapper.SendError(response, number + 100, error.message, error);
                     }
                 });
             } else {
@@ -1066,27 +1125,34 @@ router.delete('/file/:name', (request:any, response:any):void => {
                                                 if (item) {
                                                     collection.remove({filename: request.params.name}, ():void => {
                                                         wrapper.SendResult(response, 0, "OK", {});
+                                                        conn.db.close();
                                                         logger.trace("end /file/:name");
                                                     });
                                                 } else {
+                                                    conn.db.close();
                                                     wrapper.SendWarn(response, number + 1, "not found", {});
                                                 }
                                             } else {
-                                                wrapper.SendError(response, number + 100, "find error " + error.message, error);
+                                                conn.db.close();
+                                                wrapper.SendError(response, number + 100, error.message, error);
                                             }
                                         });
                                     } else {
-                                        wrapper.SendFatal(response, number + 30, "connection error", {});
+                                        conn.db.close();
+                                        wrapper.SendFatal(response, number + 30, "no collection", {});
                                     }
                                 } else {
-                                    wrapper.SendError(response, number + 100, "connection error " + error.message, error);
+                                    conn.db.close();
+                                    wrapper.SendError(response, number + 100, error.message, error);
                                 }
                             });
                         } else {
+                            conn.db.close();
                             wrapper.SendFatal(response, number + 20, "gfs error", {});
                         }
                     } else {
-                        wrapper.SendError(response, number + 100, "open error " + error.message, error);
+                        conn.db.close();
+                        wrapper.SendError(response, number + 100, error.message, error);
                     }
                 });
             } else {
@@ -1094,6 +1160,57 @@ router.delete('/file/:name', (request:any, response:any):void => {
             }
         });
     });
+});
+
+router.get('/file/query/:query', (request:any, response:any, next:any):void => {
+    logger.trace("/file/query/:query");
+   // wrapper.Guard(request, response, (request:any, response:any):void => {
+        var number:number = 27000;
+    //    wrapper.Authenticate(request, response, number, (user:any, response:any) => {
+            var conn = mongoose.createConnection(config.connection);
+         if (conn) {
+             conn.once('open', (error:any):void => {
+                 if (!error) {
+                     var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
+                     if (gfs) {
+                         conn.db.collection('fs.files', (error:any, collection:any):void => {
+                             if (!error) {
+                                 if (collection) {
+                                     //var query = JSON.parse(decodeURIComponent(request.params.query));
+                                     collection.find({}).toArray(function (error, docs) {
+                                         if (!error) {
+                                             conn.db.close();
+                                             logger.trace("end /file/query/:query");
+                                             wrapper.SendResult(response, 0, "OK", docs);
+                                         } else {
+                                             conn.db.close();
+                                             wrapper.SendError(response, number + 100, error.message, error);
+                                         }
+                                     });
+                                 } else {
+                                     conn.db.close();
+                                     wrapper.SendFatal(response, number + 30, "no collection", {});
+                                 }
+                             } else {
+                                 conn.db.close();
+                                 wrapper.SendError(response, number + 100, error.message, error);
+                             }
+                         });
+                     } else {
+                         conn.db.close();
+                         wrapper.SendFatal(response, number + 20, "gfs error", {});
+                     }
+                 } else {
+                     conn.db.close();
+                     wrapper.SendError(response, number + 100, error.message, error);
+                 }
+             });
+         } else {
+             wrapper.SendError(response, number + 10, "connection error", {});
+         }
+
+    //    });
+ //   });
 });
 
 //Test area
@@ -1646,5 +1763,7 @@ router.get('/json', function (req, res, next) {
 
     res.send(head + tohtml.render(data.content) + tail);
 });
+
+logger.info('-----------------------Start---------------------');
 
 //Test area
