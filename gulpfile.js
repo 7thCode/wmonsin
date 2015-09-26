@@ -83,7 +83,7 @@ gulp.task('ftp', function () {
         host: 'server',
         user: 'name',
         password: 'password',
-        port:22,
+        port: 22,
         parallel: 1,
         log: gutil.log
     });

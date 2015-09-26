@@ -23,24 +23,24 @@ md-dialog.box-edge(flex)
 
                     md-input-container(flex)
                         label name
-                        input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter Name', md-maxlength="30", required)
+                        input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter Name', md-maxlength="20", required)
                         div(ng-messages="validate.name.$error")
                             div(ng-message="required") 必ず入力してください.
                             div(ng-message="md-maxlength") もうすこし短くしてください.
 
-
                     md-input-container(flex)
                         label アイテムラベル
-                        input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter Label', md-maxlength="30", required)
+                        input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter Label', md-maxlength="20", required)
                         div(ng-messages="validate.label.$error")
                             div(ng-message="required") 必ず入力してください.
                             div(ng-message="md-maxlength") もうすこし短くしてください.
 
-
                 div(layout="row")
-                    md-input-container(flex)
-                        label パス
-                        input(ng-model="items.path", data-ng-required="true", name="path", placeholder='Enter Path', md-maxlength="50", required)
+                    md-switch(ng-model="isPage", aria-label="IsPage") ページ遷移/終了
+
+                    md-input-container(flex, ng-show="isPage")
+                        label ページ
+                        input(ng-model="items.page", data-ng-required="true", name="path", placeholder='Enter Path', md-maxlength="4", required)
                         div(ng-messages="validate.path.$error")
                             div(ng-message="required") 必ず入力してください.
                             div(ng-message="md-maxlength") もうすこし短くしてください.

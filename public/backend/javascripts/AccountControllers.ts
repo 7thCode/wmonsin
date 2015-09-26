@@ -1169,13 +1169,22 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                     }
                 }).then((answer:any):void => { // Answer
 
+                    var path = "";
+
+                    if(answer.isPage)
+                    {
+                        path = "/browse/" + answer.items.page;
+                    } else {
+                        path = "/write";
+                    }
+
                     var control = {
                         label: answer.items.label,
                         name: answer.items.name,
                         model: "",
                         type: "button",
                         validate: answer.items.validate,
-                        path: answer.items.path,
+                        path: path,
                         class: answer.items.class,
                     };
 
@@ -1267,6 +1276,18 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                         items: items
                     }
                 }).then((answer:any):void => { // Answer
+
+                    var path = "";
+
+                    if(answer.isPage)
+                    {
+                        path = "/browse/" + answer.items.page;
+                    } else {
+                        path = "/write";
+                    }
+
+                    answer.items.path = path;
+
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = answer.items;
                 }, ():void => { // Cancel
                 });
@@ -1959,6 +1980,7 @@ controllers.controller('ButtonCreateDialogController', ['$scope', '$mdDialog',
     ($scope:any, $mdDialog:any):void  => {
 
 
+
         $scope.hide = ():void => {
             $mdDialog.hide();
         };
@@ -2037,7 +2059,19 @@ controllers.controller('NumericUpdateDialogController', ['$scope', '$mdDialog', 
 controllers.controller('ButtonUpdateDialogController', ['$scope', '$mdDialog', 'items',
     ($scope:any, $mdDialog:any, items:any):void  => {
 
+        var path = items.path;
+
         $scope.items = items;
+
+        $scope.isPage = (path != "/write");
+        if ($scope.isPage)
+        {
+          var elements =  path.split("/");
+            if (elements.length == 3)
+            {
+                $scope.items.page = elements[2];
+            }
+        }
 
         $scope.hide = ():void => {
             $mdDialog.hide();

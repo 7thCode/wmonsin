@@ -90,12 +90,7 @@ app.config(['$stateProvider', '$urlRouterProvider','$compileProvider','$httpProv
             url: '/page',
             templateUrl: '/backend/partials/edit/page',
             controller: 'PageEditController'
-        })
-    .state('files', {
-        url: '/files',
-        templateUrl: '/backend/partials/edit/files',
-        controller: 'FilesController'
-    });
+        });
 
     $urlRouterProvider.otherwise('/start');
 }]);
