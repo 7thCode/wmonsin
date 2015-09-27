@@ -297,3 +297,7 @@ routes/lib/formatpdf.js
 model/file.js
 
 public/output/output.pdf
+
+routes/controllers/config_controller.js
+
+routes/controllers/pdf_controller.js
