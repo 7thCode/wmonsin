@@ -9,20 +9,20 @@ var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
 
 var PatientModel = require('../../model/patient');
-var Settings = require('./../settings');
 
 var _ = require('lodash');
-var settings = new Settings;
+
 var result = require('./../lib/result');
+
 var Wrapper = require('./../lib/wrapper');
-//var libs = require('./../libs');
+var wrapper = new Wrapper;
 
 var log4js = require('log4js');
 log4js.configure("config/logs.json");
 var logger = log4js.getLogger('request');
 logger.setLevel(config.loglevel);
 
-var wrapper = new Wrapper;
+
 
 class PatientController {
 

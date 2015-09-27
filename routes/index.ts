@@ -53,7 +53,7 @@ var FileController = require('./controllers/file_controller');
 var Wrapper = require('./lib/wrapper');
 var wrapper = new Wrapper;
 
-var account_controller = new AccountController();
+var account_controller = new AccountController(wrapper,logger);
 var partient_controller = new PatientController();
 var view_controller = new ViewController();
 var file_controller = new FileController();
