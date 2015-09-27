@@ -22,8 +22,6 @@ log4js.configure("config/logs.json");
 var logger = log4js.getLogger('request');
 logger.setLevel(config.loglevel);
 
-
-
 class PatientController {
 
     constructor() {}

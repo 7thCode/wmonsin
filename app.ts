@@ -174,7 +174,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 //passport
 
-if (app.get('env') === 'development') {
+if (config.state === 'development') {
     app.use(morgan({format: 'original', immediate: true}));
 } else {
     var rotatestream = require('logrotate-stream');
@@ -218,7 +218,7 @@ app.use(function (req, res, next) {
     });
 });
 
-if (app.get('env') === 'development') {
+if (config.state === 'development') {
     app.use((err:any, req:any, res:any, next:any):void => {
         res.status(err.status || 500);
         res.render('error', {

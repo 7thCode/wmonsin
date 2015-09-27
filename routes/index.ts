@@ -49,14 +49,18 @@ var AccountController = require('./controllers/account_controller');
 var PatientController = require('./controllers/patient_controller');
 var ViewController = require('./controllers/view_controller');
 var FileController = require('./controllers/file_controller');
+var PdfController = require('./controllers/pdf_controller');
+var ConfigController = require('./controllers/config_controller');
 
 var Wrapper = require('./lib/wrapper');
 var wrapper = new Wrapper;
 
-var account_controller = new AccountController(wrapper,logger);
+var account_controller = new AccountController(wrapper, logger);
 var partient_controller = new PatientController();
 var view_controller = new ViewController();
 var file_controller = new FileController();
+var pdf_controller = new PdfController();
+var config_controller = new ConfigController();
 
 logger.info('Index.js Start.');
 
@@ -165,6 +169,7 @@ catch (e) {
     logger.fatal("init");
 }
 
+/*
 function Cipher(name:any, pass:any):any {
     var cipher:any = crypto.createCipher('aes192', pass);
     cipher.update(name, 'utf8', 'hex');
@@ -177,6 +182,7 @@ function DeCipher(name:any, password:any):any {
     decrypted += decipher.final('utf8');
     return decrypted;
 }
+*/
 
 router.get('/', (req:any, res:any):void => {
     res.render('index', {deveropment: (config.state == "deveropment")});
@@ -239,7 +245,7 @@ router.get('/backend/partials/patient/sheet', (req:any, res:any):void => {
     res.render('backend/partials/patient/sheet');
 });
 
-
+/*! partials */
 router.get('/backend/partials/account/accounts', (req:any, res:any):void => {
     res.render('backend/partials/account/accounts');
 });
@@ -260,6 +266,7 @@ router.get('/backend/partials/account/accountdialog', (req:any, res:any):void =>
     res.render('backend/partials/account/accountdialog');
 });
 
+/*! edit dialog */
 router.get('/backend/partials/edit/departmentcreatedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/departmentcreatedialog');
 });
@@ -279,7 +286,6 @@ router.get('/backend/partials/edit/pagecreatedialog', (req:any, res:any):void =>
 router.get('/backend/partials/edit/pagedeletedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/pagedeletedialog');
 });
-
 
 router.get('/backend/partials/edit/item/text/textcreatedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/item/text/textcreatedialog');
@@ -305,7 +311,6 @@ router.get('/backend/partials/edit/item/button/buttoncreatedialog', (req:any, re
     res.render('backend/partials/edit/item/button/buttoncreatedialog');
 });
 
-
 router.get('/backend/partials/edit/item/text/textupdatedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/item/text/textupdatedialog');
 });
@@ -329,7 +334,6 @@ router.get('/backend/partials/edit/item/picture/pictureupdatedialog', (req:any, 
 router.get('/backend/partials/edit/item/button/buttonupdatedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/item/button/buttonupdatedialog');
 });
-
 
 router.get('/backend/partials/edit/item/text/textdeletedialog', (req:any, res:any):void => {
     res.render('backend/partials/edit/item/text/textdeletedialog');
@@ -355,7 +359,7 @@ router.get('/backend/partials/edit/item/button/buttondeletedialog', (req:any, re
     res.render('backend/partials/edit/item/button/buttondeletedialog');
 });
 
-
+/* */
 router.get('/backend/partials/edit/departments', (req:any, res:any):void => {
     res.render('backend/partials/edit/departments');
 });
@@ -364,7 +368,7 @@ router.get('/backend/partials/edit/department', (req:any, res:any):void => {
     res.render('backend/partials/edit/department');
 });
 
-
+/* */
 router.get('/backend/partials/edit/page', (req:any, res:any):void => {
     res.render('backend/partials/edit/page');
 });
@@ -381,12 +385,12 @@ router.get('/backend/partials/controll/panel', (req:any, res:any):void => {
     res.render('backend/partials/controll/panel');
 });
 
-
+/* */
 router.get('/backend/partials/error', (req:any, res:any):void => {
     res.render('backend/partials/error');
 });
 
-
+/*! front */
 router.get('/front/', (req:any, res:any):void => {
     res.render('front/index', {deveropment: (config.state == "deveropment")});
 });
@@ -424,12 +428,12 @@ router.get('/account/query/:query', account_controller.get_account_query_query);
 router.put('/account/password/:id', account_controller.get_account_password_id);
 
 /*! views */
-router.post('/view',view_controller.post_view);
-router.post('/view/create',view_controller.post_view_create);
-router.get('/view/:id',view_controller.get_view_id );
-router.put('/view/:id',view_controller.put_view_id );
-router.delete('/view/:id',view_controller.delete_view_id );
-router.get('/view/query/:query',view_controller.get_view_query_query);
+router.post('/view', view_controller.post_view);
+router.post('/view/create', view_controller.post_view_create);
+router.get('/view/:id', view_controller.get_view_id);
+router.put('/view/:id', view_controller.put_view_id);
+router.delete('/view/:id', view_controller.delete_view_id);
+router.get('/view/query/:query', view_controller.get_view_query_query);
 
 /*! file */
 router.get('/file/:name', file_controller.get_file_name);
@@ -438,69 +442,12 @@ router.put('/file/:name', file_controller.put_file_name);
 router.delete('/file/:name', file_controller.delete_file_name);
 router.get('/file/query/:query', file_controller.get_file_query_query);
 
-
-router.get('/pdf/:id', (request:any, response:any, next:any):void => {
-    try {
-        logger.trace("begin /pdf/:id");
-        PatientModel.findById(request.params.id, (error:any, patient:any):void => {
-            if (!error) {
-                if (patient) {
-                    var format = new formatpdf;
-                    var doc = format.write(patient);
-                    doc.write('public/output/output.pdf', () => {
-                        var responsePDF = fs.createReadStream('public/output/output.pdf');
-                        responsePDF.pipe(response);
-                        logger.trace("end /pdf/:id");
-                    });
-                } else {
-                    logger.error("//pdf/:id 1");
-                    next();
-                }
-            } else {
-                logger.error("//pdf/:id 2");
-                next();
-            }
-        });
-    } catch (e) {
-        logger.error("//pdf/:id 3");
-        next();
-    }
-});
+/*! pdf */
+router.get('/pdf/:id', pdf_controller.get_pdf_id);
 
 /*! config */
-/*! get */
-router.get('/config', (req:any, res:any):void => {
-    logger.trace("begin /config");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 16000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            wrapper.SendResult(res, 0, "OK", config);
-            logger.trace("end /config");
-        });
-    });
-});
-
-/*! update */
-router.put('/config', (req:any, res:any):void => {
-    logger.trace("begin /config");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 17000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                config = req.body.body;
-                fs.writeFile('config/config.json', JSON.stringify(config), (error:any):void => {
-                    if (!error) {
-                        wrapper.SendResult(res, 0, "OK", config);
-                        logger.trace("end /config");
-                    } else {
-                        wrapper.SendError(res, number + 1, error.message, error);
-                    }
-                });
-            });
-        });
-    });
-});
-
+router.get('/config', config_controller.get_config);
+router.put('/config', config_controller.put_config);
 
 //Test area
 
