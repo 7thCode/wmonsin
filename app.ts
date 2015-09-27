@@ -11,6 +11,7 @@ declare function require(x:string):any;
 
 var express = require('express');
 var morgan = require('morgan');
+morgan.format("original", "[:date] :method :url :status :response-time ms");
 var app = express();
 
 var fs = require('fs');
@@ -155,16 +156,18 @@ process.on('SIGINT', function () {
 app.use(session({
     secret: config.sessionkey,
     resave: false,
-    rolling: false,
+    rolling: true,
     saveUninitialized: true,
     cookie: {
         maxAge: 365 * 24 * 60 * 60 * 1000
     },
     store: new MongoStore({
         mongooseConnection: mongoose.connection,
-        clear_interval: 60 * 60
+        ttl: 365 * 24 * 60 * 60
     })
 }));
+
+// clear_interval: 60 * 60
 
 //passport
 app.use(passport.initialize());
@@ -172,10 +175,10 @@ app.use(passport.session());
 //passport
 
 if (app.get('env') === 'development') {
-    app.use(morgan({format: 'dev', immediate: true}));
+    app.use(morgan({format: 'original', immediate: true}));
 } else {
-    var stream = fs.createWriteStream(__dirname + '/logs/access.log', {flags: 'a'});
-    app.use(morgan({stream: stream}));
+    var rotatestream = require('logrotate-stream');
+    app.use(morgan({format: 'combined', stream: rotatestream({ file: __dirname + '/logs/access.log', size: '100k', keep: 3 })}));
 }
 
 logger.fatal('Access Log OK.');

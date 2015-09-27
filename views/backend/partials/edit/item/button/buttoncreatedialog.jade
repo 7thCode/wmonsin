@@ -22,28 +22,27 @@ md-dialog.box-edge(flex)
                 div(layout="row", layout-align="start center")
 
                     md-input-container(flex)
-                        label name
+                        label #{content.name}
                         input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter Name', md-maxlength="20", required)
                         div(ng-messages="validate.name.$error")
-                            div(ng-message="required") 必ず入力してください.
-                            div(ng-message="md-maxlength") もうすこし短くしてください.
+                            div(ng-message="required") #{content.required}
+                            div(ng-message="md-maxlength") #{content.toolong}
 
                     md-input-container(flex)
                         label アイテムラベル
                         input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter Label', md-maxlength="20", required)
                         div(ng-messages="validate.label.$error")
-                            div(ng-message="required") 必ず入力してください.
-                            div(ng-message="md-maxlength") もうすこし短くしてください.
+                            div(ng-message="required") #{content.required}
+                            div(ng-message="md-maxlength") #{content.toolong}
 
                 div(layout="row")
                     md-switch(ng-model="isPage", aria-label="IsPage") ページ遷移/終了
 
                     md-input-container(flex, ng-show="isPage")
                         label ページ
-                        input(ng-model="items.page", data-ng-required="true", name="path", placeholder='Enter Path', md-maxlength="4", required)
-                        div(ng-messages="validate.path.$error")
-                            div(ng-message="required") 必ず入力してください.
-                            div(ng-message="md-maxlength") もうすこし短くしてください.
+                        input(ng-model="items.page", name="page", placeholder='Enter Path', md-maxlength="4")
+                        div(ng-messages="validate.page.$error")
+                            div(ng-message="md-maxlength") #{content.toolong}
 
                 div(layout="row")
                     md-switch(ng-model="items.validate", aria-label="validate", equired) バリデート

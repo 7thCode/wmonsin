@@ -21,7 +21,7 @@ logger.setLevel(config.loglevel);
 var _ = require('lodash');
 var result = require('./result');
 
-var View = require('./../model/view');
+var View = require('./../../model/view');
 
 class Wrapper {
 

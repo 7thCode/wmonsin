@@ -3,19 +3,20 @@
     Copyright (c) 2015 7ThCode.
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
+- var content = {title:"ボタン", config:"設定", regist:"登録", login:"ログイン", name:"名前", password:"パスワード", required:"必ず入力してください", toolong:"もうすこし短くしてください", editor:"ドクター(編集権限)", viewer:"ナース(参照権限)",delete:"削除",update:"更新", save:"保存", cancel:"キャンセル", changepass:"パスワード変更" }
 
 md-dialog(flex="percentage")
     md-toolbar
         .md-toolbar-tools(layout="row", layout-align="end center")
             h3(flex)
-                span(flex) 削除
+                span(flex) #{content.delete}
             div
                 md-button.md-raised.md-primary(ng-click='cancel()', aria-label="Cancel")
                     ng-md-icon.iconfill(icon="cancel", size="46")
-                    md-tooltip キャンセル
+                    md-tooltip #{content.cancel}
 
     md-dialog-content
         md-divider
         div.md-actions(layout="row", layout-align="space-around center")
-            md-button.md-raised.md-primary(ng-click='answer()', aria-label="Delete") 削除
-            md-tooltip 削除
+            md-button.md-raised.md-primary(ng-click='answer()', aria-label="Delete") #{content.delete}
+            md-tooltip #{content.delete}

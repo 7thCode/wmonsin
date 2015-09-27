@@ -25,11 +25,12 @@ var _ = require('lodash');
 var mongoose = require('mongoose');
 var Grid = require('gridfs-stream');
 
-var Patient = require('./../model/patient');
-var Account = require('./../model/account');
-var View = require('./../model/view');
+var PatientModel = require('./../model/patient');
+var AccountModel = require('./../model/account');
+var ViewModel = require('./../model/view');
+var FileModel = require('./../model/file');
 
-var ToHtml = require('./tohtml');
+var ToHtml = require('./lib/tohtml');
 
 var csurf = require('csurf');
 var crypto = require("crypto");
@@ -38,18 +39,26 @@ var passport = require('passport');
 
 var router = express.Router();
 
-var configure = require('./configure');
+var Settings = require('./settings');
 
-var formatpdf = require('./formatpdf');
+var formatpdf = require('./lib/formatpdf');
 
-var result = require('./result');
+var result = require('./lib/result');
 
-var Wrapper = require('./wrapper');
+var AccountController = require('./controllers/account_controller');
+var PatientController = require('./controllers/patient_controller');
+var ViewController = require('./controllers/view_controller');
+var FileController = require('./controllers/file_controller');
+
+var Wrapper = require('./lib/wrapper');
+var wrapper = new Wrapper;
+
+var account_controller = new AccountController();
+var partient_controller = new PatientController();
+var view_controller = new ViewController();
+var file_controller = new FileController();
 
 logger.info('Index.js Start.');
-
-
-var wrapper = new Wrapper;
 
 //var emitter = require('socket.io-emitter')({ host: '127.0.0.1', port: 6379 });
 //non csrf
@@ -62,13 +71,13 @@ var wrapper = new Wrapper;
 
 module.exports = router;
 
-// root user
+// init db data
 try {
-
-    wrapper.FindOne(null, 1000, Account, {username: "root"}, (res:any, account:any):void => {
+    // root user
+    wrapper.FindOne(null, 1000, AccountModel, {username: "root"}, (res:any, account:any):void => {
         if (!account) {
             logger.trace("Creating init user");
-            Account.register(new Account({username: config.user, type: "Admin"}),
+            AccountModel.register(new AccountModel({username: config.user, type: "Admin"}),
                 config.password,
                 function (error, account) {
                     if (!error) {
@@ -80,6 +89,7 @@ try {
         }
     });
 
+    // init schema
     var conn = mongoose.createConnection(config.connection);
     if (conn) {
         conn.once('open', (error:any):void  => {
@@ -125,13 +135,14 @@ try {
         });
     }
 
-    View.count({}, (counterror:any, count:number):void => {
+    // init view
+    ViewModel.count({}, (counterror:any, count:number):void => {
         if (!counterror) {
             if (count <= 0) {
                 logger.trace("Creating init View");
                 var ev = new emitter;
                 ev.on("view", function (data) {
-                    var view = new View();
+                    var view = new ViewModel();
                     view.Name = data.Name;
                     view.Pages = data.Pages;
                     view.save(function (error) {
@@ -139,7 +150,7 @@ try {
                     });
                 });
 
-                var config = new configure;
+                var config = new Settings;
                 var views = config.initView.Views;
                 _.each(views, function (data, index) {
                     ev.emit("view", data);
@@ -172,7 +183,7 @@ router.get('/', (req:any, res:any):void => {
 });
 
 router.get('/document/:id', (req:any, res:any, next:any):void => {
-    Patient.findById(req.params.id, (finderror:any, patient:any):void => {
+    PatientModel.findById(req.params.id, (finderror:any, patient:any):void => {
         if (!finderror) {
             if (patient) {
                 res.render('document/index', {patient: patient});
@@ -205,7 +216,7 @@ router.get('/backend/partials/patient/patients', (req:any, res:any):void => {
 
 router.get('/backend/partials/patient/description/:id', (req:any, res:any, next:any):void => {
     var id = req.params.id;
-    Patient.findById(id, (error:any, patient:any):void => {
+    PatientModel.findById(id, (error:any, patient:any):void => {
         if (!error) {
             if (patient) {
                 res.render('backend/partials/patient/description', {patient: patient});
@@ -392,308 +403,68 @@ router.get('/front/partials/write', (req:any, res:any):void => {
     res.render('front/partials/write');
 });
 
-
 /*! patient */
-/*! create */
-router.post('/patient/accept', (req:any, res:any):void => {
-    logger.trace("begin /patient/accept");
-    wrapper.Guard(req, res, (req:any, res:any):void => {
-        var number:number = 1000;
-        //同時に同名でないこと（自動Accept対策)
-        var query = {"$and": [{'Information.name': req.body.Information.name}, {'Information.time': req.body.Information.time}]};
-        wrapper.Find(res, number, Patient, query, {}, {}, (res:any, docs:any) => {
-            if (docs.length == 0) {
-                var patient:any = new Patient();
-                patient.Information = req.body.Information;
-                patient.Date = new Date();
-                patient.Category = req.body.Category;
-                patient.Status = req.body.Status;
-                patient.Input = req.body.Input;
-                patient.Sequential = req.body.Sequential;
-                wrapper.Save(res, number, patient, (res:any, patient:any) => {
-                    wrapper.SendResult(res, 0, "OK", patient.Status);
-                    logger.trace("end /patient/accept");
-                });
-            } else {
-                wrapper.SendResult(res, number + 10, "", {});
-            }
-        });
-    });
-
-});
-
-/*! get */
-router.get('/patient/:id', (req:any, res:any):void => {
-    logger.trace("begin /patient/:id");
-    wrapper.Guard(req, res, (req:any, res:any) => {
-        var number:number = 2000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any) => {
-            wrapper.FindById(res, number, Patient, req.params.id, (res, patient) => {
-                wrapper.SendResult(res, 0, "OK", patient);
-                logger.trace("end /patient/:id");
-            });
-        });
-    });
-});
-
-/*! update */
-router.put('/patient/:id', (req:any, res:any):void => {
-    logger.trace("begin /patient/:id");
-    wrapper.Guard(req, res, (req:any, res:any) => {
-        var number:number = 3000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any) => {
-            wrapper.FindById(res, number, Patient, req.params.id, (res, patient) => {
-                patient.Status = req.body.Status;
-                patient.Input = req.body.Input;
-                patient.Sequential = req.body.Sequential;
-                wrapper.Save(res, number, patient, (res:any, patient:any) => {
-                    wrapper.SendResult(res, 0, "OK", patient);
-                    logger.trace("end /patient/:id");
-                });
-            });
-        });
-    });
-});
-
-/*! delete */
-router.delete('/patient/:id', (req:any, res:any):void => {
-    logger.trace("begin /patient/:id");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 4000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                wrapper.Remove(res, number, Patient, req.params.id, (res:any):void  => {
-                    wrapper.SendResult(res, 0, "OK", {});
-                    logger.trace("end /patient/:id");
-                });
-            });
-        });
-    });
-});
-
-/*! query */
-router.get('/patient/query/:query', (req:any, res:any):void => {
-    logger.trace("begin /patient/query/:query");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 5000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            var query = JSON.parse(decodeURIComponent(req.params.query));
-            wrapper.Find(res, number, Patient, query, {}, {sort: {Date: -1}}, (res:any, docs:any):void  => {
-                wrapper.SendResult(res, 0, "OK", docs);
-                logger.trace("end /patient/query/:query");
-            });
-        });
-    });
-});
-
-/*! query */
-router.get('/patient/count/:query', (req:any, res:any):void => {
-    logger.trace("begin /patient/count/:query");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 6000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            var query = JSON.parse(decodeURIComponent(req.params.query));
-            Patient.count(query, (error:any, docs:any):void => {
-                if (!error) {
-                    if (docs) {
-                        wrapper.SendResult(res, 0, "OK", docs);
-                        logger.trace("end /patient/count/:query");
-                    } else {
-                        wrapper.SendResult(res, 0, "OK", 0);
-                    }
-                } else {
-                    wrapper.SendError(res, number + 100, error.message, error);
-                }
-            });
-        });
-    });
-});
-
-/*! status */
-router.get('/patient/status/:id', (req:any, res:any):void => {
-    logger.trace("begin /patient/status/:id");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 7000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            wrapper.FindById(res, number, Patient, req.params.id, (res:any, patient:any):void  => {
-                wrapper.SendResult(res, 0, "OK", patient.Status);
-                logger.trace("end /patient/status/:id");
-            });
-        });
-    });
-});
-
-router.put('/patient/status/:id', (req:any, res:any):void => {
-    logger.trace("begin /patient/status/:id");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 8000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                wrapper.FindById(res, number, Patient, req.params.id, (res:any, patient:any):void  => {
-                    patient.Status = req.body.Status;
-                    wrapper.Save(res, number, patient, (res:any, patient:any):void  => {
-                        wrapper.SendResult(res, 0, "OK", patient.Status);
-                        logger.trace("end /patient/status/:id");
-                    });
-                });
-            });
-        });
-    });
-});
+router.post('/patient/accept', partient_controller.post_patient_accept);
+router.get('/patient/:id', partient_controller.get_patient_id);
+router.put('/patient/:id', partient_controller.put_patient_id);
+router.delete('/patient/:id', partient_controller.delete_patient_id);
+router.get('/patient/query/:query', partient_controller.get_patient_query_query);
+router.get('/patient/count/:query', partient_controller.get_patient_count_query);
+router.get('/patient/status/:id', partient_controller.get_patient_status_id);
+router.put('/patient/status/:id', partient_controller.put_patient_status_id);
 
 /*! account */
-/*! create */
-router.post('/account/create', (request:any, response:any):void => {
-    logger.trace("begin /account/create");
-    wrapper.Guard(request, response, (request:any, response:any):void  => {
-        var number:number = 9000;
-        wrapper.Authenticate(request, response, number, (user:any, res:any):void  => {
-            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                wrapper.FindOne(res, number, Account, {username: request.body.username.toLowerCase()}, (res:any, account:any):void  => {
-                    if (!account) {
-                        Account.register(new Account({username: request.body.username, type: request.body.type}),
-                            request.body.password,
-                            (error:any, account:any):void => {
-                                if (!error) {
-                                    wrapper.SendResult(res, 0, "OK", account);
-                                    logger.trace("end /account/create");
-                                } else {
-                                    wrapper.SendError(response, number + 100, error.message, error);
-                                }
-                            });
-                    } else {
-                        wrapper.SendResult(res, 1, "Already found", {});
-                    }
-                });
-            });
-        });
-    });
-});
+router.post('/account/create', account_controller.post_account_create);
+router.post('/account/logout', account_controller.post_account_logout);
+router.post('/account/login', account_controller.post_account_login);
+router.get('/account/:id', account_controller.get_account_id);
+router.put('/account/:id', account_controller.put_account_id);
+router.delete('/account/:id', account_controller.delete_account_id);
+router.get('/account/query/:query', account_controller.get_account_query_query);
+router.put('/account/password/:id', account_controller.get_account_password_id);
 
-/*! logout */
-router.post('/account/logout', (req:any, res:any):void => {
-    logger.trace("begin /account/logout");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        req.logout();
-        wrapper.SendResult(res, 0, "OK", {});
-        logger.trace("end /account/logout");
-    });
-});
+/*! views */
+router.post('/view',view_controller.post_view);
+router.post('/view/create',view_controller.post_view_create);
+router.get('/view/:id',view_controller.get_view_id );
+router.put('/view/:id',view_controller.put_view_id );
+router.delete('/view/:id',view_controller.delete_view_id );
+router.get('/view/query/:query',view_controller.get_view_query_query);
 
-/*! login */
-router.post('/account/login', (request:any, response:any, next:any):void  => {
-    passport.authenticate('local', (error:any, user:any, info:any):void  => {
-        var number:number = 10000;
-        try {
+/*! file */
+router.get('/file/:name', file_controller.get_file_name);
+router.post('/file/:name', file_controller.post_file_name);
+router.put('/file/:name', file_controller.put_file_name);
+router.delete('/file/:name', file_controller.delete_file_name);
+router.get('/file/query/:query', file_controller.get_file_query_query);
+
+
+router.get('/pdf/:id', (request:any, response:any, next:any):void => {
+    try {
+        logger.trace("begin /pdf/:id");
+        PatientModel.findById(request.params.id, (error:any, patient:any):void => {
             if (!error) {
-                if (user) {
-                    logger.trace("begin /account/login");
-                    request.login(user, (error:any):void => {
-                        if (!error) {
-                            wrapper.SendResult(response, 0, "OK", user);
-                            logger.trace("end /account/login");
-                        } else {
-                            wrapper.SendError(response, number + 1, error.message, error);
-                        }
+                if (patient) {
+                    var format = new formatpdf;
+                    var doc = format.write(patient);
+                    doc.write('public/output/output.pdf', () => {
+                        var responsePDF = fs.createReadStream('public/output/output.pdf');
+                        responsePDF.pipe(response);
+                        logger.trace("end /pdf/:id");
                     });
                 } else {
-                    wrapper.SendResult(response, number + 2, "", {});
+                    logger.error("//pdf/:id 1");
+                    next();
                 }
             } else {
-                wrapper.SendError(response, number + 3, error.message, error);
+                logger.error("//pdf/:id 2");
+                next();
             }
-        } catch (e) {
-            wrapper.SendFatal(response, 100000, e.message, e);
-        }
-    })(request, response, next);
-});
-
-/*! get */
-router.get('/account/:id', (req:any, res:any):void => {
-    logger.trace("begin /account/:id");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 11000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            wrapper.FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
-                wrapper.SendResult(res, 0, "OK", account);
-                logger.trace("end /account/:id");
-            });
         });
-    });
-});
-
-/*! update */
-router.put('/account/:id', (req:any, res:any):void => {
-    logger.trace("begin /account/:id");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 12000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                wrapper.FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
-                    account.username = req.body.username;
-                    account.type = req.body.type;
-                    wrapper.Save(res, number, account, (res:any, account:any):void  => {
-                        wrapper.SendResult(res, 0, "OK", account);
-                        logger.trace("end /account/:id");
-                    });
-                });
-            });
-        });
-    });
-});
-
-/*! delete */
-router.delete('/account/:id', (req:any, res:any):void => {
-    logger.trace("begin /account/:id");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 13000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                wrapper.Remove(res, number, Account, req.params.id, (res:any):void  => {
-                    wrapper.SendResult(res, 0, "OK", {});
-                    logger.trace("end /account/:id");
-                });
-            });
-        });
-    });
-});
-
-/*! query */
-router.get('/account/query/:query', (req:any, res:any):void => {
-    logger.trace("begin /account/query/:query");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 14000;
-        // Authenticate(req, res, number, (user:any, res:any) => {
-        var query:any = JSON.parse(decodeURIComponent(req.params.query));
-        wrapper.Find(res, number, Account, query, {}, {}, (res:any, docs:any):void  => {
-            wrapper.SendResult(res, 0, "OK", wrapper.StripAccounts(docs));
-            logger.trace("end /account/query/:query");
-        });
-        //});
-    });
-});
-
-/*! update */
-router.put('/account/password/:id', (req:any, res:any):void => {
-    logger.trace("begin /account/query/:query");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 15000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            //  If(res, number, (user.type != "Viewer"), (res:any) => {
-            wrapper.FindById(res, number, Account, req.params.id, (res:any, account:any):void  => {
-                account.setPassword(req.body.password, (error:any):void  => {
-                    if (!error) {
-                        wrapper.Save(res, number, account, (res:any, account:any):void  => {
-                            wrapper.SendResult(res, 0, "OK", account);
-                        });
-                    } else {
-                        wrapper.SendError(res, number + 200, error.message, error);
-                    }
-                });
-            });
-            //  });
-        });
-    });
+    } catch (e) {
+        logger.error("//pdf/:id 3");
+        next();
+    }
 });
 
 /*! config */
@@ -730,488 +501,6 @@ router.put('/config', (req:any, res:any):void => {
     });
 });
 
-/*! views */
-/*! create view */
-router.post('/view', (req:any, res:any):void => {
-    logger.trace("begin /view");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 18000;
-        var view:any = new View();
-        var data:any = req.body.data;
-        var viewdata:any = JSON.parse(data);
-        view.Pages = viewdata.Pages;
-        view.Name = viewdata.Name;
-        wrapper.Save(res, number, view, (res:any, view:any):void  => {
-            wrapper.SendResult(res, 0, "OK", view);
-            logger.trace("end /view");
-        });
-    });
-});
-
-router.post('/view/create', (req:any, res:any):void => {
-    logger.trace("begin /view/create");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 19000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                View.count({Name: req.body.Name}, (error:any, count:number):void => {
-                    if (!error) {
-                        if (count == 0) {
-                            var view:any = new View();
-                            view.Name = req.body.Name;
-                            view.Pages = req.body.Pages;
-                            wrapper.Save(res, number, view, (res:any, view:any):void  => {
-                                wrapper.SendResult(res, 0, "OK", view);
-                                logger.trace("end /view/create");
-                            });
-                        } else {
-                            wrapper.SendResult(res, number + 1, "Already Found.", {});
-                        }
-                    } else {
-                        wrapper.SendError(res, number + 20, error.message, error);
-                    }
-                });
-            });
-        });
-    });
-});
-
-/*! get view */
-router.get('/view/:id', (req:any, res:any):void => {
-    logger.trace("begin /view/:id");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 20000;
-        wrapper.FindById(res, number, View, req.params.id, (res:any, view:any):void  => {
-            wrapper.SendResult(res, 0, "OK", view);
-        });
-    });
-});
-
-/*! update */
-router.put('/view/:id', (req:any, res:any):void => {
-    logger.trace("begin /view/:id");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 21000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                wrapper.FindById(res, number, View, req.params.id, (res:any, view:any):void => {
-                    view.Name = req.body.Name;
-                    view.Pages = req.body.Pages;
-                    wrapper.Save(res, number, view, (res:any, object:any):void  => {
-                        wrapper.SendResult(res, 0, "OK", view);
-                        logger.trace("end /view/:id");
-                    });
-                });
-            });
-        });
-    });
-});
-
-/*! delete */
-router.delete('/view/:id', (req:any, res:any):void => {
-    logger.trace("begin /view/:id");
-    wrapper.Guard(req, res, (req:any, res:any):void  => {
-        var number:number = 22000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
-                wrapper.Remove(res, number, View, req.params.id, (res:any):void  => {
-                    wrapper.SendResult(res, 0, "OK", {});
-                    logger.trace("end /view/:id");
-                });
-            });
-        });
-    });
-});
-
-/*! query */
-router.get('/view/query/:query', (req:any, res:any):void => {
-    logger.trace("begin /view/:id");
-    wrapper.Guard(req, res, (req:any, res:any):void => {
-        var number:number = 23000;
-        wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
-            var query:any = JSON.parse(decodeURIComponent(req.params.query));
-            wrapper.Find(res, number, View, {}, {}, {}, (res:any, views:any):void  => {
-                wrapper.SendResult(res, 0, "OK", views);
-                logger.trace("end /view/:id");
-            });
-        });
-    });
-});
-
-
-router.get('/pdf/:id', (request:any, response:any, next:any):void => {
-    try {
-        logger.trace("begin /pdf/:id");
-        Patient.findById(request.params.id, (error:any, patient:any):void => {
-            if (!error) {
-                if (patient) {
-                    var format = new formatpdf;
-                    var doc = format.write(patient);
-                    doc.write('public/output/output.pdf', () => {
-                        var responsePDF = fs.createReadStream('public/output/output.pdf');
-                        responsePDF.pipe(response);
-                        logger.trace("end /pdf/:id");
-                    });
-                } else {
-                    logger.error("//pdf/:id 1");
-                    next();
-                }
-            } else {
-                logger.error("//pdf/:id 2");
-                next();
-            }
-        });
-    } catch (e) {
-        logger.error("//pdf/:id 3");
-        next();
-    }
-});
-
-router.get('/file/:name', (request:any, response:any, next:any):void => {
-    try {
-        logger.trace("begin /file/:name");
-        var conn = mongoose.createConnection(config.connection);
-        conn.once('open', (error:any):void => {
-            if (!error) {
-                var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
-                if (gfs) {
-                    conn.db.collection('fs.files', (error:any, collection:any):void => {
-                        if (!error) {
-                            if (collection) {
-                                collection.findOne({filename: request.params.name}, (error:any, item:any):void => {
-                                    if (!error) {
-                                        if (item) {
-                                            var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
-                                            if (gfs) {
-                                                var readstream = gfs.createReadStream({filename: request.params.name});
-                                                if (readstream) {
-                                                    readstream.pipe(response);
-                                                    readstream.on('close', (file:any):void => {
-                                                        conn.db.close();
-                                                        logger.trace("end /file/:name");
-                                                    });
-                                                } else {
-                                                    conn.db.close();
-                                                    logger.error("/file/:name 1");
-                                                    next();
-                                                }
-                                            } else {
-                                                conn.db.close();
-                                                logger.error("/file/:name 2");
-                                                next();
-                                            }
-                                        } else {
-                                            conn.db.close();
-                                            logger.error("/file/:name 3");
-                                            next();
-                                        }
-                                    } else {
-                                        conn.db.close();
-                                        logger.error("/file/:name 4");
-                                        next();
-                                    }
-                                });
-                            } else {
-                                conn.db.close();
-                                logger.error("/file/:name 5");
-                                next();
-                            }
-                        } else {
-                            conn.db.close();
-                            logger.error("/file/:name 6");
-                            next();
-                        }
-                    });
-                } else {
-                    conn.db.close();
-                    logger.error("/file/:name 7");
-                    next();
-                }
-            } else {
-                conn.db.close();
-                logger.error("/file/:name 8");
-                next();
-            }
-        });
-    } catch (e) {
-        logger.error("/file/:name 9");
-        next();
-    }
-});
-
-router.post('/file/:name', (request:any, response:any):void => {
-    logger.trace("begin /file/:name");
-    wrapper.Guard(request, response, (request:any, response:any):void => {
-        var number:number = 24000;
-        wrapper.Authenticate(request, response, number, (user:any, response:any):void  => {
-            var conn = mongoose.createConnection(config.connection);
-            if (conn) {
-                conn.once('open', (error:any):void  => {
-                    if (!error) {
-                        var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
-                        if (gfs) {
-                            conn.db.collection('fs.files', (error:any, collection:any):void => {
-                                if (!error) {
-                                    if (collection) {
-                                        collection.findOne({filename: request.params.name}, (error:any, item:any):void => {
-                                            if (!error) {
-                                                if (!item) {
-
-                                                    var parseDataURL = (dataURL:any):any => {
-                                                        var rslt = {
-                                                            mediaType: null,
-                                                            encoding: null,
-                                                            isBase64: null,
-                                                            data: null
-                                                        };
-                                                        if (/^data:([^;]+)(;charset=([^,;]+))?(;base64)?,(.*)/.test(dataURL)) {
-                                                            rslt.mediaType = RegExp.$1 || 'text/plain';
-                                                            rslt.encoding = RegExp.$3 || 'US-ASCII';
-                                                            rslt.isBase64 = String(RegExp.$4) === ';base64';
-                                                            rslt.data = RegExp.$5;
-                                                        }
-                                                        return rslt;
-                                                    };
-
-                                                    var info = parseDataURL(request.body.url);
-                                                    var chunk = info.isBase64 ? new Buffer(info.data, 'base64') : new Buffer(unescape(info.data), 'binary');
-                                                    var writestream = gfs.createWriteStream({filename: request.params.name});
-                                                    if (writestream) {
-                                                        writestream.write(chunk);
-                                                        writestream.end();
-                                                        writestream.on('close', (file:any):void => {
-                                                            conn.db.close();
-                                                            wrapper.SendResult(response, 0, "OK", {});
-                                                            logger.trace("end /file/:name");
-                                                        });
-                                                    } else {
-                                                        conn.db.close();
-                                                        wrapper.SendFatal(response, number + 40, "stream not open", {});
-                                                    }
-                                                } else {
-                                                    conn.db.close();
-                                                    wrapper.SendWarn(response, number + 1, "already found", {});
-                                                }
-                                            } else {
-                                                conn.db.close();
-                                                wrapper.SendError(response, number + 100, error.message, error);
-                                            }
-                                        });
-                                    } else {
-                                        conn.db.close();
-                                        wrapper.SendFatal(response, number + 30, "no collection", {});
-                                    }
-                                } else {
-                                    conn.db.close();
-                                    wrapper.SendError(response, number + 100, error.message, error);
-                                }
-                            });
-                        } else {
-                            conn.db.close();
-                            wrapper.SendFatal(response, number + 20, "no gfs", {});
-                        }
-                    } else {
-                        conn.db.close();
-                        wrapper.SendError(response, number + 100, error.message, error);
-                    }
-                });
-            } else {
-                wrapper.SendError(response, number + 10, "connection error", {});
-            }
-        });
-    });
-});
-
-router.put('/file/:name', (request:any, response:any):void => {
-    logger.trace("begin /file/:name");
-    wrapper.Guard(request, response, (request:any, response:any):void => {
-        var number:number = 25000;
-        wrapper.Authenticate(request, response, number, (user:any, response:any):void => {
-            var conn = mongoose.createConnection(config.connection);
-            if (conn) {
-                conn.once('open', (error:any):void  => {
-                    if (!error) {
-                        var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
-                        if (gfs) {
-                            conn.db.collection('fs.files', (error:any, collection:any):void  => {
-                                if (!error) {
-                                    if (collection) {
-                                        collection.findOne({filename: request.params.name}, (error:any, item:any):void => {
-                                            if (!error) {
-                                                if (item) {
-                                                    collection.remove({filename: request.params.name}, () => {
-
-                                                        var parseDataURL = (dataURL:any):any => {
-                                                            var rslt = {
-                                                                mediaType: null,
-                                                                encoding: null,
-                                                                isBase64: null,
-                                                                data: null
-                                                            };
-                                                            if (/^data:([^;]+)(;charset=([^,;]+))?(;base64)?,(.*)/.test(dataURL)) {
-                                                                rslt.mediaType = RegExp.$1 || 'text/plain';
-                                                                rslt.encoding = RegExp.$3 || 'US-ASCII';
-                                                                rslt.isBase64 = String(RegExp.$4) === ';base64';
-                                                                rslt.data = RegExp.$5;
-                                                            }
-                                                            return rslt;
-                                                        };
-
-                                                        var info = parseDataURL(request.body.url);
-                                                        var chunk = info.isBase64 ? new Buffer(info.data, 'base64') : new Buffer(unescape(info.data), 'binary');
-                                                        var writestream = gfs.createWriteStream({filename: request.params.name});
-                                                        if (writestream) {
-                                                            writestream.write(chunk);
-                                                            writestream.end();
-                                                            writestream.on('close', (file:any):void => {
-                                                                conn.db.close();
-                                                                wrapper.SendResult(response, 0, "OK", {});
-                                                                logger.trace("end /file/:name");
-                                                            });
-                                                        } else {
-                                                            conn.db.close();
-                                                            wrapper.SendFatal(response, number + 40, "stream not open", {});
-                                                        }
-                                                    });
-                                                } else {
-                                                    conn.db.close();
-                                                    wrapper.SendWarn(response, number + 1, "not found", {});
-                                                }
-                                            } else {
-                                                conn.db.close();
-                                                wrapper.SendError(response, number + 100, error.message, error);
-                                            }
-                                        });
-                                    } else {
-                                        wrapper.SendFatal(response, number + 30, "no collection", {});
-                                    }
-                                } else {
-                                    conn.db.close();
-                                    wrapper.SendError(response, number + 100, error.message, error);
-                                }
-                            });
-                        } else {
-                            conn.db.close();
-                            wrapper.SendFatal(response, number + 20, "no gfs", {});
-                        }
-                    } else {
-                        conn.db.close();
-                        wrapper.SendError(response, number + 100, error.message, error);
-                    }
-                });
-            } else {
-                wrapper.SendError(response, number + 10, "connection error", {});
-            }
-        });
-    });
-});
-
-router.delete('/file/:name', (request:any, response:any):void => {
-    logger.trace("begin /file/:name");
-    wrapper.Guard(request, response, (request:any, response:any):void => {
-        var number:number = 26000;
-        wrapper.Authenticate(request, response, number, (user:any, response:any) => {
-            var conn = mongoose.createConnection(config.connection);
-            if (conn) {
-                conn.once('open', (error:any):void => {
-                    if (!error) {
-                        var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
-                        if (gfs) {
-                            conn.db.collection('fs.files', (error:any, collection:any):void => {
-                                if (!error) {
-                                    if (collection) {
-                                        collection.findOne({filename: request.params.name}, (error:any, item:any):void => {
-                                            if (!error) {
-                                                if (item) {
-                                                    collection.remove({filename: request.params.name}, ():void => {
-                                                        wrapper.SendResult(response, 0, "OK", {});
-                                                        conn.db.close();
-                                                        logger.trace("end /file/:name");
-                                                    });
-                                                } else {
-                                                    conn.db.close();
-                                                    wrapper.SendWarn(response, number + 1, "not found", {});
-                                                }
-                                            } else {
-                                                conn.db.close();
-                                                wrapper.SendError(response, number + 100, error.message, error);
-                                            }
-                                        });
-                                    } else {
-                                        conn.db.close();
-                                        wrapper.SendFatal(response, number + 30, "no collection", {});
-                                    }
-                                } else {
-                                    conn.db.close();
-                                    wrapper.SendError(response, number + 100, error.message, error);
-                                }
-                            });
-                        } else {
-                            conn.db.close();
-                            wrapper.SendFatal(response, number + 20, "gfs error", {});
-                        }
-                    } else {
-                        conn.db.close();
-                        wrapper.SendError(response, number + 100, error.message, error);
-                    }
-                });
-            } else {
-                wrapper.SendError(response, number + 10, "connection error", {});
-            }
-        });
-    });
-});
-
-router.get('/file/query/:query', (request:any, response:any, next:any):void => {
-    logger.trace("/file/query/:query");
-   // wrapper.Guard(request, response, (request:any, response:any):void => {
-        var number:number = 27000;
-    //    wrapper.Authenticate(request, response, number, (user:any, response:any) => {
-            var conn = mongoose.createConnection(config.connection);
-         if (conn) {
-             conn.once('open', (error:any):void => {
-                 if (!error) {
-                     var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
-                     if (gfs) {
-                         conn.db.collection('fs.files', (error:any, collection:any):void => {
-                             if (!error) {
-                                 if (collection) {
-                                     //var query = JSON.parse(decodeURIComponent(request.params.query));
-                                     collection.find({}).toArray(function (error, docs) {
-                                         if (!error) {
-                                             conn.db.close();
-                                             logger.trace("end /file/query/:query");
-                                             wrapper.SendResult(response, 0, "OK", docs);
-                                         } else {
-                                             conn.db.close();
-                                             wrapper.SendError(response, number + 100, error.message, error);
-                                         }
-                                     });
-                                 } else {
-                                     conn.db.close();
-                                     wrapper.SendFatal(response, number + 30, "no collection", {});
-                                 }
-                             } else {
-                                 conn.db.close();
-                                 wrapper.SendError(response, number + 100, error.message, error);
-                             }
-                         });
-                     } else {
-                         conn.db.close();
-                         wrapper.SendFatal(response, number + 20, "gfs error", {});
-                     }
-                 } else {
-                     conn.db.close();
-                     wrapper.SendError(response, number + 100, error.message, error);
-                 }
-             });
-         } else {
-             wrapper.SendError(response, number + 10, "connection error", {});
-         }
-
-    //    });
- //   });
-});
 
 //Test area
 

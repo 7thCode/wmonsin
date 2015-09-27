@@ -4,7 +4,7 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
-- var content = {headline:"診療科コピー", cancel:"キャンセル", depertment:"診療科名", copy:"コピー" }
+- var content = {headline:"診療科コピー", cancel:"キャンセル", depertment:"診療科名", copy:"コピー", required:"必ず入力してください", toolong:"もうすこし短くしてください" }
 
 md-dialog.box-edge(flex)
     md-toolbar
@@ -24,8 +24,8 @@ md-dialog.box-edge(flex)
                     label #{content.depertment}
                     input(ng-model="items.department", data-ng-required="true", name="department", placeholder='Enter Department name', md-maxlength="30", required)
                     div(ng-messages="validate.department.$error")
-                        div(ng-message="required") 必ず入力してください.
-                        div(ng-message="md-maxlength") もうすこし短くしてください.
+                        div(ng-message="required") #{content.required}
+                        div(ng-message="md-maxlength") #{content.toolong}
 
             md-divider
             div.md-actions(layout="row", layout-align="space-around center")

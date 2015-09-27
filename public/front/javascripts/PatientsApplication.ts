@@ -5,12 +5,6 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-///<reference path="../../../../DefinitelyTyped/jquery/jquery.d.ts" />
-///<reference path="../../../../DefinitelyTyped/angularjs/angular.d.ts" />
-///<reference path="../../../../DefinitelyTyped/express/express.d.ts" />
-///<reference path="../../../../DefinitelyTyped/fabricjs/fabricjs.d.ts" />
-///<reference path="../../../../DefinitelyTyped/lodash/lodash.d.ts" />
-
 'use strict';
 
 var app:angular.IModule = angular.module('PatientsApplication', ['ui.router', 'PatientsControllers', 'TopControllers']);
@@ -50,9 +44,9 @@ app.config(['$stateProvider', '$urlRouterProvider','$compileProvider','$httpProv
                 //     return "/front/partials/browse2/page2";
             },
             controller: 'BrowseController'
-        }).
+        })
 
-        state('write', {
+        .state('write', {
             url: "/write",
             templateUrl: "/front/partials/write",
             controller: 'WriteController'

@@ -24,6 +24,15 @@ app.config(['$translateProvider', function($translateProvider) {
 }]);
 */
 
+app.run([
+    '$rootScope',
+    function($rootScope) {
+        $rootScope.$on("$routeChangeSuccess", function (event, current, previous, rejection) {
+           var a = 1;
+        });
+    }
+]);
+
 app.config(['$stateProvider', '$urlRouterProvider','$compileProvider','$httpProvider', ($stateProvider:any, $urlRouterProvider:any, $compileProvider:any, $httpProvider:any):void => {
 
     $compileProvider.debugInfoEnabled(false);
@@ -31,7 +40,6 @@ app.config(['$stateProvider', '$urlRouterProvider','$compileProvider','$httpProv
     $httpProvider.defaults.headers.common = {'x-requested-with': 'XMLHttpRequest'};
 
     $stateProvider
-
 
         .state('start', {
             url: '/start',
