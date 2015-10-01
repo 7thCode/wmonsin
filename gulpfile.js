@@ -5,6 +5,7 @@ var ftp = require('vinyl-ftp');
 var ts = require('gulp-typescript');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
+var rename = require("gulp-rename");
 var rimraf = require('rimraf');
 var less = require('gulp-less');
 var minifycss = require('gulp-minify-css');
@@ -52,9 +53,10 @@ gulp.task('js', function () {
             'public/backend/javascripts/*.js',
             'public/front/javascripts/*.js'
         ],
-        {base: '..'}
-    )
+        {base: '..'})
         .pipe(uglify())
+        .pipe(rename({extname: '.min.js'}))
+        .pipe(gulp.dest('../'))
         .pipe(gulp.dest('dist'));
 });
 
@@ -69,8 +71,7 @@ gulp.task('jsconcat', function () {
             'public/backend/javascripts/*.js',
             'public/front/javascripts/*.js'
         ],
-        {base: '..'}
-    )
+        {base: '..'})
         .pipe(uglify())
         .pipe(concat('client.min.js'))
         .pipe(gulp.dest('dist/wmonsin/public/javascripts'))
@@ -91,7 +92,6 @@ gulp.task('ftp', function () {
     return gulp.src(['dist/**'], {base: 'app/wmonsin', buffer: false})
         .pipe(conn.newer('/'))
         .pipe(conn.dest('/'));
-
 });
 
 gulp.task('default', ['copy', 'css', 'js'], function () {

@@ -149,7 +149,7 @@ class AccountController {
 
     /*! query */
     get_account_query_query(req:any, res:any):void {
-       logger.trace("begin /account/query/:query");
+        logger.trace("begin /account/query/:query");
         wrapper.Guard(req, res, (req:any, res:any):void  => {
             var number:number = 14000;
             // Authenticate(req, res, number, (user:any, res:any) => {

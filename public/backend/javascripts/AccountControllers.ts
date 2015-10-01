@@ -265,25 +265,18 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
                 controller: 'LoginDialogController',
                 templateUrl: '/backend/partials/account/logindialog',
                 targetEvent: null
-            }).then((answer:any):void => { // Answer
-                var account:any = new Login();
-                account.username = answer.items.username;
-                account.password = answer.items.password;
-                account.$login((account:any):void => {
-                    if (account) {
-                        if (account.code === 0) {
+            }).then((account:any):void => { // Answer
+
+
                             CurrentAccount.username = account.value.username;
                             CurrentAccount.type = account.value.type;
                             $scope.username = account.value.username;
                             $scope.type = account.value.type;
                             localStorage.setItem("account", JSON.stringify(CurrentAccount));
                             $rootScope.$broadcast('Login');
-                        }
-                        $mdToast.show($mdToast.simple().content(account.message));
-                    } else {
-                        $mdToast.show($mdToast.simple().content("login error"));
-                    }
-                });
+
+
+
             }, ():void => { // Error
             });
         };
@@ -1548,8 +1541,8 @@ controllers.controller('PatientTotalSheetControl', ['$scope', '$mdBottomSheet', 
 
     }]);
 
-controllers.controller('LoginDialogController', ['$scope', '$q', '$mdDialog', 'AccountQuery',
-    ($scope:any, $q:any, $mdDialog:any, AccountQuery:any):void  => {
+controllers.controller('LoginDialogController', ['$scope', '$q', '$mdDialog', '$mdToast', 'AccountQuery','Login',
+    ($scope:any, $q:any, $mdDialog:any,$mdToast:any, AccountQuery:any, Login:any):void  => {
 
         $scope.querySearch = (querystring:any):any => {
             var deferred = $q.defer();
@@ -1576,7 +1569,19 @@ controllers.controller('LoginDialogController', ['$scope', '$q', '$mdDialog', 'A
         };
 
         $scope.answer = (answer:any):void  => {
-            $mdDialog.hide($scope);
+            var account:any = new Login();
+            account.username = answer.items.username;
+            account.password = answer.items.password;
+            account.$login((account:any):void => {
+                if (account) {
+                    if (account.code === 0) {
+                        $mdDialog.hide(account);
+                    }
+                    $mdToast.show($mdToast.simple().content(account.message));
+                } else {
+                    $mdToast.show($mdToast.simple().content("login error"));
+                }
+            });
         };
 
     }]);

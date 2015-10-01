@@ -72,7 +72,6 @@ logger.info('Index.js Start.');
 
 //csrf
 
-
 module.exports = router;
 
 // init db data
@@ -185,7 +184,7 @@ function DeCipher(name:any, password:any):any {
 */
 
 router.get('/', (req:any, res:any):void => {
-    res.render('index', {deveropment: (config.state == "deveropment")});
+    res.render('index', {development:(config.state == "development")});
 });
 
 router.get('/document/:id', (req:any, res:any, next:any):void => {
@@ -209,7 +208,7 @@ router.get('/partials/logo', (req:any, res:any, next:Function):void => {
 });
 
 router.get('/backend/', (req:any, res:any):void => {
-    res.render('backend/index', {deveropment: (config.state == "deveropment")});
+    res.render('backend/index', {development: (config.state == "development")});
 });
 
 router.get('/backend/partials/patient/start', (req:any, res:any):void => {
@@ -392,7 +391,7 @@ router.get('/backend/partials/error', (req:any, res:any):void => {
 
 /*! front */
 router.get('/front/', (req:any, res:any):void => {
-    res.render('front/index', {deveropment: (config.state == "deveropment")});
+    res.render('front/index', {development: (config.state == "development")});
 });
 
 router.get('/front/partials/browseS', (req:any, res:any):void => {

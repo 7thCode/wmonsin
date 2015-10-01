@@ -220,6 +220,7 @@ app.use(function (req, res, next) {
 
 if (config.state === 'development') {
     app.use((err:any, req:any, res:any, next:any):void => {
+        logger.fatal(err.message);
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,

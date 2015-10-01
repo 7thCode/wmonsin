@@ -15,8 +15,9 @@ block content
 
 block include
 
-    if deveropment
+    if development
         script(type="text/javascript", src="javascripts/TopApplication.js")
         script(type="text/javascript", src="javascripts/TopControllers.js")
     else
-        script(type="text/javascript", src="javascripts/client.min.js")
+        script(type="text/javascript", src="javascripts/TopApplication.min.js")
+        script(type="text/javascript", src="javascripts/TopControllers.min.js")
