@@ -16,7 +16,7 @@ md-content.background
                 ng-md-icon.iconfill(icon="save", size="46", id="icon")
                 md-tooltip #{content.save}
 
-            md-button.md-fab.md-warn(ng-click="showSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'")
+            md-button.md-fab.md-warn(ng-click="showConfigSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'")
                 ng-md-icon.iconfill(icon="{{icon}}", size="46", options='{"rotation": "none"}')
                 md-tooltip Open Tools...
 

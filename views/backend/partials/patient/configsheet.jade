@@ -1,0 +1,16 @@
+//
+    patientdialog.jade　
+    Copyright (c) 2015 7ThCode.
+    This software is released under the MIT License.
+    http://opensource.org/licenses/mit-license.php
+
+md-bottom-sheet.md-grid
+    //md-card-content
+        md-input-container
+            label Query
+            input(ng-model="query",data-ng-required="true", name="query", placeholder='Query', type="text", md-maxlength="30")
+    md-list
+        md-item(ng-repeat="item in items")
+            md-button(ng-click="ItemClick($index)", class="md-grid-item-content")
+                ng-md-icon.iconfill(icon="{{item.icon}}", size="46")
+                .md-grid-text(ng-bind="item.name")

@@ -461,6 +461,20 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                     });
                 }
             });
+
+
+            $scope.showTotalSheet = ($event:any):void  => {
+                $scope.icon = "vertical_align_bottom";
+                $mdBottomSheet.show({
+                    templateUrl: '/backend/partials/patient/totalsheet',
+                    controller: 'PatientTotalSheetControl',
+                    targetEvent: $event
+                }).then((clickedItem:any):void  => {
+                    $scope.icon = "vertical_align_top";
+                }, ():void  => {
+                    $scope.icon = "vertical_align_top"
+                });
+            };
         }
         else {
             $state.go('start');
@@ -1485,11 +1499,11 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
         };
 
         $scope.icon = "vertical_align_top";
-        $scope.showSheet = ($event:any):void  => {
+        $scope.showConfigSheet = ($event:any):void  => {
             $scope.icon = "vertical_align_bottom";
             $mdBottomSheet.show({
-                templateUrl: '/backend/partials/patient/sheet',
-                controller: 'PatientSheetControl',
+                templateUrl: '/backend/partials/patient/configsheet',
+                controller: 'PatientConfigSheetControl',
                 targetEvent: $event
             }).then((clickedItem:any):void  => {
                 $scope.icon = "vertical_align_top";
@@ -1497,21 +1511,6 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
                 $scope.icon = "vertical_align_top"
             });
         };
-
-
-        $scope.showTotalSheet = ($event:any):void  => {
-            $scope.icon = "vertical_align_bottom";
-            $mdBottomSheet.show({
-                templateUrl: '/backend/partials/patient/totalsheet',
-                controller: 'PatientTotalSheetControl',
-                targetEvent: $event
-            }).then((clickedItem:any):void  => {
-                $scope.icon = "vertical_align_top";
-            }, ():void  => {
-                $scope.icon = "vertical_align_top"
-            });
-        };
-
 
     }]);
 
@@ -1540,6 +1539,18 @@ controllers.controller('PatientTotalSheetControl', ['$scope', '$mdBottomSheet', 
         };
 
     }]);
+
+controllers.controller('PatientConfigSheetControl', ['$scope', '$mdBottomSheet', '$location',
+    ($scope:any, $mdBottomSheet:any, $location:any):void  => {
+
+        $scope.items = [];
+
+        $scope.ItemClick = ($index:any):void  => {
+            $mdBottomSheet.hide($scope.items[$index]);
+        };
+
+    }]);
+
 
 controllers.controller('LoginDialogController', ['$scope', '$q', '$mdDialog', '$mdToast', 'AccountQuery','Login',
     ($scope:any, $q:any, $mdDialog:any,$mdToast:any, AccountQuery:any, Login:any):void  => {

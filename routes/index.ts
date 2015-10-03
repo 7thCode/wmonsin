@@ -244,6 +244,14 @@ router.get('/backend/partials/patient/sheet', (req:any, res:any):void => {
     res.render('backend/partials/patient/sheet');
 });
 
+router.get('/backend/partials/patient/totalsheet', (req:any, res:any):void => {
+    res.render('backend/partials/patient/totalsheet');
+});
+
+router.get('/backend/partials/patient/configsheet', (req:any, res:any):void => {
+    res.render('backend/partials/patient/configsheet');
+});
+
 /*! partials */
 router.get('/backend/partials/account/accounts', (req:any, res:any):void => {
     res.render('backend/partials/account/accounts');

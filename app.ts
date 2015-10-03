@@ -162,12 +162,13 @@ app.use(session({
         maxAge: 365 * 24 * 60 * 60 * 1000
     },
     store: new MongoStore({
-        mongooseConnection: mongoose.connection,
-        ttl: 365 * 24 * 60 * 60
+        mongooseConnection: mongoose.connection
+
     })
 }));
 
 // clear_interval: 60 * 60
+// ttl: 365 * 24 * 60 * 60
 
 //passport
 app.use(passport.initialize());
