@@ -1568,10 +1568,10 @@ controllers.controller('LoginDialogController', ['$scope', '$q', '$mdDialog', '$
             $mdDialog.cancel();
         };
 
-        $scope.answer = (answer:any):void  => {
+        $scope.answer = (items:any):void  => {
             var account:any = new Login();
-            account.username = answer.items.username;
-            account.password = answer.items.password;
+            account.username = items.username;
+            account.password = items.password;
             account.$login((account:any):void => {
                 if (account) {
                     if (account.code === 0) {
@@ -1870,7 +1870,7 @@ controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 
         $scope.processFiles = (files:any):void => {
             var filename = files[0].name;
             List(FileQuery, {filename: filename}, (data:any):void  => {
-                if (data.length == 0) {
+                if (data.length === 0) {
                     $scope.items.path = filename;
                     $scope.images[0] = {};
                     var fileReader = new FileReader();
@@ -2072,7 +2072,7 @@ controllers.controller('ButtonUpdateDialogController', ['$scope', '$mdDialog', '
         if ($scope.isPage)
         {
           var elements =  path.split("/");
-            if (elements.length == 3)
+            if (elements.length === 3)
             {
                 $scope.items.page = elements[2];
             }

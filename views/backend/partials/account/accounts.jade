@@ -12,7 +12,7 @@ md-content.background
         md-card-content
             h1.md-headline #{content.stuff}
             md-button.md-fab.md-accent(ng-click="showRegisterDialog()", ng-if="type != 'Viewer'", aria-label="")
-                ng-md-icon(icon="person_add", aria-label="スタッフ", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
+                ng-md-icon(icon="person_add", aria-label="#{content.stuff}", style="position:relative;top:6px;left:1px;fill:#abcdef", size="42")
                 md-tooltip #{content.add}
 
     md-list(hide-gt-sm)

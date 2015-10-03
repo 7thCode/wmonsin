@@ -84,7 +84,7 @@ function List(resource:any, query:any, success:(value:any) => void):void {
     var result:any[] = [];
     resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any):void => {
         if (data) {
-            if (data.code == 0) {
+            if (data.code === 0) {
                 success(data.value);
             }
         }
@@ -122,7 +122,7 @@ function PatientsList(resource:any, success:(value:any, headers:any) => void):vo
 
     resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any, headers:any):void => {
         if (data != null) {
-            if (data.code == 0) {
+            if (data.code === 0) {
                 success(data.value, headers);
             }
         }
@@ -143,7 +143,7 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
             var resource:any = new Patient();
             resource.$get({id: id}, (data:any):void => {
                 if (data != null) {
-                    if (data.code == 0) {
+                    if (data.code === 0) {
                         CurrentPatient.id = id;
 
                         CurrentPatient.Category = data.value.Category;
@@ -161,7 +161,7 @@ controllers.controller('BrowseSController', ["$scope", "$stateParams", "$locatio
         };
 
         // SocketIO
-        if (Global.socket == null) {
+        if (Global.socket === null) {
             Global.socket = io.connect();
         }
 
@@ -183,7 +183,7 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
         var color:string = "rgba(200, 20, 30, 0.4)";
 
         var depertment = _.filter(Views.Data, (data:any):boolean => {
-            return (data.Name == CurrentPatient.Category);
+            return (data.Name === CurrentPatient.Category);
         });
 
         $scope.contents = depertment[0].Pages[page];
@@ -198,7 +198,7 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
                     backgroundImageStretch: false
                 });
 
-                if ($scope.Input[value.name] == null) {
+                if ($scope.Input[value.name] === null) {
                     fabric.Image.fromURL("/file/" + value.path, (image:any):void => {
                     });
                 }
@@ -261,7 +261,7 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
         $scope.next = (path:any):any => {
 
             _.map<any,any>($scope.contents.items, (value:any, key:any):void => {
-                if (value.type == "check") { //checkboxの場合は、値がfalseならば表示しない方針。よって、modelの値がfalseyならばvalueはfalseとする。trueならば、"name-value"コンベンションに従う。
+                if (value.type === "check") { //checkboxの場合は、値がfalseならば表示しない方針。よって、modelの値がfalseyならばvalueはfalseとする。trueならば、"name-value"コンベンションに従う。
                     var name_and_value = value.name.split("-");//"name-value"コンベンション。
                     var value1 = name_and_value[1];
                     if (!value.model) {

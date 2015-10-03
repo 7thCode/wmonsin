@@ -33,7 +33,7 @@ class PatientController {
             //同時に同名でないこと（自動Accept対策)
             var query = {"$and": [{'Information.name': req.body.Information.name}, {'Information.time': req.body.Information.time}]};
             wrapper.Find(res, number, PatientModel, query, {}, {}, (res:any, docs:any) => {
-                if (docs.length == 0) {
+                if (docs.length === 0) {
                     var patient:any = new PatientModel();
                     patient.Information = req.body.Information;
                     patient.Date = new Date();

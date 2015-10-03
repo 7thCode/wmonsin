@@ -49,7 +49,7 @@ class ViewController {
                 wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
                     ViewModel.count({Name: req.body.Name}, (error:any, count:number):void => {
                         if (!error) {
-                            if (count == 0) {
+                            if (count === 0) {
                                 var view:any = new ViewModel();
                                 view.Name = req.body.Name;
                                 view.Pages = req.body.Pages;

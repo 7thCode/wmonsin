@@ -32,6 +32,7 @@
     "jquery": "~2.1.4",
     "lodash": "~3.10.1",
     "ng-flow": "~2",
-    "svg-morpheus": "~0.1.8"
+    "svg-morpheus": "~0.1.8",
+    "angular-mocks": "~1.4.7"
   }
 }

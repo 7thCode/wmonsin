@@ -18,7 +18,7 @@ var fs = require('fs');
 
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
-config.state = app.get('env');
+//config.state = app.get('env');
 
 var log4js = require('log4js');
 log4js.configure("config/logs.json");

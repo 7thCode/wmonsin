@@ -4,7 +4,7 @@
     This software is released under the MIT License.
     http://opensource.org/licenses/mit-license.php
 
-- var content = {headline:"問診票ページ登録",cancel:"キャンセル", field1:"ページタイトル", save:"保存" }
+- var content = {headline:"問診票ページ登録",cancel:"キャンセル", field1:"ページタイトル", save:"保存", required:"必ず入力してください", toolong:"もうすこし短くしてください"  }
 
 md-dialog.box-edge(flex)
     md-toolbar
@@ -24,8 +24,8 @@ md-dialog.box-edge(flex)
                     label #{content.field1}
                     input(ng-model="items.title", data-ng-required="true", name="title", placeholder='Enter title', md-maxlength="30", required)
                     div(ng-messages="validate.title.$error")
-                        div(ng-message="required") 必ず入力してください.
-                        div(ng-message="md-maxlength") もうすこし短くしてください.
+                        div(ng-message="required") #{content.required}
+                        div(ng-message="md-maxlength") #{content.toolong}
 
             md-divider
             div.md-actions(layout="row", layout-align="space-around center")
