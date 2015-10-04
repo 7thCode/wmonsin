@@ -154,6 +154,7 @@ process.on('SIGINT', function () {
 });
 
 app.use(session({
+    name:'wmonsin',
     secret: config.sessionkey,
     resave: false,
     rolling: true,
@@ -162,8 +163,9 @@ app.use(session({
         maxAge: 365 * 24 * 60 * 60 * 1000
     },
     store: new MongoStore({
-        mongooseConnection: mongoose.connection
-
+        mongooseConnection: mongoose.connection,
+        ttl: 365 * 24 * 60 * 60,
+        clear_interval: 60 * 60
     })
 }));
 

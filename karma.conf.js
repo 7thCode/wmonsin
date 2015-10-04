@@ -1,70 +1,51 @@
-// Karma configuration
-// Generated on Sat Oct 03 2015 11:40:58 GMT+0900 (JST)
+module.exports = function (config) {
+    config.set({
+        basePath: '',
+        frameworks: ['jasmine'],
+        files: [
 
-module.exports = function(config) {
-  config.set({
-
-    // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
-
-    // frameworks to use
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
-
-
-    // list of files / patterns to load in the browser
-    files: [
-      '/bower_components/angular/angular.js',
-      '/bower_components/angular-mocks/angular-mocks.js',
-      '/public/javascripts/Application.js',
-      '/spec/message_spec.js'
-    ],
-
-    // list of files to exclude
-    exclude: [],
-
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-      // TypeScript で書かれたコードを JavaScript にコンパイルする
-      'public/javascripts/Application.ts':['typescript'],
-      'spec/message_spec.ts': ['typescript']
-    },
-
-    typescriptPreprocessor: {
-      // options passed to the typescript compiler
-      options: {},
-      // extra typing definitions to pass to the compiler (globs allowed)
-      typings: []
-    },
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
-
-    // web server port
-    port: 9876,
-
-    // enable / disable colors in the output (reporters and logs)
-    colors: true,
+            'public/bower_components/hammerjs/hammer.js',
+            'public/bower_components/angular/angular.js',
+            'public/bower_components/angular-ui-router/release/angular-ui-router.js',
+            'public/bower_components/angular-animate/angular-animate.js',
+            'public/bower_components/angular-messages/angular-messages.js',
+            'public/bower_components/angular-aria/angular-aria.js',
+            'public/bower_components/angular-material/angular-material.js',
+            'public/bower_components/angular-material-icons/angular-material-icons.js',
+            'public/bower_components/angular-resource/angular-resource.js',
+            'public/bower_components/angular-socket-io/socket.js',
+            'public/bower_components/ng-flow/dist/ng-flow-standalone.js',
+            'public/bower_components/lodash/lodash.js',
+            'public/bower_components/fabric/dist/fabric.js',
+            'public/bower_components/jquery/dist/jquery.js',
+            'public/bower_components/canvas2image/canvas2image/canvas2image.js',
+            'public/bower_components/svg-morpheus/compile/minified/svg-morpheus.js',
 
 
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+            {pattern: "public/bower_components/angular-socket.io-mock/angular-socket.io-mock.js", included: false},
+            'public/bower_components/angular-mocks/angular-mocks.js',
 
-
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
-
-
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['ChromeCanary'],
-
-
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
-  })
+            'public/javascripts/TopApplication.js',
+            'public/javascripts/TopControllers.js',
+            'public/backend/javascripts/AccountApplication.js',
+            'public/backend/javascripts/AccountControllers.js',
+            'public/front/javascripts/PatientsApplication.js',
+            'public/front/javascripts/PatientsControllers.js',
+            'spec/account_application_spec.js',
+            'spec/account_controllers_spec.js',
+            'spec/patients_application_spec.js',
+            'spec/patients_controllers_spec.js',
+            'spec/top_application_spec.js',
+            'spec/top_controllers_spec.js'
+        ],
+        exclude: [],
+        preprocessors: {},
+        reporters: ['progress'],
+        port: 9876,
+        colors: true,
+        logLevel: config.LOG_INFO,
+        autoWatch: true,
+        browsers: ['ChromeCanary'],
+        singleRun: false
+    })
 };

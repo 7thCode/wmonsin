@@ -1,9 +1,9 @@
-describe('message-test', function() {
+describe('Application: TopApplication', function() {
 
-    beforeEach(module('TopApplication'));
+    beforeEach(angular.mock.module('TopApplication'));
 
     var $filter;
-    beforeEach(inject(function(_$filter_) {
+    beforeEach(angular.mock.inject(function(_$filter_) {
         $filter = _$filter_;
     }));
 
