@@ -36,14 +36,14 @@ gulp.task('copy', ['clean'], function () {
         ],
         {base: '..'}
     )
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('production'));
 });
 
 gulp.task('css', function () {
     return gulp.src('public/**/stylesheets/*.less')
         .pipe(less())
         .pipe(minifycss())
-        .pipe(gulp.dest('dist/wmonsin/public'));
+        .pipe(gulp.dest('production/wmonsin/public'));
 });
 
 gulp.task('js', function () {
@@ -57,11 +57,11 @@ gulp.task('js', function () {
         .pipe(uglify())
         .pipe(rename({extname: '.min.js'}))
         .pipe(gulp.dest('../'))
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('production'));
 });
 
 gulp.task('clean', function (cb) {
-    rimraf('dist', cb);
+    rimraf('production', cb);
 });
 
 gulp.task('jsconcat', function () {
@@ -74,7 +74,7 @@ gulp.task('jsconcat', function () {
         {base: '..'})
         .pipe(uglify())
         .pipe(concat('client.min.js'))
-        .pipe(gulp.dest('dist/wmonsin/public/javascripts'))
+        .pipe(gulp.dest('production/wmonsin/public/javascripts'))
         .pipe(gulp.dest('public/javascripts'));
 });
 
@@ -89,7 +89,7 @@ gulp.task('ftp', function () {
         log: gutil.log
     });
 
-    return gulp.src(['dist/**'], {base: 'app/wmonsin', buffer: false})
+    return gulp.src(['production/**'], {base: 'app/wmonsin', buffer: false})
         .pipe(conn.newer('/'))
         .pipe(conn.dest('/'));
 });

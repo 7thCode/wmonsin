@@ -3,7 +3,6 @@ module.exports = function (config) {
         basePath: '',
         frameworks: ['jasmine'],
         files: [
-
             'public/bower_components/hammerjs/hammer.js',
             'public/bower_components/angular/angular.js',
             'public/bower_components/angular-ui-router/release/angular-ui-router.js',
@@ -20,7 +19,6 @@ module.exports = function (config) {
             'public/bower_components/jquery/dist/jquery.js',
             'public/bower_components/canvas2image/canvas2image/canvas2image.js',
             'public/bower_components/svg-morpheus/compile/minified/svg-morpheus.js',
-
 
             {pattern: "public/bower_components/angular-socket.io-mock/angular-socket.io-mock.js", included: false},
             'public/bower_components/angular-mocks/angular-mocks.js',
