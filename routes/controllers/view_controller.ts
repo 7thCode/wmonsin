@@ -23,7 +23,8 @@ logger.setLevel(config.loglevel);
 
 class ViewController {
 
-    constructor() {}
+    constructor() {
+    }
 
     public post_view(req:any, res:any):void {
         logger.trace("begin /view");

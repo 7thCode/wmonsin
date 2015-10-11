@@ -125,7 +125,8 @@ logger.info('Jade Start.');
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ limit:'50mb',extended: true }));
+//app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
 var mongoose = require('mongoose');
@@ -154,7 +155,7 @@ process.on('SIGINT', function () {
 });
 
 app.use(session({
-    name:'wmonsin',
+    name: config.sessionName,
     secret: config.sessionkey,
     resave: false,
     rolling: true,

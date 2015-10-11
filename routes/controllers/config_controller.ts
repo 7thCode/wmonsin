@@ -8,9 +8,9 @@ var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
 
-var PatientModel = require('../../model/patient');
+//var PatientModel = require('../../model/patient');
 
-var formatpdf = require('./../lib/formatpdf');
+//var formatpdf = require('./../lib/formatpdf');
 
 //var _ = require('lodash');
 

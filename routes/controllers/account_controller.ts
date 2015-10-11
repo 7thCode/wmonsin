@@ -26,7 +26,7 @@ logger.setLevel(config.loglevel);
 
 class AccountController {
 
-    constructor(private wrapper:any, private logger:any) {
+    constructor() {
     }
 
     public post_account_create(request:any, response:any):void {

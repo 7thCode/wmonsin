@@ -24,7 +24,8 @@ logger.setLevel(config.loglevel);
 
 class PatientController {
 
-    constructor() {}
+    constructor() {
+    }
 
     public post_patient_accept(req:any, res:any):void {
         logger.trace("begin /patient/accept");
@@ -50,7 +51,6 @@ class PatientController {
                 }
             });
         });
-
     }
 
     public get_patient_id(req:any, res:any):void {

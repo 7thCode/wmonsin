@@ -10,7 +10,7 @@ var rimraf = require('rimraf');
 var less = require('gulp-less');
 var minifycss = require('gulp-minify-css');
 
-gulp.task('copy', ['clean'], function () {
+gulp.task('copy', ['clean'], () => {
     return gulp.src(
         [
             'bin/www',
@@ -39,14 +39,14 @@ gulp.task('copy', ['clean'], function () {
         .pipe(gulp.dest('production'));
 });
 
-gulp.task('css', function () {
+gulp.task('css', () => {
     return gulp.src('public/**/stylesheets/*.less')
         .pipe(less())
         .pipe(minifycss())
         .pipe(gulp.dest('production/wmonsin/public'));
 });
 
-gulp.task('js', function () {
+gulp.task('js', () => {
     return gulp.src(
         [
             'public/javascripts/*.js',
@@ -60,11 +60,11 @@ gulp.task('js', function () {
         .pipe(gulp.dest('production'));
 });
 
-gulp.task('clean', function (cb) {
+gulp.task('clean', (cb) => {
     rimraf('production', cb);
 });
 
-gulp.task('jsconcat', function () {
+gulp.task('jsconcat', () => {
     return gulp.src(
         [
             'public/javascripts/*.js',
@@ -78,13 +78,12 @@ gulp.task('jsconcat', function () {
         .pipe(gulp.dest('public/javascripts'));
 });
 
-gulp.task('ftp', function () {
+gulp.task('ftp', () => {
 
     var conn = ftp.create({
-        host: 'server',
-        user: 'name',
-        password: 'password',
-        port: 22,
+        host: '128.199.196.240',
+        user: '',
+        pass: '',
         parallel: 1,
         log: gutil.log
     });
@@ -94,6 +93,6 @@ gulp.task('ftp', function () {
         .pipe(conn.dest('/'));
 });
 
-gulp.task('default', ['copy', 'css', 'js'], function () {
+gulp.task('default', ['copy', 'css', 'js'], () => {
     console.log('done');
 });
