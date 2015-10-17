@@ -5,6 +5,7 @@
  http://opensource.org/licenses/mit-license.php
  */
 
+/// <reference path="../../../typings/tsd.d.ts" />
 
 'use strict';
 

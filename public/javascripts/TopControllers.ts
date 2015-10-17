@@ -9,6 +9,8 @@
 
  */
 
+/// <reference path="../../typings/tsd.d.ts" />
+
 'use strict';
 
 var controllers:angular.IModule = angular.module('TopControllers', ["ngMaterial", "ngResource", 'ngAnimate']);

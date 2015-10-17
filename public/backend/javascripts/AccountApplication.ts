@@ -5,6 +5,8 @@
  http://opensource.org/licenses/mit-license.php
  */
 
+/// <reference path="../../../typings/tsd.d.ts" />
+
 'use strict';
 
 var app:angular.IModule = angular.module('AccountApplication', ['ui.router', 'AccountControllers', 'TopControllers']);

@@ -1,3 +1,10 @@
+/**
+ view_controller.ts
+ Copyright (c) 2015 7ThCode.
+ This software is released under the MIT License.
+ http://opensource.org/licenses/mit-license.php
+ */
+
 'use strict';
 
 declare function require(x:string):any;
@@ -20,6 +27,10 @@ var log4js = require('log4js');
 log4js.configure("config/logs.json");
 var logger = log4js.getLogger('request');
 logger.setLevel(config.loglevel);
+
+var messages = {
+    already:"Already found"
+};
 
 class ViewController {
 
@@ -59,7 +70,7 @@ class ViewController {
                                     logger.trace("end /view/create");
                                 });
                             } else {
-                                wrapper.SendResult(res, number + 1, "Already Found.", {});
+                                wrapper.SendResult(res, number + 1, message.already, {});
                             }
                         } else {
                             wrapper.SendError(res, number + 20, error.message, error);

@@ -5,6 +5,9 @@
  http://opensource.org/licenses/mit-license.php
  */
 
+
+/// <reference path="../../../typings/tsd.d.ts" />
+
 /**
  0 - ok
  1 - rights
@@ -19,6 +22,7 @@
  Done
 
  */
+
 
 'use strict';
 
@@ -290,7 +294,7 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
                     }
                     $mdToast.show($mdToast.simple().content(account.message));
                 } else {
-                    $mdToast.show($mdToast.simple().content("logout error"));
+                    $mdToast.show($mdToast.simple().content("network error(logout)"));
                 }
             });
         };
@@ -390,13 +394,11 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                                                 $scope.progress = false;
                                                 Global.socket.emit('server', {value: "1"});
                                                 $scope.patients = data;
-                                                $mdToast.show($mdToast.simple().content(result.message));
                                             });
-                                        } else {
-                                            $mdToast.show($mdToast.simple().content(result.message));
                                         }
+                                        $mdToast.show($mdToast.simple().content(result.message));
                                     } else {
-                                        $mdToast.show($mdToast.simple().content("save error"));
+                                        $mdToast.show($mdToast.simple().content("network error(save)"));
                                     }
                                 });
                             }, ():void => { // Cancel
@@ -494,11 +496,10 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                     $scope.Input.push(value);
                                     $scope.Information = data.value.Information;
                                 });
-                            } else {
-                                $mdToast.show($mdToast.simple().content(data.message));
                             }
+                            $mdToast.show($mdToast.simple().content(data.message));
                         } else {
-                            $mdToast.show($mdToast.simple().content('patient error'));
+                            $mdToast.show($mdToast.simple().content('network error(patient)'));
                         }
                     }
                 )
@@ -509,11 +510,10 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                 if (result) {
                     if (result.code === 0) {
                         $scope.IsDone = (result.value === "Done");
-                    } else {
-                        $mdToast.show($mdToast.simple().content(result.message));
                     }
+                    $mdToast.show($mdToast.simple().content(result.message));
                 } else {
-                    $mdToast.show($mdToast.simple().content("patient status error"));
+                    $mdToast.show($mdToast.simple().content("network error(status)"));
                 }
             });
 
@@ -537,7 +537,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                     if (result) {
                         $mdToast.show($mdToast.simple().content(result.message));
                     } else {
-                        $mdToast.show($mdToast.simple().content("remove patient error"));
+                        $mdToast.show($mdToast.simple().content("network error(patient)"));
                     }
                 });
             };
@@ -561,9 +561,9 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                                 if (result.code === 0) {
                                                     Global.socket.emit('server', {value: "1"});
                                                 }
-                                                $mdToast.show($mdToast.simple().content('Status Updated.'));
+                                                $mdToast.show($mdToast.simple().content(result.message));
                                             } else {
-                                                $mdToast.show($mdToast.simple().content("status update error"));
+                                                $mdToast.show($mdToast.simple().content("network error(status)"));
                                             }
                                         });
                                     }
@@ -577,7 +577,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                                 }
                                                 $mdToast.show($mdToast.simple().content(result.message));
                                             } else {
-                                                $mdToast.show($mdToast.simple().content("login error"));
+                                                $mdToast.show($mdToast.simple().content("network error(login)"));
                                             }
                                         });
                                     }
@@ -586,7 +586,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                 $mdToast.show($mdToast.simple().content(result.message));
                             }
                         } else {
-                            $mdToast.show($mdToast.simple().content("login error"));
+                            $mdToast.show($mdToast.simple().content("network error(login)"));
                         }
                     });
                 }
@@ -628,7 +628,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                             }
                             $mdToast.show($mdToast.simple().content(result.message));
                         } else {
-                            $mdToast.show($mdToast.simple().content('Status Updated.'));
+                            $mdToast.show($mdToast.simple().content('network error(status)'));
                         }
                     });
                 }, ():void => {
@@ -650,10 +650,10 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                     $scope.accounts = data;
                                     $scope.progress = false;
                                 });
-                                $mdToast.show($mdToast.simple().content(result.message));
                             }
+                            $mdToast.show($mdToast.simple().content(result.message));
                         } else {
-                            $mdToast.show($mdToast.simple().content('Status Updated.'));
+                            $mdToast.show($mdToast.simple().content('network error(status)'));
                         }
                     });
                 }, ():void => {
@@ -684,7 +684,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                                 if (result) {
                                                     $mdToast.show($mdToast.simple().content(result.message));
                                                 } else {
-                                                    $mdToast.show($mdToast.simple().content('Password Updated error.'));
+                                                    $mdToast.show($mdToast.simple().content('network error(password)'));
                                                 }
                                             });
                                         }
@@ -700,13 +700,11 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                                         List(AccountQuery, {}, (data:any):void => {
                                                             $scope.accounts = data;
                                                             $scope.progress = false;
-                                                            $mdToast.show($mdToast.simple().content(result.message));
                                                         });
-                                                    } else {
-                                                        $mdToast.show($mdToast.simple().content(result.message));
                                                     }
+                                                    $mdToast.show($mdToast.simple().content(result.message));
                                                 } else {
-                                                    $mdToast.show($mdToast.simple().content('account Updated error.'));
+                                                    $mdToast.show($mdToast.simple().content('network error(account)'));
                                                 }
                                             });
                                         }
@@ -774,13 +772,11 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                             List(ViewQuery, {}, (data:any):void  => {
                                 $scope.Departments = data;
                                 $scope.progress = false;
-                                $mdToast.show($mdToast.simple().content(result.message));
                             });
-                        } else {
-                            $mdToast.show($mdToast.simple().content(result.message));
                         }
+                        $mdToast.show($mdToast.simple().content(result.message));
                     } else {
-                        $mdToast.show($mdToast.simple().content("save error"));
+                        $mdToast.show($mdToast.simple().content("network error(save)"));
                     }
                 });
             }, ():void => { // Cancel
@@ -808,13 +804,11 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                                 List(ViewQuery, {}, (data:any):void  => {
                                     $scope.Departments = data;
                                     $scope.progress = false;
-                                    $mdToast.show($mdToast.simple().content(result.message));
                                 });
-                            } else {
-                                $mdToast.show($mdToast.simple().content(result.message));
                             }
+                            $mdToast.show($mdToast.simple().content(result.message));
                         } else {
-                            $mdToast.show($mdToast.simple().content("save error"));
+                            $mdToast.show($mdToast.simple().content("network error(save)"));
                         }
                     });
                 }, ():void => { // Cancel
@@ -846,13 +840,11 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                             List(ViewQuery, {}, (data:any):void  => {
                                 $scope.Departments = data;
                                 $scope.progress = false;
-                                $mdToast.show($mdToast.simple().content(result.message));
                             });
-                        } else {
-                            $mdToast.show($mdToast.simple().content(result.message));
                         }
+                        $mdToast.show($mdToast.simple().content(result.message));
                     } else {
-                        $mdToast.show($mdToast.simple().content("save error"));
+                        $mdToast.show($mdToast.simple().content("network error(save)"));
                     }
                 });
             }, ():void => {
@@ -899,7 +891,7 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
                             $mdToast.show($mdToast.simple().content(result.message));
                         }
                     } else {
-                        $mdToast.show($mdToast.simple().content('account Updated error.'));
+                        $mdToast.show($mdToast.simple().content('network error(account)'));
                     }
                 });
             };
@@ -990,7 +982,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                             $mdToast.show($mdToast.simple().content(result.message));
                         }
                     } else {
-                        $mdToast.show($mdToast.simple().content('account Updated error.'));
+                        $mdToast.show($mdToast.simple().content('network error(account)'));
                     }
                 });
             };
@@ -1008,7 +1000,8 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                         type: "text",
                         items: [
                             {name: "required", message: "Required"},
-                            {name: "md-maxlength", message: "Max"}]
+                            {name: "md-maxlength", message: "Max"}
+                        ]
                     };
                     CurrentView.Data.Pages[CurrentView.Page].items.push(control);
                 }, ():void => { // Cancel
@@ -1393,11 +1386,10 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
             if (result) {
                 if (result.code === 0) {
                     $scope.config = result.value;
-                } else {
-                    $mdToast.show($mdToast.simple().content(result.message));
                 }
+                $mdToast.show($mdToast.simple().content(result.message));
             } else {
-                $mdToast.show($mdToast.simple().content("config get error."));
+                $mdToast.show($mdToast.simple().content("network error(config)"));
             }
         });
 
@@ -1410,11 +1402,17 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
                 var config:any = new Config();
                 config.body = $scope.config;
                 config.$update({}, (result:any):void => {
-                    if (result.code === 0) {
-                        $mdToast.show($mdToast.simple().content('Updated.'));
+                    if (result)
+                    {
+                        if (result.code === 0) {
+                            $mdToast.show($mdToast.simple().content('Updated.'));
+                        } else {
+                            $mdToast.show($mdToast.simple().content(result.message));
+                        }
                     } else {
-                        $mdToast.show($mdToast.simple().content(result.message));
+                        $mdToast.show($mdToast.simple().content("network error(notification)"));
                     }
+
                 });
             }, ():void  => {
             });
@@ -1512,7 +1510,7 @@ controllers.controller('LoginDialogController', ['$scope', '$q', '$mdDialog', '$
                     }
                     $mdToast.show($mdToast.simple().content(account.message));
                 } else {
-                    $mdToast.show($mdToast.simple().content("login error"));
+                    $mdToast.show($mdToast.simple().content("network error(login)"));
                 }
             });
         };
@@ -1825,7 +1823,7 @@ controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 
                         $mdToast.show($mdToast.simple().content("already found."));
                     }
                 } else {
-                    $mdToast.show($mdToast.simple().content("network error."));
+                    $mdToast.show($mdToast.simple().content("network error(file)"));
                 }
             });
 

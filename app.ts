@@ -195,13 +195,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 
 //passport
-passport.serializeUser(function (user, done) {
-    done(null, user);
-});
+//passport.serializeUser(function (user, done) {
+//    done(null, user);
+//});
 
-passport.deserializeUser(function (obj, done) {
-    done(null, obj);
-});
+//passport.deserializeUser(function (obj, done) {
+//    done(null, obj);
+//});
 
 var Account = require('./model/account');
 passport.use(new LocalStrategy(Account.authenticate()));
@@ -210,10 +210,13 @@ if (Account) {
 } else {
     logger.fatal('Account NG.');
 }
+
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
 //passport
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use((req:any, res:any, next:any):void => {
     var err = new Error('Not Found');
     err.status = 404;
     res.render('error', {
