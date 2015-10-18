@@ -5,7 +5,6 @@
  http://opensource.org/licenses/mit-license.php
  */
 
-
 /// <reference path="../../../typings/tsd.d.ts" />
 
 /**
@@ -25,6 +24,82 @@
 
 
 'use strict';
+
+interface IControl {
+    name: string;
+    label: string;
+    model: string;
+    type: string;
+}
+
+interface ICheckControl extends IControl {
+}
+
+interface INumericControl extends IControl {
+}
+
+interface ITextControl extends IControl {
+    items: [{name: string; message: string;}];
+}
+
+interface ISelectControl extends IControl {
+    items: [{name: string; message: string;}];
+}
+
+interface IPictureControl extends IControl {
+    path: string;
+    height: number;
+    width:  number;
+}
+
+interface IButtonControl extends IControl {
+    path: string;
+    validate: boolean;
+    class: string;
+}
+
+interface IAccount extends angular.resource.IResource<any> {
+    username: string;
+    password: string;
+    type: string;
+    $login:any;
+    $logout:any;
+    $update:any;
+}
+
+interface IPatient extends angular.resource.IResource<any> {
+    Input:any;
+    Information:{name:string;time:string;kana:string;insurance:string};
+    Category:string;
+    Sequential:number;
+    Status:string;
+    $update:any;
+}
+
+interface IView extends angular.resource.IResource<any> {
+    Name: string;
+    Pages: string;
+    $update:any;
+}
+
+interface IGlobal {
+    socket: any;
+}
+
+interface ICurrentPatient {
+    id: any;
+    name:string;
+}
+
+interface ICurrentView {
+    Page:number;
+    Data: any;
+}
+
+interface ICurrentAccount {
+    username:string;
+    type: string;
+}
 
 var controllers:angular.IModule = angular.module('AccountControllers', ["ngMaterial", "ngResource", 'ngMessages', 'ngMdIcons', 'ngAnimate', 'flow']);
 
@@ -74,7 +149,7 @@ controllers.factory('AccountQuery', ['$resource',
     }]);
 
 controllers.factory('Account', ['$resource',
-    ($resource:any):angular.resource.IResource<any> => {
+    ($resource:any):IAccount => {
         return $resource('/account/:id', {}, {
             get: {method: 'GET'},
             update: {method: 'PUT'},
@@ -83,19 +158,19 @@ controllers.factory('Account', ['$resource',
     }]);
 
 controllers.factory('AccountPassword', ['$resource',
-    ($resource:any):angular.resource.IResource<any> => {
+    ($resource:any):IAccount => {
         return $resource('/account/password/:id', {}, {
             update: {method: 'PUT'}
         });
     }]);
 
 controllers.factory('AccountCreate', ['$resource',
-    ($resource:any):angular.resource.IResource<any> => {
+    ($resource:any):IAccount => {
         return $resource('/account/create', {}, {});
     }]);
 
 controllers.factory('PatientAccept', ['$resource',
-    ($resource:any):angular.resource.IResource<any> => {
+    ($resource:any):IPatient => {
         return $resource('/patient/accept', {}, {});
     }]);
 
@@ -114,7 +189,7 @@ controllers.factory('PatientCount', ['$resource',
     }]);
 
 controllers.factory('Patient', ['$resource',
-    ($resource:any):angular.resource.IResource<any> => {
+    ($resource:any):IPatient => {
         return $resource('/patient/:id', {}, {
             update: {method: 'PUT'},
             remove: {method: 'DELETE'}
@@ -129,12 +204,12 @@ controllers.factory('PatientStatus', ['$resource',
     }]);
 
 controllers.factory('ViewCreate', ['$resource',
-    ($resource:any):angular.resource.IResource<any> => {
+    ($resource:any):IView => {
         return $resource('/view/create', {}, {});
     }]);
 
 controllers.factory('View', ['$resource',
-    ($resource:any):angular.resource.IResource<any> => {
+    ($resource:any):IView => {
         return $resource('/view/:id', {}, {
             update: {method: 'PUT'},
             remove: {method: 'DELETE'}
@@ -163,14 +238,12 @@ controllers.factory('File', ['$resource',
         });
     }]);
 
-
 controllers.factory('FileQuery', ['$resource',
     ($resource):angular.resource.IResource<any> => {
         return $resource('/file/query/:query', {query: '@query'}, {
             query: {method: 'GET'}
         });
     }]);
-
 
 controllers.factory('Pdf', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
@@ -197,7 +270,6 @@ function PatientsList(resource:any, query:any, success:(value:any, headers:any) 
 }
 
 function List(resource:any, query:any, success:(value:any) => void):void {
-    var result:any[] = [];
     resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any):void => {
         if (data) {
             if (data.code === 0) {
@@ -210,7 +282,7 @@ function List(resource:any, query:any, success:(value:any) => void):void {
 /*! Controllers  */
 
 controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
-    ($scope:any, $state:any, CurrentAccount:any):void => {
+    ($scope:any, $state:any, CurrentAccount:ICurrentAccount):void => {
         if (CurrentAccount.username !== "") {
             $scope.username = CurrentAccount.username;
             $scope.type = CurrentAccount.type;
@@ -220,7 +292,7 @@ controllers.controller("StartController", ["$scope", "$state", 'CurrentAccount',
     }]);
 
 controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state', "$mdDialog", '$mdToast', "$mdSidenav", '$mdUtil', 'Login', 'Logout', 'CurrentAccount', 'Global',
-    ($scope:any, $rootScope:any, $state:any, $mdDialog:any, $mdToast:any, $mdSidenav:any, $mdUtil:any, Login:any, Logout:any, CurrentAccount:any, Global:any):void => {
+    ($scope:any, $rootScope:any, $state:any, $mdDialog:any, $mdToast:any, $mdSidenav:any, $mdUtil:any, Login:any, Logout:any, CurrentAccount:ICurrentAccount, Global:IGlobal):void => {
 
         $scope.goBack = ():void => {
             window.history.back();
@@ -250,8 +322,8 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
 
         $scope.open = buildToggler();
 
-        function buildToggler() {
-            var debounceFn = $mdUtil.debounce(():any => {
+        function buildToggler():(f:() => any, n:number) => void {
+            var debounceFn:(f:() => any, n:number) => void = $mdUtil.debounce(():any => {
                 $mdSidenav('nav').toggle().then(():void => {
                 });
             }, 300);
@@ -280,7 +352,7 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
         };
 
         $scope.Logout = ():void => {
-            var account:any = new Logout();
+            var account:IAccount = new Logout();
             account.$logout((account:any):void => {
                 if (account) {
                     if (account.code === 0) {
@@ -319,7 +391,7 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
     }]);
 
 controllers.controller('PatientsController', ['$scope', '$state', '$stateParams', '$q', "$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
-    ($scope:any, $state:any, $stateParams, $q:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientAccept:any, PatientQuery:any, PatientCount:any, CurrentAccount:any, CurrentPatient:any, Global:any):void => {
+    ($scope:any, $state:any, $stateParams:any, $q:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientAccept:any, PatientQuery:any, PatientCount:any, CurrentAccount:ICurrentAccount, CurrentPatient:ICurrentPatient, Global:IGlobal):void => {
         if (CurrentAccount.username !== "") {
             $scope.username = CurrentAccount.username;
             $scope.type = CurrentAccount.type;
@@ -355,7 +427,7 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                 PatientCount.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any):void => {
                     if (data) {
                         if (data.code === 0) {
-                            var items = {count: 0};
+                            var items:{count:number} = {count: 0};
                             items.count = data.value;
 
                             $mdDialog.show({
@@ -367,9 +439,9 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                                 }
                             }).then((answer:any):void => { // Answer
 
-                                var patient:any = new PatientAccept();
+                                var patient:IPatient = new PatientAccept();
                                 patient.Input = {};
-                                patient.Information = {};
+                                patient.Information = {name:"",time:"",kana:"",insurance:""};
                                 patient.Information.name = answer.items.name;
 
                                 var now:Date = new Date();
@@ -409,7 +481,7 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
             };
 
             $scope.querySearch = (querystring:any):any => {
-                var deferred = $q.defer();
+                var deferred:any = $q.defer();
                 var query:any = TodayQuery();
                 PatientQuery.query({query: encodeURIComponent(JSON.stringify({$and: [query, {"Information.name": {$regex: querystring}}]}))}, (data:any):void => {
                     deferred.resolve(data.value);
@@ -417,11 +489,11 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                 return deferred.promise;
             };
 
-            $scope.searchTextChange = (text):void => {
+            $scope.searchTextChange = (text:any):void => {
 
             };
 
-            $scope.selectedItemChange = (item):void => {
+            $scope.selectedItemChange = (item:any):void => {
 
             };
 
@@ -475,23 +547,21 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
     }]);
 
 controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$mdToast', 'Patient', 'PatientStatus', 'CurrentAccount', 'CurrentPatient', 'Pdf', 'Global',
-    ($scope:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientStatus:any, CurrentAccount:any, CurrentPatient:any, Pdf:any, Global:any):void => {
+    ($scope:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientStatus:any, CurrentAccount:ICurrentAccount, CurrentPatient:ICurrentPatient, Pdf:any, Global:IGlobal):void => {
         if (CurrentPatient) {
             $scope.selectedIndex = 0;
             $scope.load = ():void => {
-                var patient:any = new Patient();
+                var patient:IPatient = new Patient();
                 patient.$get({id: CurrentPatient.id}, (data:any):void => {
                         if (data) {
                             if (data.code === 0) {
                                 $scope.Input = [];
                                 _.each<any>(data.value.Input, (value:any, index:any, array:any[]):void => {
                                     if (value.type === "picture") {
-
                                         var canvas:any = new fabric.Canvas('schema-' + value.name);
                                         canvas.loadFromJSON(JSON.stringify(value.value), canvas.renderAll.bind(canvas), (o:any, object:any):void => {
                                             var a = 1;
                                         });
-
                                     }
                                     $scope.Input.push(value);
                                     $scope.Information = data.value.Information;
@@ -505,7 +575,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                 )
             };
 
-            var patient:any = new PatientStatus();
+            var patient:IPatient = new PatientStatus();
             patient.$get({id: CurrentPatient.id}, (result:any):void => {
                 if (result) {
                     if (result.code === 0) {
@@ -532,7 +602,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
             };
 
             $scope.done = ():void => {
-                var patient:any = new Patient();
+                var patient:IPatient = new Patient();
                 patient.$remove({id: CurrentPatient.id}, (result:any):void => {
                     if (result) {
                         $mdToast.show($mdToast.simple().content(result.message));
@@ -549,7 +619,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
 
             $scope.$watch('IsDone', ():void => {
                 if ($scope.IsDone !== null) {// avoid initalizeation.
-                    var patient:any = new PatientStatus();
+                    var patient:IPatient = new PatientStatus();
                     patient.$get({id: CurrentPatient.id}, (result:any):void => {
                         if (result) {
                             if (result.code === 0) {
@@ -595,7 +665,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
     }]);
 
 controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '$mdToast', 'Account', 'AccountQuery', 'AccountCreate', 'AccountPassword', 'CurrentAccount',
-    ($scope:any, $state:any, $mdDialog:any, $mdToast:any, Account:any, AccountQuery:any, AccountCreate:any, AccountPassword:any, CurrentAccount:any):void => {
+    ($scope:any, $state:any, $mdDialog:any, $mdToast:any, Account:any, AccountQuery:any, AccountCreate:any, AccountPassword:any, CurrentAccount:ICurrentAccount):void => {
         if (CurrentAccount.username !== "") {
             $scope.username = CurrentAccount.username;
             $scope.type = CurrentAccount.type;
@@ -613,7 +683,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                     templateUrl: '/backend/partials/account/registerdialog',
                     targetEvent: null
                 }).then((answer:any):void => {
-                    var account:any = new AccountCreate();
+                    var account:IAccount = new AccountCreate();
                     account.username = answer.items.username;
                     account.password = answer.items.password;
                     account.type = answer.items.type;
@@ -641,7 +711,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                     templateUrl: '/backend/partials/account/deletedialog',
                     targetEvent: id
                 }).then((answer:any):void => {  // Answer
-                    var account:any = new Account();
+                    var account:IAccount = new Account();
                     $scope.progress = true;
                     account.$remove({id: id}, (result:any):void => {
                         if (result) {
@@ -661,7 +731,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
             };
 
             $scope.showAccountUpdateDialog = (id:any):void => {
-                var account:any = new Account();
+                var account:IAccount = new Account();
                 account.$get({id: id}, (data:any):void => {
                         if (data) {
                             if (data.code === 0) {
@@ -678,7 +748,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                     switch (answer.a) {
                                         case 1:
                                         {
-                                            var account:any = new AccountPassword();
+                                            var account:IAccount = new AccountPassword();
                                             account.password = answer.items.password;
                                             account.$update({id: id}, (result:any):void => {
                                                 if (result) {
@@ -690,7 +760,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                         }
                                         case 2:
                                         {
-                                            var account:any = new Account();
+                                            var account:IAccount = new Account();
                                             account.username = answer.items.username;
                                             account.type = answer.items.type;
                                             $scope.progress = true;
@@ -739,13 +809,14 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                     $scope.progress = false;
                 });
             });
+
         } else {
             $state.go('start');
         }
     }]);
 
 controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog", "$mdToast", "CurrentView", "ViewCreate", "View", "ViewQuery",
-    ($scope:any, $state:any, $mdDialog:any, $mdToast:any, CurrentView:any, ViewCreate:any, View:any, ViewQuery:any):void  => {
+    ($scope:any, $state:any, $mdDialog:any, $mdToast:any, CurrentView:ICurrentView, ViewCreate:any, View:any, ViewQuery:any):void  => {
 
         $scope.progress = true;
         List(ViewQuery, {}, (data:any):void  => {
@@ -763,7 +834,7 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                 templateUrl: '/backend/partials/edit/departmentcreatedialog',
                 targetEvent: null
             }).then((answer:any):void => { // Answer
-                var view:any = new ViewCreate();
+                var view:IView = new ViewCreate();
                 view.Name = answer.items.department;
                 view.$save({}, (result:any):void => {
                     if (result) {
@@ -784,7 +855,7 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
         };
 
         $scope.showDepartmentCopyDialog = (id:any):void => {
-            var view:any = new View();
+            var view:IView = new View();
             view.$get({id: id}, (data:any):void => {
                 $mdDialog.show({
                     controller: 'DepartmentCopyDialogController',
@@ -794,7 +865,7 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                         items: view
                     }
                 }).then((answer:any):void => { // Answer
-                    var view:any = new ViewCreate();
+                    var view:IView = new ViewCreate();
                     view.Pages = data.value.Pages;
                     view.Name = answer.items.department;
                     view.$save({}, (result:any):void => {
@@ -817,7 +888,7 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
         };
 
         $scope.DepartmentUpdate = (id:any):void => {
-            var view:any = new View();
+            var view:IView = new View();
             view.$get({id: id}, (data:any):void => {
                 CurrentView.Data = data.value;
                 $scope.Pages = CurrentView.Data.Pages;
@@ -831,7 +902,7 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                 templateUrl: '/backend/partials/edit/departmentdeletedialog',
                 targetEvent: id
             }).then((answer:any):void => {  // Answer
-                var view:any = new View();
+                var view:IView = new View();
                 $scope.progress = true;
                 view.$remove({id: id}, (result:any):void => {
                     if (result) {
@@ -853,7 +924,7 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
     }]);
 
 controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDialog', "$mdToast", "CurrentView", "View",
-    ($scope:any, $state:any, $mdDialog:any, $mdToast:any, CurrentView:any, View:any):void  => {
+    ($scope:any, $state:any, $mdDialog:any, $mdToast:any, CurrentView:ICurrentView, View:any):void  => {
         if (CurrentView.Data) {
 
             $scope.Title = CurrentView.Data.Name;
@@ -865,7 +936,7 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
 
             $scope.up = (index:number) => {
                 if (index > 0) {
-                    var control = CurrentView.Data.Pages[index];
+                    var control:any = CurrentView.Data.Pages[index];
                     CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index - 1];
                     CurrentView.Data.Pages[index - 1] = control;
                 }
@@ -873,14 +944,14 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
 
             $scope.down = (index:number) => {
                 if (index < CurrentView.Data.Pages.length - 1) {
-                    var control = CurrentView.Data.Pages[index];
+                    var control:any = CurrentView.Data.Pages[index];
                     CurrentView.Data.Pages[index] = CurrentView.Data.Pages[index + 1];
                     CurrentView.Data.Pages[index + 1] = control;
                 }
             };
 
             $scope.DepartmentUpdate = ():void => {
-                var view:any = new View();
+                var view:IView = new View();
                 view.Name = CurrentView.Data.Name;
                 view.Pages = CurrentView.Data.Pages;
                 view.$update({id: CurrentView.Data._id}, (result:any):void => {
@@ -904,10 +975,8 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
                 }).then((answer:any):void => { // Answer
 
                     var name:string = answer.items.title;
-                    //   var next:number = CurrentView.Data.Pages.length + 1;
-                    //   var prev:number = CurrentView.Data.Pages.length - 1;
 
-                    var page:any = {
+                    var page:{headline:string; items:any; picture:any} = {
                         headline: name,
                         items: [],
                         picture: []
@@ -946,7 +1015,7 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
     }]);
 
 controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '$mdToast', "CurrentView", "View",
-    ($scope:any, $state:any, $mdDialog:any, $mdToast:any, CurrentView:any, View:any):void  => {
+    ($scope:any, $state:any, $mdDialog:any, $mdToast:any, CurrentView:ICurrentView, View:any):void  => {
         if (CurrentView.Data.Pages) {
             $scope.Page = CurrentView.Data.Pages[CurrentView.Page];
 
@@ -954,24 +1023,24 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                 window.history.back();
             };
 
-            $scope.up = (index:number) => {
+            $scope.up = (index:number):void => {
                 if (index > 0) {
-                    var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                    var control:any = CurrentView.Data.Pages[CurrentView.Page].items[index];
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = CurrentView.Data.Pages[CurrentView.Page].items[index - 1];
                     CurrentView.Data.Pages[CurrentView.Page].items[index - 1] = control;
                 }
             };
 
-            $scope.down = (index:number) => {
+            $scope.down = (index:number):void => {
                 if (index < CurrentView.Data.Pages[CurrentView.Page].items.length - 1) {
-                    var control = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                    var control:any = CurrentView.Data.Pages[CurrentView.Page].items[index];
                     CurrentView.Data.Pages[CurrentView.Page].items[index] = CurrentView.Data.Pages[CurrentView.Page].items[index + 1];
                     CurrentView.Data.Pages[CurrentView.Page].items[index + 1] = control;
                 }
             };
 
             $scope.DepartmentUpdate = ():void => {
-                var view:any = new View();
+                var view:IView = new View();
                 view.Name = CurrentView.Data.Name;
                 view.Pages = CurrentView.Data.Pages;
                 view.$update({id: CurrentView.Data._id}, (result:any):void => {
@@ -993,7 +1062,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                     templateUrl: '/backend/partials/edit/item/text/textcreatedialog',
                     targetEvent: null
                 }).then((answer:any):void => { // Answer
-                    var control = {
+                    var control:ITextControl = {
                         label: answer.items.label,
                         name: answer.items.name,
                         model: "",
@@ -1014,7 +1083,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                     templateUrl: '/backend/partials/edit/item/check/checkcreatedialog',
                     targetEvent: null
                 }).then((answer:any):void => { // Answer
-                    var control = {
+                    var control:ICheckControl = {
                         label: answer.items.label,
                         name: answer.items.name + "-" + answer.items.label,
                         model: "",
@@ -1031,7 +1100,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                     templateUrl: '/backend/partials/edit/item/select/selectcreatedialog',
                     targetEvent: null
                 }).then((answer:any):void => { // Answer
-                    var control = {
+                    var control:ISelectControl = {
                         label: answer.items.label,
                         name: answer.items.name,
                         model: "",
@@ -1049,7 +1118,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                     templateUrl: '/backend/partials/edit/item/numeric/numericcreatedialog',
                     targetEvent: null
                 }).then((answer:any):void => { // Answer
-                    var control = {
+                    var control:INumericControl = {
                         label: answer.items.label,
                         name: answer.items.name,
                         model: "",
@@ -1066,14 +1135,14 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                     templateUrl: '/backend/partials/edit/item/picture/picturecreatedialog',
                     targetEvent: null
                 }).then((answer:any):void => { // Answer
-                    var control = {
-                        "height": 600,
-                        "width": 300,
-                        "path": answer.items.path,
-                        "type": "picture",
-                        "model": "",
-                        "name": answer.items.name,
-                        "label": answer.items.label
+                    var control:IPictureControl = {
+                        height: 600,
+                        width: 300,
+                        path: answer.items.path,
+                        type: "picture",
+                        model: "",
+                        name: answer.items.name,
+                        label: answer.items.label
                     };
                     CurrentView.Data.Pages[CurrentView.Page].picture[0] = control;
                 }, ():void => { // Cancel
@@ -1081,7 +1150,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
             };
 
             $scope.showPictureUpdateDialog = (index:number):void => {
-                var items = CurrentView.Data.Pages[CurrentView.Page].picture[0];
+                var items:any = CurrentView.Data.Pages[CurrentView.Page].picture[0];
                 $mdDialog.show({
                     controller: 'PictureUpdateDialogController',
                     templateUrl: '/backend/partials/edit/item/picture/pictureupdatedialog',
@@ -1090,14 +1159,14 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                         items: items
                     }
                 }).then((answer:any):void => { // Answer
-                    var control = {
-                        "height": 600,
-                        "width": 300,
-                        "path": answer.items.path,
-                        "type": "picture",
-                        "model": "",
-                        "name": answer.items.name,
-                        "label": answer.items.label
+                    var control:IPictureControl = {
+                        height: 600,
+                        width: 300,
+                        path: answer.items.path,
+                        type: "picture",
+                        model: "",
+                        name: answer.items.name,
+                        label: answer.items.label
                     };
                     CurrentView.Data.Pages[CurrentView.Page].picture[0] = control;
                 }, ():void => { // Cancel
@@ -1106,7 +1175,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
 
             $scope.showButtonCreateDialog = ():void => {
 
-                var items = {
+                var items:{type:string; validate:boolean; class:string} = {
                     type: "button",
                     validate: true,
                     class: "md-accent"
@@ -1121,7 +1190,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                     }
                 }).then((answer:any):void => { // Answer
 
-                    var path = "";
+                    var path:string = "";
 
                     if (answer.isPage) {
                         path = "/browse/" + answer.items.page;
@@ -1129,7 +1198,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                         path = "/write";
                     }
 
-                    var control = {
+                    var control:IButtonControl = {
                         label: answer.items.label,
                         name: answer.items.name,
                         model: "",
@@ -1145,7 +1214,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
             };
 
             $scope.showTextUpdateDialog = (index:number):void => {
-                var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                var items:any = CurrentView.Data.Pages[CurrentView.Page].items[index];
                 $mdDialog.show({
                     controller: 'TextUpdateDialogController',
                     templateUrl: '/backend/partials/edit/item/check/textupdatedialog',
@@ -1160,7 +1229,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
             };
 
             $scope.showCheckUpdateDialog = (index:number):void => {
-                var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                var items:any = CurrentView.Data.Pages[CurrentView.Page].items[index];
                 items.name = items.name.split("-")[0];
                 $mdDialog.show({
                     controller: 'CheckUpdateDialogController',
@@ -1177,7 +1246,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
             };
 
             $scope.showSelectUpdateDialog = (index:number):void => {
-                var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                var items:any = CurrentView.Data.Pages[CurrentView.Page].items[index];
                 $mdDialog.show({
                     controller: 'SelectUpdateDialogController',
                     templateUrl: '/backend/partials/edit/item/select/selectupdatedialog',
@@ -1192,7 +1261,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
             };
 
             $scope.showNumericUpdateDialog = (index:number):void => {
-                var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                var items:any = CurrentView.Data.Pages[CurrentView.Page].items[index];
                 $mdDialog.show({
                     controller: 'NumericUpdateDialogController',
                     templateUrl: '/backend/partials/edit/item/numeric/numericupdatedialog',
@@ -1207,7 +1276,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
             };
 
             $scope.showButtonUpdateDialog = (index:number):void => {
-                var items = CurrentView.Data.Pages[CurrentView.Page].items[index];
+                var items:any = CurrentView.Data.Pages[CurrentView.Page].items[index];
                 $mdDialog.show({
                     controller: 'ButtonUpdateDialogController',
                     templateUrl: '/backend/partials/edit/item/button/buttonupdatedialog',
@@ -1217,7 +1286,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                     }
                 }).then((answer:any):void => { // Answer
 
-                    var path = "";
+                    var path:string = "";
 
                     if (answer.isPage) {
                         path = "/browse/" + answer.items.page;
@@ -1402,8 +1471,7 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
                 var config:any = new Config();
                 config.body = $scope.config;
                 config.$update({}, (result:any):void => {
-                    if (result)
-                    {
+                    if (result) {
                         if (result.code === 0) {
                             $mdToast.show($mdToast.simple().content('Updated.'));
                         } else {
@@ -1435,7 +1503,7 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
     }]);
 
 controllers.controller('PatientSheetControl', ['$scope', '$mdBottomSheet', '$location', 'CurrentPatient',
-    ($scope:any, $mdBottomSheet:any, $location:any, CurrentPatient:any):void  => {
+    ($scope:any, $mdBottomSheet:any, $location:any, CurrentPatient:ICurrentPatient):void  => {
 
         if (CurrentPatient) {
             $scope.items = [
@@ -1476,7 +1544,7 @@ controllers.controller('LoginDialogController', ['$scope', '$q', '$mdDialog', '$
     ($scope:any, $q:any, $mdDialog:any, $mdToast:any, AccountQuery:any, Login:any):void  => {
 
         $scope.querySearch = (querystring:any):any => {
-            var deferred = $q.defer();
+            var deferred:any = $q.defer();
             AccountQuery.query({query: encodeURIComponent(JSON.stringify({"username": {$regex: querystring}}))}, (data:any):void => {
                 deferred.resolve(data.value);
             });
@@ -1500,7 +1568,7 @@ controllers.controller('LoginDialogController', ['$scope', '$q', '$mdDialog', '$
         };
 
         $scope.answer = (items:any):void  => {
-            var account:any = new Login();
+            var account:IAccount = new Login();
             account.username = items.username;
             account.password = items.password;
             account.$login((account:any):void => {
@@ -1610,7 +1678,7 @@ controllers.controller('PatientAcceptDialogController', ['$scope', '$mdDialog', 
 
         $scope.progress = true;
         List(ViewQuery, {}, (data:any):void  => {
-            _.each(data, (item, index):void => {
+            _.each(data, (item:any, index:number):void => {
                 $scope.categories.push(item.Name);
             });
             $scope.progress = false;
@@ -1752,7 +1820,7 @@ controllers.controller('CheckCreateDialogController', ['$scope', '$mdDialog',
 controllers.controller('SelectCreateDialogController', ['$scope', '$mdDialog',
     ($scope:any, $mdDialog:any):void  => {
 
-        var self = this;
+        var self:any = this;
         self.tags = [];
         $scope.tags = angular.copy(self.tags);
 
@@ -1800,19 +1868,19 @@ controllers.controller('PictureCreateDialogController', ['$scope', '$mdDialog', 
 
         $scope.processFiles = (files:any):void => {
 
-            var filename = files[0].name;
+            var filename:string = files[0].name;
             List(FileQuery, {filename: filename}, (data:any):void  => {
                 if (data) {
                     if (data.length == 0) {
                         $scope.items.path = filename;
                         $scope.images[0] = {};
-                        var fileReader = new FileReader();
-                        var image = new Image();
+                        var fileReader:any = new FileReader();
+                        var image:any = new Image();
                         fileReader.onload = (event:any):void => {
-                            var uri = event.target.result;
+                            var uri:any = event.target.result;
                             image.src = uri;
                             image.onload = ():void => {
-                                var file = new File();
+                                var file:any = new File();
                                 file.url = uri;
                                 file.$send({name: $scope.items.path});
                                 $scope.$apply();
@@ -1998,13 +2066,13 @@ controllers.controller('NumericUpdateDialogController', ['$scope', '$mdDialog', 
 controllers.controller('ButtonUpdateDialogController', ['$scope', '$mdDialog', 'items',
     ($scope:any, $mdDialog:any, items:any):void  => {
 
-        var path = items.path;
+        var path:string = items.path;
 
         $scope.items = items;
 
         $scope.isPage = (path != "/write");
         if ($scope.isPage) {
-            var elements = path.split("/");
+            var elements:string[] = path.split("/");
             if (elements.length === 3) {
                 $scope.items.page = elements[2];
             }

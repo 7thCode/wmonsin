@@ -25,13 +25,13 @@ gulp.task('copy', ['clean'], () => {
             'bower.json',
             '.bowerrc',
             'public/favicons/*',
-            'public/**/*.css',
+            //'public/**/*.css',
             'public/**/*.svg',
             'public/**/*.png',
             'public/font/**/*',
-            'public/javascripts/*.js',
-            'public/backend/javascripts/*.js',
-            'public/front/javascripts/*.js',
+            //'public/javascripts/*.js',
+            //'public/backend/javascripts/*.js',
+            //'public/front/javascripts/*.js',
             'public/output/output.pdf'
         ],
         {base: '..'}
@@ -56,7 +56,6 @@ gulp.task('js', () => {
         {base: '..'})
         .pipe(uglify())
         .pipe(rename({extname: '.min.js'}))
-        .pipe(gulp.dest('../'))
         .pipe(gulp.dest('production'));
 });
 

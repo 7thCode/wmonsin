@@ -92,6 +92,7 @@ function List(resource:any, query:any, success:(value:any) => void):void {
     });
 }
 
+
 // Patient resource
 controllers.factory('PatientQuery', ['$resource', ($resource:any):angular.resource.IResource<any> => {
     return $resource('/patient/query/:query', {query: '@query'}, {
