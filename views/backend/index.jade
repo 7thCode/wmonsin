@@ -8,35 +8,6 @@ block content
                 ng-md-icon(icon="list", size="46", ng-click="open()", style="position:relative;top:5px;fill:#18FFFF")
                 h3.md-display-1(ng-bind="username + '-' + type")
 
-        md-sidenav(style="opacity:0.8;", layout="row", class="md-sidenav-right", md-component-id="nav")
-            //md-content(layout="column", style="width:38px; background-image: url('../images/edge.svg');background-repeat:repeat-y;")
-            md-content.sidenav-edge(layout="column", style="width:18px;")
-            md-content(layout="column")
-                div(layout="row",layout-align="end center")
-                    ng-md-icon(icon="reply", aria-label="",style="position:relative;top:2px;fill:#009688", size="22")
-                    md-button(ng-click="goTop();close();") Top
-                div(layout="row",layout-align="end center")
-                    ng-md-icon(icon="home", aria-label="",style="position:relative;top:5px;fill:#a0ffff", size="22")
-                    md-button(ng-click="goBack();close();") Back
-                div(layout="row",layout-align="end center",ng-show="type == 'Admin'")
-                    ng-md-icon(icon="settings", aria-label="",style="position:relative;top:5px;fill:#F8BBD0",  size="22")
-                    md-button(ng-click="goConfig();close();") Config
-                div(layout="row",layout-align="end center",ng-show="type != 'Viewer'")
-                    ng-md-icon(icon="edit", aria-label="",style="position:relative;top:5px;fill:#0097A7", size="22")
-                    md-button(ng-click="goEdit();close();") Edit
-                div(layout="row",layout-align="end center",ng-show="mode == 'Account'")
-                    ng-md-icon(icon="perm_identity",style="position:relative;top:6px;fill:#B3E5FC", aria-label="", size="22")
-                    md-button(ng-click="goPatient();close();") Patients
-                div(layout="row",layout-align="end center",ng-show="mode == 'Patient'")
-                    ng-md-icon(icon="face", aria-label="",style="position:relative;top:6px;fill:#039BE5", size="22")
-                    md-button(ng-click="goAccount();close();") Accounts
-                div(layout="row",layout-align="end center",ng-show="type == ''")
-                    ng-md-icon(icon="check_box_outline_blank", aria-label="",style="position:relative;top:5px;fill:#B3E5FC", size="22")
-                    md-button(ng-click="showLoginDialog();close();") Login
-                div(layout="row",layout-align="end center", ng-show="type != ''")
-                    ng-md-icon(icon="check_box", aria-label="",style="position:relative;top:5px;fill:#B3E5FC",  size="22")
-                    md-button(ng-click="Logout();close();") Logout
-
         md-toolbar.toolbar(hide-sm)
             .md-toolbar-tools(layout="row", layout-align="end center")
                 h3.md-display-1(flex)
@@ -45,7 +16,7 @@ block content
 
                     md-button.md-fab.menu-button(ng-click="goBack()", aria-label="", style="background-color:#00BCD4;z-index:10;")
                         ng-md-icon(icon="reply", aria-label="return",style="position:relative;top:5px;fill:#009688", size="42")
-                        md-tooltip(ng-bind="back")
+                        md-tooltip バック
 
                     md-button.md-fab.menu-button(ng-click="goTop()", aria-label="", style="background-color:#26969a;z-index:10;")
                         ng-md-icon(icon="home", aria-label="Top", style="position:relative;top:5px;fill:#a0ffff", size="42")
@@ -74,6 +45,47 @@ block content
                     md-button.md-fab.menu-button(ng-show="type != ''", ng-click="Logout()", aria-label="", style="background-color:#FF1744;z-index:10;")
                         ng-md-icon(icon="check_box", aria-label="Account", style="position:relative;top:5px;fill:#B3E5FC", size="42")
                         md-tooltip ログアウト
+
+
+
+        md-sidenav(style="opacity:0.8;", layout="row", class="md-sidenav-right", md-component-id="nav", ng-cloak)
+            //md-content(layout="column", style="width:38px; background-image: url('../images/edge.svg');background-repeat:repeat-y;")
+            md-content.sidenav-edge(layout="column", style="width:18px;")
+            md-content(layout="column")
+                div(layout="row",layout-align="end center")
+                    ng-md-icon(icon="reply", aria-label="",style="position:relative;top:2px;fill:#009688", size="22")
+                    md-button(ng-click="goTop();close();") Top
+                div(layout="row",layout-align="end center")
+                    ng-md-icon(icon="home", aria-label="",style="position:relative;top:5px;fill:#a0ffff", size="22")
+                    md-button(ng-click="goBack();close();") Back
+                div(layout="row",layout-align="end center",ng-show="type == 'Admin'")
+                    ng-md-icon(icon="settings", aria-label="",style="position:relative;top:5px;fill:#F8BBD0",  size="22")
+                    md-button(ng-click="goConfig();close();") Config
+                div(layout="row",layout-align="end center",ng-show="type != 'Viewer'")
+                    ng-md-icon(icon="edit", aria-label="",style="position:relative;top:5px;fill:#0097A7", size="22")
+                    md-button(ng-click="goEdit();close();") Edit
+                div(layout="row",layout-align="end center",ng-show="mode == 'Account'")
+                    ng-md-icon(icon="perm_identity",style="position:relative;top:6px;fill:#B3E5FC", aria-label="", size="22")
+                    md-button(ng-click="goPatient();close();") Patients
+                div(layout="row",layout-align="end center",ng-show="mode == 'Patient'")
+                    ng-md-icon(icon="face", aria-label="",style="position:relative;top:6px;fill:#039BE5", size="22")
+                    md-button(ng-click="goAccount();close();") Accounts
+                div(layout="row",layout-align="end center",ng-show="type == ''")
+                    ng-md-icon(icon="check_box_outline_blank", aria-label="",style="position:relative;top:5px;fill:#B3E5FC", size="22")
+                    md-button(ng-click="showLoginDialog();close();") Login
+                div(layout="row",layout-align="end center", ng-show="type != ''")
+                    ng-md-icon(icon="check_box", aria-label="",style="position:relative;top:5px;fill:#B3E5FC",  size="22")
+                    md-button(ng-click="Logout();close();") Logout
+
+
+
+
+
+
+
+
+
+
 
         div(ui-view="")
 

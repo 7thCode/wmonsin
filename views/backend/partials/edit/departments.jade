@@ -20,7 +20,7 @@ md-content.background
         md-list-item(ng-repeat="Department in Departments", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="end center", flex)
-                    h1.md-subhead(flex) {{Department.Name}}
+                    h1.md-subhead(flex, ng-bind="Department.Name")
                     div(layout="row", ng-if="type != 'Viewer'")
                         md-button.md-fab.md-mini(ng-click="showDepartmentCopyDialog(Department._id)", aria-label="Copy", style="background-color:#00897B;z-index:1;")
                             ng-md-icon.iconfill(icon="content_copy", style="position:relative;top:6px;left:1px;", size="22")
@@ -38,7 +38,7 @@ md-content.background
         md-list-item(ng-repeat="Department in Departments", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="end center", flex)
-                    h3.md-title(flex) {{Department.Name}}
+                    h3.md-title(flex, ng-bind="Department.Name")
 
                     div(layout="row", ng-if="type != 'Viewer'")
                         md-button.md-fab(ng-click="showDepartmentCopyDialog(Department._id)", aria-label="Copy", style="background-color:#00897B;z-index:1;")

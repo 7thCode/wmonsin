@@ -44,7 +44,7 @@ md-dialog.box-edge(flex)
                 md-grid-list(md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6" md-row-height-gt-md="1:1" md-row-height="2:2" md-gutter="8px" md-gutter-gt-sm="8px" )
                     md-grid-tile(ng-repeat="file in files",md-rowspan="2" md-colspan="1" md-colspan-sm="1" )
                         img(ng-src="{{'/file/' + file.filename}}", style="width:50%;" ng-click="selectFile(file.filename);")
-                        md-grid-tile-footer {{file.filename}}
+                        md-grid-tile-footer(ng-bind="file.filename")
 
                 //div(flow-init flow-name="uploader.flow", flow-files-added="processFiles($files)")
                     md-button.md-raised.md-primary(flow-btn type="file") Update Images

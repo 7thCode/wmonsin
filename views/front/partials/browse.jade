@@ -8,7 +8,7 @@ md-content.background
     md-card
         ng-form(name="validate")
             md-card-content(layout layout-align="center center")
-                h3.md-headline {{contents.headline}}
+                h3.md-headline(ng-bind="contents.headline")
 
             md-card-content(layout layout-align="center center", ng-show="contents.picture.length > 0")
                 md-radio-group
@@ -26,30 +26,30 @@ md-content.background
                         md-card-content(layout-align="start center")
 
                             md-input-container(style="width:100%", ng-if="content.type == 'text' && content.items.length == 0")
-                                label {{content.label}}
+                                label(ng-bind="content.label")
                                 input(ng-model="content.model", placeholder="",name="{{content.name}}")
 
                             md-input-container(style="width:100%", ng-if="content.type == 'text' && content.items.length != 0")
-                                label {{content.label}}
+                                label(ng-bind="content.label")
                                 input(ng-model="content.model", placeholder="",name="{{content.name}}", md-maxlength="30", required)
                                 div(ng-messages="validate[content.name].$error")
-                                    div(ng-repeat="item in content.items", ng-message="{{item.name}}") {{item.message}}
+                                    div(ng-repeat="item in content.items", ng-message="{{item.name}}", ng-bind="item.message")
 
                             md-radio-group(ng-model="content.model",ng-if="content.type == 'select'", name="{{content.name}}", layout-align="center center",  required)
-                                .md-display-1 {{content.label}}
+                                .md-display-1(ng-bind="content.label")
                                 md-radio-button(ng-repeat="item in content.items", ng-model="content.model", value="{{item}}")
-                                    .md-display-1 {{item}}
+                                    .md-display-1(ng-bind="item")
 
                             md-checkbox.md-primary(ng-model="content.model", ng-if="content.type == 'check'", md-no-ink aria-label="Checkbox No Ink")
-                                .md-display-1 {{content.label}}
+                                .md-display-1(ng-bind="content.label")
 
-                            md-button.md-raised(flex, ng-if="content.type == 'button' && content.validate", ng-class="content.class", ng-click="next(content.path)", aria-label="", ng-disabled="validate.$invalid") {{content.label}}
-                            md-button.md-raised(flex, ng-if="content.type == 'button' && !content.validate", ng-class="content.class", ng-click="next(content.path)", aria-label="") {{content.label}}
+                            md-button.md-raised(flex, ng-if="content.type == 'button' && content.validate", ng-class="content.class", ng-click="next(content.path)", aria-label="", ng-disabled="validate.$invalid", ng-bind="content.label")
+                            md-button.md-raised(flex, ng-if="content.type == 'button' && !content.validate", ng-class="content.class", ng-click="next(content.path)", aria-label="", ng-bind="content.label")
 
                             div(layout="column", flex, ng-if="content.type == 'numeric'")
                                 div(layout="row",flex)
                                     md-input-container(style="width:100%")
-                                        label {{content.label}}
+                                        label(ng-bind="content.label")
                                         input(ng-model="content.model", placeholder="",name="{{content.name}}",ng-pattern="/^[0-9]+$/", md-maxlength="30", required)
 
                                 div(layout="row",layout-align="center center", flex)

@@ -458,7 +458,7 @@ router.put('/config', config_controller.put_config);
 
 //Test area
 
-router.get('/front/partials/browse2/:name', function (req, res, next) {
+router.get('/front/partials/browse2/:name', function (req, res) {
 
     var tohtml = new ToHtml();
     /*

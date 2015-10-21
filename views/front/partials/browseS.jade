@@ -17,15 +17,15 @@ md-content.background
                             ng-md-icon.iconfill(icon="assignment_ind", style="position:relative;top:6px;", size="42")
                             md-tooltip Description...
 
-                    div(layout="column", flex="20") {{patient.Category}}
+                    div(layout="column", flex="20", ng-bind="patient.Category")
 
                     div(layout="column", flex="20")
-                        span(style="font-size:9px;") {{patient.Information.kana}}
-                        span.md-subhead {{patient.Information.name}}
+                        span(style="font-size:9px;", ng-bind="patient.Information.kana")
+                        span.md-subhead(ng-bind="patient.Information.name")
 
                     div(layout="column", flex="20")
-                        span.md-subhead(style="font-size:9px;") {{patient.Information.insurance}}
-                        span.md-subhead {{patient.Date | date:'yyyy-MM-dd HH:mm:ss'}}
+                        span.md-subhead(style="font-size:9px;", ng-bind="patient.Information.insurance")
+                        span.md-subhead(ng-bind="patient.Date | date:'yyyy-MM-dd HH:mm:ss'")
 
-                    div(flex="20",layout="row", layout-align="end center") {{patient.Status | status}}
+                    div(flex="20",layout="row", layout-align="end center", ng-bind="patient.Status | status")
 

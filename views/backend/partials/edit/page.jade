@@ -60,9 +60,9 @@ md-content.background
 
                 md-card-content(layout="column", layout-align="center center", flex)
                     div(layout="row")
-                        h1.md-subhead(flex) {{item.type}}
+                        h1.md-subhead(flex, ng-bind="item.type")
                     div
-                        h1.md-subhead(flex) {{item.name}}
+                        h1.md-subhead(flex, ng-bind="item.name")
                     div(layout="row")
 
                         div(layout="row", ng-if="type != 'Viewer'")
@@ -130,9 +130,9 @@ md-content.background
             md-card(layout="row", flex)
                 md-card-content(layout="column", layout-align="center center", flex)
                     div(layout="row")
-                        h1.md-subhead(flex) {{picture.type}}
+                        h1.md-subhead(flex, ng-bind="picture.type")
                     div
-                        h1.md-subhead(flex) {{picture.name}}
+                        h1.md-subhead(flex, ng-bind="picture.name")
                     div(layout="row")
                         div(layout="row", ng-if="picture.type == 'picture'")
                             div(flex, ng-if="type != 'Viewer'")
@@ -149,8 +149,8 @@ md-content.background
             md-card(layout="row", flex)
 
                 md-card-content(layout="row", layout-align="center center", flex)
-                    h3.md-title(flex) {{item.type}}
-                    h4(flex) {{item.name}}
+                    h3.md-title(flex, ng-bind="item.type")
+                    h4(flex, ng-bind="item.name")
 
                     div(layout="row", ng-if="type != 'Viewer'")
                         md-button.md-fab(ng-click="up($index)", aria-label="Up", ng-if="type != 'Viewer'", style="background-color:#64ffda;z-index:1;")
@@ -216,8 +216,8 @@ md-content.background
         md-list-item(ng-repeat="picture in Page.picture", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)
-                    h3.md-title(flex) {{picture.type}}
-                    h4(flex) {{picture.name}}
+                    h3.md-title(flex, ng-bind="picture.type")
+                    h4(flex, ng-bind="picture.name")
 
                     div(layout="row", ng-if="picture.type == 'picture'")
                         div(flex, ng-if="type != 'Viewer'")

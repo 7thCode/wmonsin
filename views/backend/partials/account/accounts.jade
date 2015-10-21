@@ -19,7 +19,7 @@ md-content.background
         md-list-item(ng-repeat="account in accounts", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)
-                    h1.md-subhead(flex) {{account.username}}
+                    h1.md-subhead(flex, ng-bind="account.username")
 
                     div(layout="row", ng-if="type == 'Viewer'")
                         ng-md-icon(icon="person", style="{{account.type | rgb}}", size="50")
@@ -38,7 +38,7 @@ md-content.background
         md-list-item(ng-repeat="account in accounts", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)
-                    h3.md-title(flex) {{account.username}}
+                    h3.md-title(flex, ng-bind="account.username")
 
                     div(layout="row", ng-if="type == 'Viewer'")
                         ng-md-icon(icon="person", style="{{account.type | rgb}}", size="50")

@@ -60,6 +60,10 @@ class Browser {
     }
 }
 
+interface IGlobal {
+    socket: any;
+}
+
 controllers.value('Global', {
         socket: null
     }
@@ -82,7 +86,7 @@ controllers.value("CurrentPatient", {
 });
 
 function List(resource:any, query:any, success:(value:any) => void):void {
-    var result:any[] = [];
+
     resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any):void => {
         if (data) {
             if (data.code === 0) {
@@ -114,7 +118,6 @@ controllers.factory('ViewQuery', ['$resource',
     }]);
 
 function PatientsList(resource:any, success:(value:any, headers:any) => void):void {
-    var result:any[] = [];
 
     var today:Date = new Date();
     today.setHours(23, 59, 59, 99);
@@ -132,7 +135,7 @@ function PatientsList(resource:any, success:(value:any, headers:any) => void):vo
 }
 
 controllers.controller('BrowseSController', ["$scope", "$stateParams", "$location", 'Patient', 'PatientQuery', "CurrentPatient", "Global", 'ViewQuery', 'Views',
-    ($scope:any, $stateParams:any, $location:any, Patient:any, PatientQuery:any, CurrentPatient:any, Global:any, ViewQuery:any, Views:any):void => {
+    ($scope:any, $stateParams:any, $location:any, Patient:any, PatientQuery:any, CurrentPatient:any, Global:IGlobal, ViewQuery:any, Views:any):void => {
 
         List(ViewQuery, {}, (data:any):void  => {
             PatientsList(PatientQuery, (patients:any):void => {
@@ -213,19 +216,19 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
             canvas.on({
 
                 'touch:gesture': (options:any):void => {
-                    var a:number = 1;
+
                 },
                 'touch:drag': (options:any):void => {
-                    var a:number = 1;
+
                 },
                 'touch:orientation': (options:any):void => {
-                    var a:number = 1;
+
                 },
                 'touch:shake': (options:any):void => {
-                    var a:number = 1;
+
                 },
                 'touch:longpress': (options:any):void => {
-                    var a:number = 1;
+
                 },
                 'mouse:up': (options:any):void => {
                     var radius:number = 20;
@@ -290,12 +293,12 @@ controllers.controller('BrowseController', ["$scope", "$stateParams", "$location
     }]);
 
 controllers.controller('ConfirmController', ["$scope", "$stateParams", "CurrentPatient", "Patient", 'Global',
-    ($scope:any, $stateParams:any, CurrentPatient:any, Patient:any, Global:any):void => {
+    ($scope:any, $stateParams:any, CurrentPatient:any, Patient:any, Global:IGlobal):void => {
         $scope.Input = CurrentPatient.Input;
     }]);
 
 controllers.controller('WriteController', ["$scope", "$stateParams", "$location", "CurrentPatient", "Patient", 'Global',
-    ($scope, $stateParams:any, $location:any, CurrentPatient:any, Patient:any, Global:any):void => {
+    ($scope, $stateParams:any, $location:any, CurrentPatient:any, Patient:any, Global:IGlobal):void => {
         $scope.Input = CurrentPatient.Input;
         $scope.send = true;
         var patient:any = new Patient();

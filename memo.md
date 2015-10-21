@@ -4,6 +4,10 @@ ssh root@188.166.244.121
 docker run -it --name ubuntu1 ubuntu1 /bin/bash
 
 
+
+
+
+
 いろいろ....
 
 

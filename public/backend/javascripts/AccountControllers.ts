@@ -323,11 +323,11 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
         $scope.open = buildToggler();
 
         function buildToggler():(f:() => any, n:number) => void {
-            var debounceFn:(f:() => any, n:number) => void = $mdUtil.debounce(():any => {
+            return $mdUtil.debounce(():any => {
                 $mdSidenav('nav').toggle().then(():void => {
                 });
             }, 300);
-            return debounceFn;
+         //   return debounceFn;
         }
 
         $scope.close = ():void => {
@@ -560,7 +560,6 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                     if (value.type === "picture") {
                                         var canvas:any = new fabric.Canvas('schema-' + value.name);
                                         canvas.loadFromJSON(JSON.stringify(value.value), canvas.renderAll.bind(canvas), (o:any, object:any):void => {
-                                            var a = 1;
                                         });
                                     }
                                     $scope.Input.push(value);
@@ -757,6 +756,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                                     $mdToast.show($mdToast.simple().content('network error(password)'));
                                                 }
                                             });
+                                            break;
                                         }
                                         case 2:
                                         {
@@ -777,6 +777,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                                     $mdToast.show($mdToast.simple().content('network error(account)'));
                                                 }
                                             });
+                                            break;
                                         }
                                     }
                                 }, ():void => {

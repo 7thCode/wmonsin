@@ -23,8 +23,8 @@ md-dialog.box-edge(flex)
                 ng-md-icon.iconfill-blue(icon="account_circle", size="46")
                 md-autocomplete(required, name="username",autocomplete="off",  md-no-cache="noCache", md-selected-item="selectedItem", md-search-text="items.username",  md-items="item in querySearch(items.username)", md-item-text="item.username",md-min-length="1", placeholder="User Name", md-menu-class="autocomplete-template")
                     md-item-template
-                        div.item-title {{item.username}}
-                        div.item-metadata {{item.type}}
+                        div.item-title(ng-bind="item.username")
+                        div.item-metadata(ng-bind="item.type")
 
             div(layout="row", layout-align="start center")
                 ng-md-icon.iconfill-pink(icon="vpn_key", size="46")
