@@ -8,7 +8,30 @@ md-content.background
     md-card
         md-card-content
             h1.md-headline 問診一覧
-    md-list
+
+
+    md-list(hide-gt-sm)
+        md-list-item(ng-repeat="patient in patients")
+            md-card(layout="row", flex)
+                md-card-content(layout="row", layout-align="center center", flex)
+                    div(flex="20")
+                        md-button.md-fab.md-accent.md-mini(ng-click="next(patient._id)", aria-label="Description")
+                            ng-md-icon.iconfill(icon="assignment_ind", style="position:relative;top:6px;", size="22")
+                            md-tooltip Description...
+
+                    div.md-body-2(layout="column", flex="20", ng-bind="patient.Category")
+
+                    div(layout="column", flex="20")
+                        span(style="font-size:9px;", ng-bind="patient.Information.kana")
+                        span.md-body-2(ng-bind="patient.Information.name")
+
+                    div(layout="column", flex="20")
+                        span.md-body-2(style="font-size:9px;", ng-bind="patient.Information.insurance")
+                        span.md-body-2(ng-bind="patient.Date | date:'yy-MM-dd HH:mm'")
+
+                    div.md-body-2(flex="20",layout="row", layout-align="end center", ng-bind="patient.Status | status")
+
+    md-list(hide-sm)
         md-list-item(ng-repeat="patient in patients")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)

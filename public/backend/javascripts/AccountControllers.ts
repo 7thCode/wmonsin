@@ -363,8 +363,9 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
                         localStorage.removeItem("account");
                         $rootScope.$broadcast('Logout');
                         $state.go('start');
+                    } else {
+                        $mdToast.show($mdToast.simple().content(account.message));
                     }
-                    $mdToast.show($mdToast.simple().content(account.message));
                 } else {
                     $mdToast.show($mdToast.simple().content("network error(logout)"));
                 }
@@ -467,8 +468,9 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                                                 Global.socket.emit('server', {value: "1"});
                                                 $scope.patients = data;
                                             });
+                                        } else {
+                                            $mdToast.show($mdToast.simple().content(result.message));
                                         }
-                                        $mdToast.show($mdToast.simple().content(result.message));
                                     } else {
                                         $mdToast.show($mdToast.simple().content("network error(save)"));
                                     }
@@ -565,8 +567,9 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                     $scope.Input.push(value);
                                     $scope.Information = data.value.Information;
                                 });
+                            } else {
+                                $mdToast.show($mdToast.simple().content(data.message));
                             }
-                            $mdToast.show($mdToast.simple().content(data.message));
                         } else {
                             $mdToast.show($mdToast.simple().content('network error(patient)'));
                         }
@@ -579,8 +582,9 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                 if (result) {
                     if (result.code === 0) {
                         $scope.IsDone = (result.value === "Done");
+                    } else {
+                        $mdToast.show($mdToast.simple().content(result.message));
                     }
-                    $mdToast.show($mdToast.simple().content(result.message));
                 } else {
                     $mdToast.show($mdToast.simple().content("network error(status)"));
                 }
@@ -604,7 +608,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                 var patient:IPatient = new Patient();
                 patient.$remove({id: CurrentPatient.id}, (result:any):void => {
                     if (result) {
-                        $mdToast.show($mdToast.simple().content(result.message));
+              //          $mdToast.show($mdToast.simple().content(result.message));
                     } else {
                         $mdToast.show($mdToast.simple().content("network error(patient)"));
                     }
@@ -629,8 +633,9 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                             if (result) {
                                                 if (result.code === 0) {
                                                     Global.socket.emit('server', {value: "1"});
+                                                } else {
+                                                    $mdToast.show($mdToast.simple().content(result.message));
                                                 }
-                                                $mdToast.show($mdToast.simple().content(result.message));
                                             } else {
                                                 $mdToast.show($mdToast.simple().content("network error(status)"));
                                             }
@@ -643,8 +648,9 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                             if (result) {
                                                 if (result.code === 0) {
                                                     Global.socket.emit('server', {value: "1"});
+                                                } else {
+                                                    $mdToast.show($mdToast.simple().content(result.message));
                                                 }
-                                                $mdToast.show($mdToast.simple().content(result.message));
                                             } else {
                                                 $mdToast.show($mdToast.simple().content("network error(login)"));
                                             }
@@ -694,8 +700,9 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                     $scope.accounts = data;
                                     $scope.progress = false;
                                 });
+                            } else {
+                                $mdToast.show($mdToast.simple().content(result.message));
                             }
-                            $mdToast.show($mdToast.simple().content(result.message));
                         } else {
                             $mdToast.show($mdToast.simple().content('network error(status)'));
                         }
@@ -719,8 +726,9 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                     $scope.accounts = data;
                                     $scope.progress = false;
                                 });
+                            } else {
+                                $mdToast.show($mdToast.simple().content(result.message));
                             }
-                            $mdToast.show($mdToast.simple().content(result.message));
                         } else {
                             $mdToast.show($mdToast.simple().content('network error(status)'));
                         }
@@ -751,7 +759,7 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                             account.password = answer.items.password;
                                             account.$update({id: id}, (result:any):void => {
                                                 if (result) {
-                                                    $mdToast.show($mdToast.simple().content(result.message));
+                                     //               $mdToast.show($mdToast.simple().content(result.message));
                                                 } else {
                                                     $mdToast.show($mdToast.simple().content('network error(password)'));
                                                 }
@@ -771,8 +779,9 @@ controllers.controller('AccountsController', ['$scope', '$state', "$mdDialog", '
                                                             $scope.accounts = data;
                                                             $scope.progress = false;
                                                         });
+                                                    } else {
+                                                        $mdToast.show($mdToast.simple().content(result.message));
                                                     }
-                                                    $mdToast.show($mdToast.simple().content(result.message));
                                                 } else {
                                                     $mdToast.show($mdToast.simple().content('network error(account)'));
                                                 }
@@ -845,8 +854,9 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                                 $scope.Departments = data;
                                 $scope.progress = false;
                             });
+                        } else {
+                            $mdToast.show($mdToast.simple().content(result.message));
                         }
-                        $mdToast.show($mdToast.simple().content(result.message));
                     } else {
                         $mdToast.show($mdToast.simple().content("network error(save)"));
                     }
@@ -877,8 +887,9 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                                     $scope.Departments = data;
                                     $scope.progress = false;
                                 });
+                            } else {
+                                $mdToast.show($mdToast.simple().content(result.message));
                             }
-                            $mdToast.show($mdToast.simple().content(result.message));
                         } else {
                             $mdToast.show($mdToast.simple().content("network error(save)"));
                         }
@@ -913,8 +924,9 @@ controllers.controller('DepartmentsController', ['$scope', '$state', "$mdDialog"
                                 $scope.Departments = data;
                                 $scope.progress = false;
                             });
+                        } else {
+                            $mdToast.show($mdToast.simple().content(result.message));
                         }
-                        $mdToast.show($mdToast.simple().content(result.message));
                     } else {
                         $mdToast.show($mdToast.simple().content("network error(save)"));
                     }
@@ -958,7 +970,7 @@ controllers.controller('DepartmentEditController', ['$scope', '$state', '$mdDial
                 view.$update({id: CurrentView.Data._id}, (result:any):void => {
                     if (result) {
                         if (result.code === 0) {
-                            $mdToast.show($mdToast.simple().content(result.message));
+                    //        $mdToast.show($mdToast.simple().content(result.message));
                         } else {
                             $mdToast.show($mdToast.simple().content(result.message));
                         }
@@ -1047,7 +1059,7 @@ controllers.controller('PageEditController', ['$scope', '$state', '$mdDialog', '
                 view.$update({id: CurrentView.Data._id}, (result:any):void => {
                     if (result) {
                         if (result.code === 0) {
-                            $mdToast.show($mdToast.simple().content(result.message));
+                //            $mdToast.show($mdToast.simple().content(result.message));
                         } else {
                             $mdToast.show($mdToast.simple().content(result.message));
                         }
@@ -1456,8 +1468,9 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
             if (result) {
                 if (result.code === 0) {
                     $scope.config = result.value;
+                } else {
+                    $mdToast.show($mdToast.simple().content(result.message));
                 }
-                $mdToast.show($mdToast.simple().content(result.message));
             } else {
                 $mdToast.show($mdToast.simple().content("network error(config)"));
             }
@@ -1474,7 +1487,7 @@ controllers.controller('ControllpanelController', ['$scope', '$mdToast', '$mdBot
                 config.$update({}, (result:any):void => {
                     if (result) {
                         if (result.code === 0) {
-                            $mdToast.show($mdToast.simple().content('Updated.'));
+                     //       $mdToast.show($mdToast.simple().content('Updated.'));
                         } else {
                             $mdToast.show($mdToast.simple().content(result.message));
                         }
@@ -1576,8 +1589,9 @@ controllers.controller('LoginDialogController', ['$scope', '$q', '$mdDialog', '$
                 if (account) {
                     if (account.code === 0) {
                         $mdDialog.hide(account);
+                    } else {
+                        $mdToast.show($mdToast.simple().content(account.message));
                     }
-                    $mdToast.show($mdToast.simple().content(account.message));
                 } else {
                     $mdToast.show($mdToast.simple().content("network error(login)"));
                 }

@@ -1,5 +1,5 @@
 {
-  "connection":"mongodb://localhost/patient",
+  "db":"patient",
   "user": "root",
   "password":"root",
   "sessionkey": "Daisy, Daisy.",

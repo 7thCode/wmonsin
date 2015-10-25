@@ -26,32 +26,31 @@ md-content.background
                 md-tab-label data
                 md-tab-body
                     md-list
-                        md-card-content
-                            div(layout layout-align="center center", ng-repeat="item in Input")
+                        div(layout layout-align="center center", ng-repeat="item in Input")
 
-                                div(layout="row", ng-show="item.type == 'text'", flex)
-                                    md-card(flex)
-                                        md-card-content(layout="row", layout-align="start center", flex)
-                                            label.md-subhead(ng-bind="item.name", flex="30")
-                                            .md-title(ng-bind="item.value")
+                            div(layout="row", ng-show="item.type == 'text'", flex)
+                                md-card(flex)
+                                    md-card-content(layout="row", layout-align="start center", flex)
+                                        label.md-subhead(ng-bind="item.name", flex="30")
+                                        .md-title(ng-bind="item.value")
 
-                                div(layout="row", ng-show="item.type == 'select'", flex)
-                                    md-card(flex)
-                                        md-card-content(layout="row", layout-align="start center", flex)
-                                            label.md-subhead(ng-bind="item.name", flex="30")
-                                            .md-title(ng-bind="item.value")
+                            div(layout="row", ng-show="item.type == 'select'", flex)
+                                md-card(flex)
+                                    md-card-content(layout="row", layout-align="start center", flex)
+                                        label.md-subhead(ng-bind="item.name", flex="30")
+                                        .md-title(ng-bind="item.value")
 
-                                div(layout="row", ng-show="item.type == 'check'", flex)
-                                    md-card(flex, ng-show="item.value")
-                                        md-card-content(layout="row", layout-align="start center", flex)
-                                            label.md-subhead(ng-bind="item.name", flex="30")
-                                            .md-title(ng-bind="item.value")
+                            div(layout="row", ng-show="item.type == 'check'", flex)
+                                md-card(flex, ng-show="item.value")
+                                    md-card-content(layout="row", layout-align="start center", flex)
+                                        label.md-subhead(ng-bind="item.name", flex="30")
+                                        .md-title(ng-bind="item.value")
 
-                                div(layout="row", ng-show="item.type == 'numeric'", flex)
-                                    md-card(flex)
-                                        md-card-content(layout="row", layout-align="start center", flex)
-                                            label.md-subhead(ng-bind="item.name", flex="30")
-                                            .md-title(ng-bind="item.value")
+                            div(layout="row", ng-show="item.type == 'numeric'", flex)
+                                md-card(flex)
+                                    md-card-content(layout="row", layout-align="start center", flex)
+                                        label.md-subhead(ng-bind="item.name", flex="30")
+                                        .md-title(ng-bind="item.value")
 
             md-tab
                 md-tab-label copyable

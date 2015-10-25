@@ -144,7 +144,7 @@ if (MongoStore) {
 }
 
 var options = {server: {socketOptions: {connectTimeoutMS: 1000000}}};
-mongoose.connect(config.connection, options);
+mongoose.connect("mongodb://" + process.env.CONNECTION + "/" +config.db, options);
 
 process.on('exit', function (code) {
     logger.info('Stop.' + code);
@@ -195,13 +195,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 
 //passport
-//passport.serializeUser(function (user, done) {
-//    done(null, user);
-//});
+passport.serializeUser((user, done):void => {
+    done(null, user);
+});
 
-//passport.deserializeUser(function (obj, done) {
-//    done(null, obj);
-//});
+passport.deserializeUser((obj, done):void => {
+    done(null, obj);
+});
 
 var Account = require('./model/account');
 passport.use(new LocalStrategy(Account.authenticate()));
@@ -211,8 +211,8 @@ if (Account) {
     logger.fatal('Account NG.');
 }
 
-passport.serializeUser(Account.serializeUser());
-passport.deserializeUser(Account.deserializeUser());
+//passport.serializeUser(Account.serializeUser());
+//passport.deserializeUser(Account.deserializeUser());
 //passport
 
 // catch 404 and forward to error handler

@@ -9,6 +9,8 @@
 
 declare function require(x:string):any;
 
+var _ = require('lodash');
+
 var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
@@ -18,7 +20,6 @@ log4js.configure("config/logs.json");
 var logger = log4js.getLogger('request');
 logger.setLevel(config.loglevel);
 
-var _ = require('lodash');
 var result = require('./result');
 
 var View = require('./../../model/view');

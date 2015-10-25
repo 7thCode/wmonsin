@@ -10,6 +10,7 @@
 declare function require(x:string):any;
 
 var mongoose = require('mongoose');
+var _ = require('lodash');
 
 var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
@@ -17,10 +18,7 @@ var config = JSON.parse(text);
 
 var PatientModel = require('../../model/patient');
 
-var _ = require('lodash');
-
 var result = require('./../lib/result');
-
 var Wrapper = require('./../lib/wrapper');
 var wrapper = new Wrapper;
 
@@ -174,6 +172,5 @@ class PatientController {
     }
 
 }
-
 
 module.exports = PatientController;

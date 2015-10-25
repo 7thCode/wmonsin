@@ -15,8 +15,8 @@ md-dialog.box-edge(flex="percentage")
                 md-button.md-fab.md-warn(ng-click='cancel()', aria-label="Cancel", style="position:relative;top:20px;")
                     ng-md-icon.iconfill(icon="clear", style="position:relative;top:4px;", size="46")
                     md-tooltip #{content.cancel}
-    md-dialog-content
 
+    md-dialog-content.layout-padding
         md-divider
         div.md-actions(layout="row", layout-align="space-around center")
             md-button.md-raised.md-primary(ng-click='answer()', aria-label="Delete") #{content.delete}

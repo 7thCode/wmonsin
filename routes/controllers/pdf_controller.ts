@@ -16,15 +16,7 @@ var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
 
 var PatientModel = require('../../model/patient');
-
 var formatpdf = require('./../lib/formatpdf');
-
-//var _ = require('lodash');
-
-//var result = require('./../lib/result');
-
-//var Wrapper = require('./../lib/wrapper');
-//var wrapper = new Wrapper;
 
 var log4js = require('log4js');
 log4js.configure("config/logs.json");
@@ -63,6 +55,7 @@ class PdfController {
             next();
         }
     }
+
 }
 
 module.exports = PdfController;

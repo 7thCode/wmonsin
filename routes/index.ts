@@ -9,6 +9,13 @@
 
 declare function require(x:string):any;
 
+var express = require('express');
+var emitter = require('events').EventEmitter;
+
+var mongoose = require('mongoose');
+var Grid = require('gridfs-stream');
+var _ = require('lodash');
+
 var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
@@ -17,13 +24,6 @@ var log4js = require('log4js');
 log4js.configure("config/logs.json");
 var logger = log4js.getLogger('request');
 logger.setLevel(config.loglevel);
-
-var express = require('express');
-var emitter = require('events').EventEmitter;
-var _ = require('lodash');
-
-var mongoose = require('mongoose');
-var Grid = require('gridfs-stream');
 
 var PatientModel = require('./../model/patient');
 var AccountModel = require('./../model/account');
@@ -42,7 +42,6 @@ var router = express.Router();
 var Settings = require('./settings');
 
 var formatpdf = require('./lib/formatpdf');
-
 var result = require('./lib/result');
 
 var AccountController = require('./controllers/account_controller');
@@ -93,7 +92,7 @@ try {
     });
 
     // init schema
-    var conn = mongoose.createConnection(config.connection);
+    var conn = mongoose.createConnection("mongodb://" + process.env.CONNECTION + "/" + config.db);
     if (conn) {
         conn.once('open', (error:any):void  => {
             if (!error) {

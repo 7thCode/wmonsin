@@ -1,3 +1,7 @@
+'use strict';
+
+declare function require(x:string):any;
+
 var gulp = require('gulp');
 
 var gutil = require('gulp-util');
