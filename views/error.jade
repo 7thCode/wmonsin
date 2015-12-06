@@ -1,23 +1,23 @@
 extends layout.jade
 
 block content
-   body.background(ng-app="TopApplication",ng-controller="TopController")
-      md-toolbar(md-scroll-shrink)
-         .md-toolbar-tools(layout="row", layout-align="end center")
-            h3(flex)
-               span wmonsin
+    body.background(ng-app="TopApplication")
+        md-toolbar(md-scroll-shrink)
+            .md-toolbar-tools(layout="row", layout-align="end center")
+                h3(flex)
+                    span wmonsin
 
-      body.background(ng-app="PatientsApplication")
-         md-card
-            md-card-content
-               h1= message
-               h2= error.status
+        md-content.background
+            md-card.box-edge
+                md-card-content.layout-padding
+                    h1= message
+                    h2= error.status
 
 block include
 
-   if development
-      script(type="text/javascript", src="javascripts/TopApplication.js")
-      script(type="text/javascript", src="javascripts/TopControllers.js")
-   else
-      script(type="text/javascript", src="javascripts/TopApplication.min.js")
-      script(type="text/javascript", src="javascripts/TopControllers.min.js")
+    if development
+        script(type="text/javascript", src="javascripts/TopApplication.js")
+        script(type="text/javascript", src="javascripts/TopControllers.js")
+    else
+        script(type="text/javascript", src="javascripts/TopApplication.min.js")
+        script(type="text/javascript", src="javascripts/TopControllers.min.js")

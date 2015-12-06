@@ -15,6 +15,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
+config.dbaddress = process.env.DB_PORT_27017_TCP_ADDR || 'localhost';
 
 var FileModel = require('../../model/patient');
 var Grid = require('gridfs-stream');
@@ -36,7 +37,7 @@ class FileController {
     public get_file_name(request:any, response:any, next:any):void {
         try {
             logger.trace("begin /file/:name");
-            var conn = mongoose.createConnection(config.connection);
+            var conn = mongoose.createConnection("mongodb://" + config.dbaddress + "/" + config.db);
             conn.once('open', (error:any):void => {
                 if (!error) {
                     var gfs = Grid(conn.db, mongoose.mongo); //missing parameter
@@ -110,7 +111,7 @@ class FileController {
         wrapper.Guard(request, response, (request:any, response:any):void => {
             var number:number = 24000;
             wrapper.Authenticate(request, response, number, (user:any, response:any):void  => {
-                var conn = mongoose.createConnection(config.connection);
+                var conn = mongoose.createConnection("mongodb://" + config.dbaddress + "/" + config.db);
                 if (conn) {
                     conn.once('open', (error:any):void  => {
                         if (!error) {
@@ -193,7 +194,7 @@ class FileController {
         wrapper.Guard(request, response, (request:any, response:any):void => {
             var number:number = 25000;
             wrapper.Authenticate(request, response, number, (user:any, response:any):void => {
-                var conn = mongoose.createConnection(config.connection);
+                var conn = mongoose.createConnection("mongodb://" + config.dbaddress + "/" + config.db);
                 if (conn) {
                     conn.once('open', (error:any):void  => {
                         if (!error) {
@@ -277,7 +278,7 @@ class FileController {
         wrapper.Guard(request, response, (request:any, response:any):void => {
             var number:number = 26000;
             wrapper.Authenticate(request, response, number, (user:any, response:any) => {
-                var conn = mongoose.createConnection(config.connection);
+                var conn = mongoose.createConnection("mongodb://" + config.dbaddress + "/" + config.db);
                 if (conn) {
                     conn.once('open', (error:any):void => {
                         if (!error) {
@@ -333,7 +334,7 @@ class FileController {
         wrapper.Guard(request, response, (request:any, response:any):void => {
             var number:number = 27000;
             wrapper.Authenticate(request, response, number, (user:any, response:any) => {
-                var conn = mongoose.createConnection(config.connection);
+                var conn = mongoose.createConnection("mongodb://" + config.dbaddress + "/" + config.db);
                 if (conn) {
                     conn.once('open', (error:any):void => {
                         if (!error) {

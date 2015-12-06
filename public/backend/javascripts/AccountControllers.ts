@@ -69,7 +69,7 @@ interface IAccount extends angular.resource.IResource<any> {
 
 interface IPatient extends angular.resource.IResource<any> {
     Input:any;
-    Information:{name:string;time:string;kana:string;insurance:string};
+    Information:{name:string;time:string;kana:string;insurance:string;patientid:string;};
     Category:string;
     Sequential:number;
     Status:string;
@@ -199,6 +199,13 @@ controllers.factory('Patient', ['$resource',
 controllers.factory('PatientStatus', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
         return $resource('/patient/status/:id', {}, {
+            update: {method: 'PUT'}
+        });
+    }]);
+
+controllers.factory('PatientInformation', ['$resource',
+    ($resource:any):angular.resource.IResource<any> => {
+        return $resource('/patient/information/:id', {}, {
             update: {method: 'PUT'}
         });
     }]);
@@ -442,7 +449,7 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
 
                                 var patient:IPatient = new PatientAccept();
                                 patient.Input = {};
-                                patient.Information = {name:"",time:"",kana:"",insurance:""};
+                                patient.Information = {name:"",time:"",kana:"",insurance:"", patientid:""};
                                 patient.Information.name = answer.items.name;
 
                                 var now:Date = new Date();
@@ -548,8 +555,8 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
         }
     }]);
 
-controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$mdToast', 'Patient', 'PatientStatus', 'CurrentAccount', 'CurrentPatient', 'Pdf', 'Global',
-    ($scope:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientStatus:any, CurrentAccount:ICurrentAccount, CurrentPatient:ICurrentPatient, Pdf:any, Global:IGlobal):void => {
+controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$mdToast', 'Patient', 'PatientStatus','PatientInformation', 'CurrentAccount', 'CurrentPatient', 'Pdf', 'Global',
+    ($scope:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientStatus:any,PatientInformation:any, CurrentAccount:ICurrentAccount, CurrentPatient:ICurrentPatient, Pdf:any, Global:IGlobal):void => {
         if (CurrentPatient) {
             $scope.selectedIndex = 0;
             $scope.load = ():void => {
@@ -602,6 +609,21 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                 }, ():void => {
                     $scope.icon = "vertical_align_top"
                 });
+            };
+
+            $scope.setPatientID = () => {
+                var patientinformation = new PatientInformation();
+                patientinformation.name = $scope.Information.name;
+                patientinformation.time = $scope.Information.time;
+                patientinformation.kana = $scope.Information.kana;
+                patientinformation.insurance = $scope.Information.insurance;
+                patientinformation.patientid = $scope.Information.patientid;
+                patientinformation.$update({id: CurrentPatient.id}, (result:any):void => {
+
+                    var a = 1;
+
+                });
+
             };
 
             $scope.done = ():void => {

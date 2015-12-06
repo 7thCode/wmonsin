@@ -10,6 +10,7 @@ md-content.background
             h1.md-headline 問診内容
             h4(ng-bind="Information.time")
             h3 {{Information.kana}} [ {{Information.name}} ]
+            h3 {{Information.patientid}}
         md-card-content
             div(layout="row")
                 div
@@ -90,5 +91,17 @@ md-content.background
                                             //canvas(id="schema-pic1", width="300", height="600")
                                             //canvas(id="schema-pic2", width="300", height="600")
                                         div(flex)
+            md-tab
+                md-tab-label edit
+                md-tab-body
+                    md-card
+                        md-card-content(layout-align="start start", flex)
+                            ng-form(name="validate")
+                                md-input-container(flex)
+                                    label patient id
+                                    input(ng-model="Information.patientid", name="patientid", placeholder='Enter Id', md-maxlength="30")
+                                    div(ng-messages="validate.patientid.$error")
+                                        div(ng-message="md-maxlength") too long
+                                md-button.md-raised.md-primary(ng-click='setPatientID()', ng-disabled="validate.patientid.$invalid", aria-label="Save") Save
 
 

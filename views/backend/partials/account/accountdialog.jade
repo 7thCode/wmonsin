@@ -36,9 +36,10 @@ md-dialog.box-edge(flex)
                         div(ng-message="required") #{content.required}
                         div(ng-message="md-maxlength") #{content.toolong}
 
-            md-radio-group(ng-model="items.type", aria-label="")
-                md-radio-button(value="Editor", aria-label="Editor") #{content.editor}
-                md-radio-button(value="Viewer", aria-label="Viewer") #{content.viewer}
+            div(ng-show="items.type != 'Admin'")
+                md-radio-group(ng-model="items.type", aria-label="")
+                    md-radio-button(value="Editor", aria-label="Editor") #{content.editor}
+                    md-radio-button(value="Viewer", aria-label="Viewer") #{content.viewer}
 
             md-divider
             div.md-actions(layout="row", layout-align="space-around center")

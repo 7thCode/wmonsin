@@ -1,5 +1,6 @@
 {
   "db":"patient",
+  "dbaddress": "localhost",
   "user": "root",
   "password":"root",
   "sessionkey": "Daisy, Daisy.",

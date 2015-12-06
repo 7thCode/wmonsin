@@ -60,7 +60,6 @@ app.config(['$stateProvider', '$urlRouterProvider','$compileProvider','$httpProv
             templateUrl: function ($stateParams) {
                 var id = $stateParams.id;
                 return '/backend/partials/patient/description/' + id;
-
             },
             controller: 'DescriptionController',
             params: {id:null}

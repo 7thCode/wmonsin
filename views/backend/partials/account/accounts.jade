@@ -16,7 +16,7 @@ md-content.background
                 md-tooltip #{content.add}
 
     md-list(hide-gt-sm)
-        md-list-item(ng-repeat="account in accounts", ng-show="account.type != 'Admin'")
+        md-list-item(ng-repeat="account in accounts")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)
                     h1.md-subhead(flex, ng-bind="account.username")
@@ -35,7 +35,7 @@ md-content.background
                             md-tooltip #{content.delete}
 
     md-list(hide-sm)
-        md-list-item(ng-repeat="account in accounts", ng-show="account.type != 'Admin'")
+        md-list-item(ng-repeat="account in accounts")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)
                     h3.md-title(flex, ng-bind="account.username")

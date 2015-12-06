@@ -34,7 +34,9 @@
     "ng-flow": "~2",
     "svg-morpheus": "~0.1.8",
     "angular-socket-io": "~0.7.0",
-    "angular-i18n": "~1.4.7"
+    "angular-i18n": "~1.4.7",
+    "AniJS": "anijs#~0.9.3",
+    "animate.css": "~3.4.0"
   },
   "overrides": {
     "angular-i18n": {

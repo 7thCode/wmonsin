@@ -15,6 +15,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
+config.dbaddress = process.env.DB_PORT_27017_TCP_ADDR || 'localhost';
 
 var PatientModel = require('../../model/patient');
 
@@ -170,6 +171,25 @@ class PatientController {
             });
         });
     }
+
+    public put_patient_information_id(req:any, res:any):void {
+        logger.trace("begin /patient/information/:id");
+        wrapper.Guard(req, res, (req:any, res:any):void  => {
+            var number:number = 8100;
+            wrapper.Authenticate(req, res, number, (user:any, res:any):void  => {
+                wrapper.If(res, number, (user.type != "Viewer"), (res:any):void  => {
+                    wrapper.FindById(res, number, PatientModel, req.params.id, (res:any, patient:any):void  => {
+                        patient.Information = req.body;
+                        wrapper.Save(res, number, patient, (res:any, patient:any):void  => {
+                            wrapper.SendResult(res, 0, "OK", patient.Information);
+                            logger.trace("end /patient/information/:id");
+                        });
+                    });
+                });
+            });
+        });
+    }
+
 
 }
 

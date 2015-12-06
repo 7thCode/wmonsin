@@ -9,14 +9,19 @@
 
 declare function require(x:string):any;
 
+function alert_log(obj:any, name:string):void {
+    if (obj) {
+        logger.info(name + ' Ok.');
+    } else {
+        logger.fatal(name + ' NG.');
+    }
+}
+
 var express = require('express');
 var emitter = require('events').EventEmitter;
 
-var mongoose = require('mongoose');
-var Grid = require('gridfs-stream');
-var _ = require('lodash');
-
 var fs = require('fs');
+
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
 
@@ -25,41 +30,99 @@ log4js.configure("config/logs.json");
 var logger = log4js.getLogger('request');
 logger.setLevel(config.loglevel);
 
+alert_log(express,'express');
+alert_log(emitter,'emitter');
+
+var mongoose = require('mongoose');
+alert_log(mongoose,'mongoose');
+
+var Grid = require('gridfs-stream');
+alert_log(Grid,'Grid');
+
+var _ = require('lodash');
+alert_log(_,'lodash');
+
+alert_log(fs,'fs');
+alert_log(config,'config');
+
+config.dbaddress = process.env.DB_PORT_27017_TCP_ADDR || 'localhost';
+if (config.dbaddress) {
+    logger.info('config.dbaddress : ' + config.dbaddress);
+} else {
+    logger.fatal('config.dbaddress NG.');
+}
+
 var PatientModel = require('./../model/patient');
+alert_log(PatientModel,'PatientModel');
+
+
 var AccountModel = require('./../model/account');
+alert_log(AccountModel,'AccountModel');
+
 var ViewModel = require('./../model/view');
+alert_log(ViewModel,'ViewModel');
+
 var FileModel = require('./../model/file');
+alert_log(FileModel,'FileModel');
 
 var ToHtml = require('./lib/tohtml');
+alert_log(ToHtml,'ToHtml');
 
-var csurf = require('csurf');
-var crypto = require("crypto");
+//var csurf = require('csurf');
+//var crypto = require("crypto");
 
 var passport = require('passport');
+alert_log(passport,'passport');
+
 
 var router = express.Router();
 
 var Settings = require('./settings');
+alert_log(log4js,'log4js');
 
-var formatpdf = require('./lib/formatpdf');
+//var formatpdf = require('./lib/formatpdf');
 var result = require('./lib/result');
+alert_log(log4js,'log4js');
 
 var AccountController = require('./controllers/account_controller');
+alert_log(AccountController,'AccountController');
+
 var PatientController = require('./controllers/patient_controller');
+alert_log(log4js,'log4js');
+
 var ViewController = require('./controllers/view_controller');
+alert_log(ViewController,'ViewController');
+
 var FileController = require('./controllers/file_controller');
+alert_log(FileController,'FileController');
+
 var PdfController = require('./controllers/pdf_controller');
+alert_log(PdfController,'PdfController');
+
 var ConfigController = require('./controllers/config_controller');
+alert_log(ConfigController,'ConfigController');
 
 var Wrapper = require('./lib/wrapper');
 var wrapper = new Wrapper;
+alert_log(wrapper,'wrapper');
 
 var account_controller = new AccountController();
+alert_log(account_controller,'account_controller');
+
 var partient_controller = new PatientController();
+alert_log(partient_controller,'partient_controller');
+
 var view_controller = new ViewController();
+alert_log(view_controller,'view_controller');
+
 var file_controller = new FileController();
+alert_log(file_controller,'file_controller');
+
 var pdf_controller = new PdfController();
+alert_log(pdf_controller,'pdf_controller');
+
 var config_controller = new ConfigController();
+alert_log(config_controller,'config_controller');
 
 logger.info('Index.js Start.');
 
@@ -92,7 +155,7 @@ try {
     });
 
     // init schema
-    var conn = mongoose.createConnection("mongodb://" + process.env.CONNECTION + "/" + config.db);
+    var conn = mongoose.createConnection("mongodb://" + config.dbaddress + "/" + config.db);
     if (conn) {
         conn.once('open', (error:any):void  => {
             if (!error) {
@@ -422,6 +485,9 @@ router.get('/patient/query/:query', partient_controller.get_patient_query_query)
 router.get('/patient/count/:query', partient_controller.get_patient_count_query);
 router.get('/patient/status/:id', partient_controller.get_patient_status_id);
 router.put('/patient/status/:id', partient_controller.put_patient_status_id);
+router.put('/patient/information/:id', partient_controller.put_patient_information_id);
+
+
 
 /*! account */
 router.post('/account/create', account_controller.post_account_create);

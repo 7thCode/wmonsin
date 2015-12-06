@@ -14,6 +14,7 @@ var mongoose = require('mongoose');
 var fs = require('fs');
 var text = fs.readFileSync('config/config.json', 'utf-8');
 var config = JSON.parse(text);
+config.dbaddress = process.env.DB_PORT_27017_TCP_ADDR || 'localhost';
 
 var PatientModel = require('../../model/patient');
 var formatpdf = require('./../lib/formatpdf');

@@ -47,7 +47,6 @@ block content
                         md-tooltip ログアウト
 
 
-
         md-sidenav(style="opacity:0.8;", layout="row", class="md-sidenav-right", md-component-id="nav", ng-cloak)
             //md-content(layout="column", style="width:38px; background-image: url('../images/edge.svg');background-repeat:repeat-y;")
             md-content.sidenav-edge(layout="column", style="width:18px;")
@@ -76,16 +75,6 @@ block content
                 div(layout="row",layout-align="end center", ng-show="type != ''")
                     ng-md-icon(icon="check_box", aria-label="",style="position:relative;top:5px;fill:#B3E5FC",  size="22")
                     md-button(ng-click="Logout();close();") Logout
-
-
-
-
-
-
-
-
-
-
 
         div(ui-view="")
 
