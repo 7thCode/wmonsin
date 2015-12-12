@@ -122,6 +122,11 @@ controllers.value("CurrentAccount", {
     'type': ""
 });
 
+controllers.value("CurrentQuery", {
+    'query': {}
+});
+
+
 controllers.factory('ViewItem', ['$resource',
     ($resource:any):angular.resource.IResource<any> => {
         return $resource('/view', {}, {});
@@ -265,8 +270,15 @@ function TodayQuery():any {
     return {$and: [{Date: {$lte: today}}, {Date: {$gt: yesterday}}]};
 }
 
+function Query(query:any):any {
+    var result = TodayQuery();
+    if (query != {}) {
+        result = query;
+    }
+    return result;
+}
+
 function PatientsList(resource:any, query:any, success:(value:any, headers:any) => void):void {
-    var query:any = TodayQuery();
     resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any, headers:any):void => {
         if (data) {
             if (data.code === 0) {
@@ -398,14 +410,16 @@ controllers.controller("ApplicationController", ["$scope", "$rootScope", '$state
 
     }]);
 
-controllers.controller('PatientsController', ['$scope', '$state', '$stateParams', '$q', "$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
-    ($scope:any, $state:any, $stateParams:any, $q:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientAccept:any, PatientQuery:any, PatientCount:any, CurrentAccount:ICurrentAccount, CurrentPatient:ICurrentPatient, Global:IGlobal):void => {
+controllers.controller('PatientsController', ['$scope', '$state', '$stateParams', '$q', "$mdDialog", '$mdBottomSheet', '$mdToast', 'Patient', 'PatientAccept', 'PatientQuery','CurrentQuery', 'PatientCount', 'CurrentAccount', 'CurrentPatient', 'Global',
+    ($scope:any, $state:any, $stateParams:any, $q:any, $mdDialog:any, $mdBottomSheet:any, $mdToast:any, Patient:any, PatientAccept:any, PatientQuery:any,CurrentQuery:any, PatientCount:any, CurrentAccount:ICurrentAccount, CurrentPatient:ICurrentPatient, Global:IGlobal):void => {
         if (CurrentAccount.username !== "") {
             $scope.username = CurrentAccount.username;
             $scope.type = CurrentAccount.type;
 
+            CurrentQuery.query = Query({});
             $scope.progress = true;
-            PatientsList(PatientQuery, {}, (data:any):void => {
+            //var query:any = Query({});
+            PatientsList(PatientQuery, CurrentQuery.query, (data:any):void => {
                 $scope.patients = data;
                 $scope.progress = false;
             });
@@ -431,8 +445,8 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
             };
 
             $scope.showPatientAcceptDialog = (id:any):void => { // Register Dialog
-                var query:any = TodayQuery();
-                PatientCount.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any):void => {
+             //   var query:any = Query({});
+                PatientCount.query({query: encodeURIComponent(JSON.stringify(CurrentQuery.query))}, (data:any):void => {
                     if (data) {
                         if (data.code === 0) {
                             var items:{count:number} = {count: 0};
@@ -470,7 +484,8 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                                 patient.$save({}, (result:any):void => {
                                     if (result) {
                                         if (result.code === 0) {
-                                            PatientsList(PatientQuery, {}, (data:any):void => {
+                                           // var query:any = Query({});
+                                            PatientsList(PatientQuery, CurrentQuery.query, (data:any):void => {
                                                 $scope.progress = false;
                                                 Global.socket.emit('server', {value: "1"});
                                                 $scope.patients = data;
@@ -489,26 +504,49 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                 });
             };
 
-            $scope.querySearch = (querystring:any):any => {
+            $scope.querySearch = (query:any):any => {
                 var deferred:any = $q.defer();
-                var query:any = TodayQuery();
-                PatientQuery.query({query: encodeURIComponent(JSON.stringify({$and: [query, {"Information.name": {$regex: querystring}}]}))}, (data:any):void => {
+                PatientQuery.query({query: encodeURIComponent(CurrentQuery.query)}, (data:any):void => {
+
+               //     PatientQuery.query({query: encodeURIComponent(JSON.stringify({$and: [query, {"Information.name": {$regex: querystring}}]}))}, (data:any):void => {
                     deferred.resolve(data.value);
                 });
                 return deferred.promise;
             };
 
             $scope.searchTextChange = (text:any):void => {
+                var query = CurrentQuery.query;
+                if (text != "") {
+                    query = {"Information.name": {$regex: text}};
+                    CurrentQuery.query = query;
+                } else {
+                    CurrentQuery.query = Query({});
+                }
+                PatientsList(PatientQuery, CurrentQuery.query, (data:any):void => {
+                    $scope.patients = data;
+                    $scope.progress = false;
+                });
 
             };
 
             $scope.selectedItemChange = (item:any):void => {
+                var query = CurrentQuery.query;
+                if (item != "") {
+                    query = {"Information.name": {$regex: item}};
+                    CurrentQuery.query = query;
+                } else {
+                    CurrentQuery.query = Query({});
+                }
+                PatientsList(PatientQuery, CurrentQuery.query, (data:any):void => {
+                    $scope.patients = data;
+                    $scope.progress = false;
+                });
 
             };
 
             $scope.$on('Login', ():void => {
                 $scope.progress = true;
-                PatientsList(PatientQuery, {}, (data:any):void => {
+                PatientsList(PatientQuery,  CurrentQuery.query, (data:any):void => {
                     $scope.patients = data;
                     $scope.progress = false;
                 });
@@ -522,7 +560,7 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
 
             $scope.$on('Update', ():void => {
                 $scope.progress = true;
-                PatientsList(PatientQuery, {}, (data:any):void => {
+                PatientsList(PatientQuery,  CurrentQuery.query, (data:any):void => {
                     $scope.patients = data;
                     $scope.progress = false;
                 });
@@ -531,7 +569,7 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
             Global.socket.on('client', (data:any):void => {
                 if (data.value === "1") {
                     $scope.progress = true;
-                    PatientsList(PatientQuery, {}, (data:any):void => {
+                    PatientsList(PatientQuery, CurrentQuery.query, (data:any):void => {
                         $scope.patients = data;
                         $scope.progress = false;
                     });
@@ -620,7 +658,7 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                 patientinformation.patientid = $scope.Information.patientid;
                 patientinformation.$update({id: CurrentPatient.id}, (result:any):void => {
 
-                    var a = 1;
+                        $mdToast.show($mdToast.simple().content("OK."));
 
                 });
 
