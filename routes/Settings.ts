@@ -466,7 +466,7 @@ class Configure {
                                 name: "痛いところ",
                                 model: "",
                                 type: "picture",
-                                path: 'schema.png',
+                                path: 'schema1.png',
                                 width: 300,
                                 height: 600
                             }
@@ -758,7 +758,7 @@ class Configure {
                                 name: "痛いところ",
                                 model: "",
                                 type: "picture",
-                                path: 'schema.png',
+                                path: 'schema1.png',
                                 width: 300,
                                 height: 600
                             }

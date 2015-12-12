@@ -14,7 +14,7 @@ var rimraf = require('rimraf');
 var less = require('gulp-less');
 var minifycss = require('gulp-minify-css');
 
-gulp.task('copy', ['clean'], () => {
+gulp.task('copy', [], () => {
     return gulp.src(
         [
             'bin/www',
@@ -40,7 +40,7 @@ gulp.task('copy', ['clean'], () => {
         ],
         {base: '..'}
     )
-        .pipe(gulp.dest('production'));
+        .pipe(gulp.dest('../womnsin_image'));
 });
 
 gulp.task('css', () => {
