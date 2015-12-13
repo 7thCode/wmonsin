@@ -513,7 +513,6 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                     $scope.patients = data;
                     $scope.progress = false;
                 });
-
             };
 
             $scope.selectedItemChange = (item:any):void => {
