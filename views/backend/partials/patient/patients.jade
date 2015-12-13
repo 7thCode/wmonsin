@@ -58,7 +58,8 @@ md-content.background
                         span(style="font-size:9px;", ng-bind="patient.Information.kana")
                         span.md-body-2(ng-bind="patient.Information.name")
                     div(layout="column", flex="20")
-                        span.md-body-2(style="font-size:9px;", ng-bind="patient.Information.insurance")
+                        //span.md-body-2(style="font-size:9px;", ng-bind="patient.Information.insurance")
+                        span.md-body-2(style="font-size:9px;", ng-bind="patient.Information.patientid")
                         span.md-body-2(ng-bind="patient.Date | date:'yy-MM-dd HH:mm'")
                     div.md-body-2(layout="row", flex="20", layout-align="end center", ng-bind="patient.Status | status")
 
@@ -75,6 +76,7 @@ md-content.background
                         span(style="font-size:9px;", ng-bind="patient.Information.kana")
                         span.md-subhead(ng-bind="patient.Information.name")
                     div(layout="column", flex="20")
-                        span.md-subhead(style="font-size:9px;", ng-bind="patient.Information.insurance")
+                        //span.md-subhead(style="font-size:9px;", ng-bind="patient.Information.insurance")
+                        span.md-subhead(style="font-size:9px;", ng-bind="patient.Information.patientid")
                         span.md-subhead(ng-bind="patient.Date | date:'yyyy-MM-dd HH:mm:ss'")
                     div(layout="row", flex="20", layout-align="end center", ng-bind="patient.Status | status")
