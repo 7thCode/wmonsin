@@ -270,14 +270,6 @@ function TodayQuery():any {
     return {$and: [{Date: {$lte: today}}, {Date: {$gt: yesterday}}]};
 }
 
-function Query(query:any):any {
-    var result = TodayQuery();
-    if (query != {}) {
-        result = query;
-    }
-    return result;
-}
-
 function PatientsList(resource:any, query:any, success:(value:any, headers:any) => void):void {
     resource.query({query: encodeURIComponent(JSON.stringify(query))}, (data:any, headers:any):void => {
         if (data) {
@@ -416,9 +408,8 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
             $scope.username = CurrentAccount.username;
             $scope.type = CurrentAccount.type;
 
-            CurrentQuery.query = Query({});
+            CurrentQuery.query = TodayQuery();
             $scope.progress = true;
-            //var query:any = Query({});
             PatientsList(PatientQuery, CurrentQuery.query, (data:any):void => {
                 $scope.patients = data;
                 $scope.progress = false;
@@ -445,7 +436,6 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
             };
 
             $scope.showPatientAcceptDialog = (id:any):void => { // Register Dialog
-             //   var query:any = Query({});
                 PatientCount.query({query: encodeURIComponent(JSON.stringify(CurrentQuery.query))}, (data:any):void => {
                     if (data) {
                         if (data.code === 0) {
@@ -484,7 +474,6 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                                 patient.$save({}, (result:any):void => {
                                     if (result) {
                                         if (result.code === 0) {
-                                           // var query:any = Query({});
                                             PatientsList(PatientQuery, CurrentQuery.query, (data:any):void => {
                                                 $scope.progress = false;
                                                 Global.socket.emit('server', {value: "1"});
@@ -520,7 +509,7 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                     query = {"Information.name": {$regex: text}};
                     CurrentQuery.query = query;
                 } else {
-                    CurrentQuery.query = Query({});
+                    CurrentQuery.query = TodayQuery();
                 }
                 PatientsList(PatientQuery, CurrentQuery.query, (data:any):void => {
                     $scope.patients = data;
@@ -535,7 +524,7 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                     query = {"Information.name": {$regex: item}};
                     CurrentQuery.query = query;
                 } else {
-                    CurrentQuery.query = Query({});
+                    CurrentQuery.query = TodayQuery();
                 }
                 PatientsList(PatientQuery, CurrentQuery.query, (data:any):void => {
                     $scope.patients = data;
