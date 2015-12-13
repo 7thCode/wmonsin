@@ -504,10 +504,8 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
             };
 
             $scope.searchTextChange = (text:any):void => {
-                var query = CurrentQuery.query;
                 if (text != "") {
-                    query = {"Information.name": {$regex: text}};
-                    CurrentQuery.query = query;
+                    CurrentQuery.query = {"Information.name": {$regex: text}};
                 } else {
                     CurrentQuery.query = TodayQuery();
                 }
@@ -519,10 +517,8 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
             };
 
             $scope.selectedItemChange = (item:any):void => {
-                var query = CurrentQuery.query;
                 if (item != "") {
-                    query = {"Information.name": {$regex: item}};
-                    CurrentQuery.query = query;
+                    CurrentQuery.query = {"Information.name": {$regex: item}};
                 } else {
                     CurrentQuery.query = TodayQuery();
                 }

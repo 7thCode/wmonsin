@@ -7,8 +7,14 @@
 'use strict';
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var toLocalTime = function (time) {
+    var d = new Date(time);
+    var offset = (new Date().getTimezoneOffset() / 60) * -1;
+    var n = new Date(d.getTime() + offset);
+    return n;
+};
 var Patient = new Schema({
-    'Date': { type: Date, default: Date.now },
+    'Date': { type: Date, default: toLocalTime(Date.now) },
     'Status': { type: String, default: "Init" },
     'Category': { type: String, default: "1" },
     'Information': {},
