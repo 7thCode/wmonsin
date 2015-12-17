@@ -3,12 +3,12 @@ block content
 
     body.background(ng-app="AccountApplication", ng-controller="ApplicationController")
 
-        md-toolbar.toolbar(md-scroll-shrink, hide-gt-sm)
+        md-toolbar.toolbar(md-scroll-shrink, show-xs, hide-sm, hide-md, hide-lg)
             .md-toolbar-tools(layout-align="start center")
                 ng-md-icon(icon="list", size="46", ng-click="open()", style="position:relative;top:5px;fill:#18FFFF")
                 h3.md-display-1(ng-bind="username + '-' + type")
 
-        md-toolbar.toolbar(hide-sm)
+        md-toolbar.toolbar(hide-xs, show-sm, show-md, show-lg)
             .md-toolbar-tools(layout="row", layout-align="end center")
                 h3.md-display-1(flex)
                     span(ng-bind="username + '-' + type")

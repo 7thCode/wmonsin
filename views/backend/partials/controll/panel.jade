@@ -21,37 +21,31 @@ md-content.background
                 md-tooltip Open Tools...
 
     md-card
-
-        md-card-content
+        md-card-content(layout="row")
                 div.md-body-2 DB Address
                 div.md-body-3 #{process.env.DB_PORT_27017_TCP_ADDR}
 
         md-card-content
-            md-input-container
+            md-input-container(flex="50")
                 label DB Name
                 input(ng-model="config.db",data-ng-required="true", name="db", placeholder='DB name', type="text", md-maxlength="100")
 
-        md-card-content
-            md-input-container
+            md-input-container(flex="50")
                 label root user name
                 input(ng-model="config.user",data-ng-required="true", name="user", placeholder='Key', type="text", md-maxlength="50")
 
-        md-card-content
-            md-input-container
+            md-input-container(flex="50")
                 label root user password
                 input(ng-model="config.password",data-ng-required="true", name="password", placeholder='Key', type="text", md-maxlength="50")
 
-        md-card-content
-            md-input-container
+            md-input-container(flex="50")
                 label Session Key
                 input(ng-model="config.sessionkey",data-ng-required="true", name="sessionkey", placeholder='Session Key', type="text", md-maxlength="50")
 
-        md-card-content
-            md-input-container
+            md-input-container(flex="50")
                 label Password Key
                 input(ng-model="config.key1",data-ng-required="true", name="key1", placeholder='Key', type="text", md-maxlength="50")
 
-        md-card-content
-            md-input-container
+            md-input-container(flex="50")
                 label Account Key
                 input(ng-model="config.key2",data-ng-required="true", name="key2", placeholder='Key', type="text", md-maxlength="50")

@@ -9,10 +9,9 @@ md-content.background
     md-card.box-edge
         md-card-content.layout-padding
             h1.md-headline 患者
-            div(layout="row", layout-align="start center", hide-gt-sm)
+            div(layout="row", layout-align="start center", hide-gt-xs)
                 div(layout="column")
                     div
-
                         md-button.md-fab(ng-click="showPatientAcceptDialog()", aria-label="", style="background-color:#5540fc;")
                             ng-md-icon(icon="person_add", aria-label="Patients", style="position:relative;top:6px;fill:#abcdef" size="42")
                             md-tooltip 追加...
@@ -20,14 +19,13 @@ md-content.background
                         md-button.md-fab.md-warn(ng-click="showTotalSheet()", aria-label="Done", ng-if="type == 'Admin' || type == 'Editor'")
                             ng-md-icon.iconfill(icon="{{icon}}", size="46", options='{"rotation": "none"}')
                             md-tooltip Open Tools...
-
                     div
                         md-autocomplete(md-no-cache="noCache", md-selected-item="selectedItem", md-search-text-change="searchTextChange(searchText)", md-search-text="searchText", md-selected-item-change="selectedItemChange(item)", md-items="item in querySearch(searchText)", md-item-text="item.Information.name",md-min-length="0", placeholder="Name", md-menu-class="autocomplete-custom-template")
                             md-item-template
                                 span(class="item-title")
                                     span(ng-bind="item.Information.name")
 
-            div(layout="row", layout-align="start center" hide-sm)
+            div(layout="row", layout-align="start center" hide-xs)
                 div(layout="row")
                     md-button.md-fab(ng-click="showPatientAcceptDialog()", aria-label="", style="background-color:#5540fc;")
                         ng-md-icon(icon="person_add", aria-label="Patients", style="position:relative;top:6px;fill:#abcdef" size="42")
