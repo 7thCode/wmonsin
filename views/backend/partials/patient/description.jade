@@ -18,7 +18,7 @@ md-content.background
                         ng-md-icon.iconfill(icon="{{icon}}", size="46", options='{"rotation": "none"}')
                         md-tooltip ツール...
                 div
-                    md-switch(ng-model="IsDone") Done
+                    md-switch(ng-model="IsDone" ng-disabled="!(type == 'Admin' || type == 'Editor')") Done
 
     md-card(ng-cloak)
         md-tabs.md-primary(md-selected="selectedIndex", style="min-height:660px;", ng-init="load()")
