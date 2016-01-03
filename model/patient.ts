@@ -28,6 +28,4 @@ var Patient = new Schema({
     'Sequential': 0
 });
 
-
-
 module.exports = mongoose.model('Patient', Patient);

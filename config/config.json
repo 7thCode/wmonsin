@@ -1,6 +1,5 @@
 {
-  "db":"patient",
-  "dbaddress": "localhost",
+  "connection": "mongodb://oda:zz0101@localhost/patient",
   "user": "root",
   "password":"root",
   "sessionkey": "Daisy, Daisy.",

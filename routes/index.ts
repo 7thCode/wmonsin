@@ -126,6 +126,7 @@ alert_log(config_controller,'config_controller');
 
 logger.info('Index.js Start.');
 
+
 //var emitter = require('socket.io-emitter')({ host: '127.0.0.1', port: 6379 });
 //non csrf
 //router.get('/', function (req, res, next) {
@@ -155,7 +156,7 @@ try {
     });
 
     // init schema
-    var conn = mongoose.createConnection("mongodb://" + config.dbaddress + "/" + config.db);
+    var conn = mongoose.createConnection(config.connection);
     if (conn) {
         conn.once('open', (error:any):void  => {
             if (!error) {

@@ -70,7 +70,7 @@ class ViewController {
                                     logger.trace("end /view/create");
                                 });
                             } else {
-                                wrapper.SendResult(res, number + 1, message.already, {});
+                                wrapper.SendResult(res, number + 1, "already", {});
                             }
                         } else {
                             wrapper.SendError(res, number + 20, error.message, error);
@@ -138,7 +138,6 @@ class ViewController {
             });
         });
     }
-
 
 }
 

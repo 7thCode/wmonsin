@@ -56,10 +56,14 @@ class Wrapper {
                 callback(req, res);
                 logger.trace("|exit Guard ");
             } else {
-                this.SendWarn(res, 1, 'CSRF Attack.', {});
+                if (res) {
+                    this.SendWarn(res, 1, 'CSRF Attack.', {});
+                }
             }
         } catch (e) {
-            this.SendFatal(res, 100000, e.message, e);
+            if (res) {
+                this.SendFatal(res, 100000, e.message, e);
+            }
         }
     }
 
@@ -69,7 +73,9 @@ class Wrapper {
             callback(req.user, res);
             logger.trace("|exit Authenticate " + code);
         } else {
-            this.SendWarn(res, code + 2, "Unacceptable", {});
+            if (res) {
+                this.SendWarn(res, code + 2, "Unacceptable", {});
+            }
         }
     }
 
@@ -84,7 +90,9 @@ class Wrapper {
                     this.SendWarn(res, code + 10, "", {});
                 }
             } else {
-                this.SendError(res, code + 100, error.message, error);
+                if (res) {
+                    this.SendError(res, code + 100, error.message, error);
+                }
             }
         });
     }
@@ -96,7 +104,9 @@ class Wrapper {
                 callback(res, doc);
                 logger.trace("|exit FindOne " + code);
             } else {
-                this.SendError(res, code + 100, error.message, error);
+                if (res) {
+                    this.SendError(res, code + 100, error.message, error);
+                }
             }
         });
     }
@@ -112,7 +122,9 @@ class Wrapper {
                     this.SendError(res, code + 10, "", {});
                 }
             } else {
-                this.SendError(res, code + 100, error.message, error);
+                if (res) {
+                    this.SendError(res, code + 100, error.message, error);
+                }
             }
         });
     }
@@ -124,7 +136,9 @@ class Wrapper {
                 callback(res, instance);
                 logger.trace("|exit Save " + code);
             } else {
-                this.SendError(res, code + 100, error.message, error);
+                if (res) {
+                    this.SendError(res, code + 100, error.message, error);
+                }
             }
         });
     }
@@ -136,7 +150,9 @@ class Wrapper {
                 callback(res);
                 logger.trace("|exit Remove " + code);
             } else {
-                this.SendError(res, code + 100, error.message, error);
+                if (res) {
+                    this.SendError(res, code + 100, error.message, error);
+                }
             }
         });
     }
@@ -147,7 +163,9 @@ class Wrapper {
             callback(res);
             logger.trace("|exit If " + code);
         } else {
-            this.SendWarn(res, code + 1, "", {});
+            if (res) {
+                this.SendWarn(res, code + 1, "", {});
+            }
         }
     }
 

@@ -32,7 +32,7 @@ log4js.configure("config/logs.json");
 var logger = log4js.getLogger('request');
 logger.setLevel(config.loglevel);
 
-config.dbaddress = process.env.DB_PORT_27017_TCP_ADDR || 'localhost';
+config.dbaddress = process.env.DB_PORT_27017_TCP_ADDR || config.dbaddress;
 //config.state = app.get('env');
 if (config.dbaddress) {
     logger.info('config.dbaddress : ' + config.dbaddress);
@@ -97,8 +97,10 @@ alert_log(mongoose,'mongoose');
 var MongoStore = require('connect-mongo')(session);
 alert_log(MongoStore,'MongoStore');
 
+//var options = {server: {socketOptions: {connectTimeoutMS: 1000000}}, user: config.user, pass: config.password};
 var options = {server: {socketOptions: {connectTimeoutMS: 1000000}}};
-mongoose.connect("mongodb://" + config.dbaddress + "/" +config.db, options);
+
+mongoose.connect(config.connection, options);
 
 process.on('exit', function (code) {
     logger.info('Stop.' + code);
@@ -131,6 +133,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 //passport
+
 
 if (config.state === 'development') {
     app.use(morgan({format: 'original', immediate: true}));
