@@ -45,7 +45,7 @@ alert_log(_,'lodash');
 alert_log(fs,'fs');
 alert_log(config,'config');
 
-config.dbaddress = process.env.DB_PORT_27017_TCP_ADDR || 'localhost';
+config.dbaddress = process.env.DB_PORT_27017_TCP_ADDR || config.dbaddress;
 if (config.dbaddress) {
     logger.info('config.dbaddress : ' + config.dbaddress);
 } else {
@@ -156,7 +156,9 @@ try {
     });
 
     // init schema
-    var conn = mongoose.createConnection(config.connection);
+    var connection = "mongodb://" + config.dbuser + ":" + config.dbpassword +  "@" + config.dbaddress +  "/" + config.dbname;
+
+    var conn = mongoose.createConnection(connection);
     if (conn) {
         conn.once('open', (error:any):void  => {
             if (!error) {

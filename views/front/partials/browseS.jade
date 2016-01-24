@@ -10,7 +10,7 @@ md-content.background
             h1.md-headline 問診一覧
 
 
-    md-list(hide-gt-sm)
+    md-list(hide-gt-xs)
         md-list-item(ng-repeat="patient in patients")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)
@@ -31,7 +31,7 @@ md-content.background
 
                     div.md-body-2(flex="20",layout="row", layout-align="end center", ng-bind="patient.Status | status")
 
-    md-list(hide-sm)
+    md-list(hide-xs)
         md-list-item(ng-repeat="patient in patients")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)

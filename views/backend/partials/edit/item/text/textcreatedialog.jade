@@ -31,6 +31,5 @@ md-dialog(flex)
                         div(ng-message="required") 必ず入力してください.
                         div(ng-message="md-maxlength") もうすこし短くしてください.
 
-            md-divider
-            div.md-actions(layout="row", layout-align="space-around center")
+    md-dialog-actions(layout="row")
                 md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") 登録

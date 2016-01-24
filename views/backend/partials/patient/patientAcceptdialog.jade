@@ -40,6 +40,5 @@ md-dialog.box-edge(flex)
                 md-select(placeholder="診療科", ng-model="items.category", required)
                     md-option(ng-repeat="category in categories", value="{{category}}", ng-bind="category")
 
-            md-divider
-            div.md-actions(layout="row" layout-align="space-around center")
+    md-dialog-actions(layout="row")
                 md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="Save") 受付

@@ -54,7 +54,7 @@ md-content.background
                                 ng-md-icon(icon="picture_in_picture", aria-label="問診票科目", style="position:relative;top:6px;left:1px;fill:#37474F", size="42")
                                 md-tooltip シェーマ
 
-    md-list(hide-gt-sm)
+    md-list(hide-gt-xs)
         md-list-item(ng-repeat="item in Page.items", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
 
@@ -125,7 +125,7 @@ md-content.background
                                     ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
                                     md-tooltip #{content.delete}
 
-    md-list(hide-gt-sm)
+    md-list(hide-gt-xs)
         md-list-item(ng-repeat="picture in Page.picture", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="column", layout-align="center center", flex)
@@ -144,7 +144,7 @@ md-content.background
                                     ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="22")
                                     md-tooltip #{content.delete}
 
-    md-list(hide-sm)
+    md-list(hide-xs)
         md-list-item(ng-repeat="item in Page.items", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
 
@@ -212,7 +212,7 @@ md-content.background
                                 ng-md-icon.iconfill(icon="remove", style="position:relative;top:6px;left:1px;", size="42")
                                 md-tooltip #{content.delete}
 
-    md-list(hide-sm)
+    md-list(hide-xs)
         md-list-item(ng-repeat="picture in Page.picture", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="center center", flex)

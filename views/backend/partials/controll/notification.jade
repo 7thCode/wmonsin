@@ -17,10 +17,12 @@ md-dialog.box-edge(flex="percentage")
                     md-button.md-fab.md-notice(ng-click='cancel()', aria-label="Cancel", style="position:relative;top:20px;")
                         ng-md-icon.iconfill(icon="clear", style="position:relative;top:4px;", size="46")
                         md-tooltip #{content.cancel}
-        md-card
-            md-card-content
-                div Server Restert & Database drop Required. (Data All Lost.)
 
-            md-card-content(layout="row", layout-align="space-around center")
-                md-button.md-raised.md-warn(ng-click='answer()', aria-label="Update") #{content.update}
-                md-tooltip #{content.update}
+        md-dialog-content
+            .md-dialog-content
+                h3 Server Restert & Database drop Required. (Data All Lost.)
+
+        md-dialog-actions(layout="row")
+
+            md-button.md-raised.md-warn(ng-click='answer()', aria-label="Update") #{content.update}
+            md-tooltip #{content.update}

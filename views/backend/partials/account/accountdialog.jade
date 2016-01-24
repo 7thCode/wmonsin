@@ -41,7 +41,6 @@ md-dialog.box-edge(flex)
                     md-radio-button(value="Editor", aria-label="Editor") #{content.editor}
                     md-radio-button(value="Viewer", aria-label="Viewer") #{content.viewer}
 
-            md-divider
-            div.md-actions(layout="row", layout-align="space-around center")
+    md-dialog-actions(layout="row")
                 md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.username.$invalid", aria-label="Save") #{content.save}
                 md-button.md-raised.md-warn(ng-click='changePassword()', ng-disabled="validate.password.$invalid", aria-label="Password") #{content.changepass}

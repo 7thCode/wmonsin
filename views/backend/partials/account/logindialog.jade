@@ -35,6 +35,5 @@ md-dialog.box-edge(flex)
                         div(ng-message="required") #{content.required}
                         div(ng-message="md-maxlength") #{content.toolong}
 
-            md-divider
-            div.md-actions(layout="row" layout-align="space-around center")
+    md-dialog-actions(layout="row")
                 md-button.md-raised.md-primary(ng-click='answer(items)', ng-disabled="validate.$invalid", aria-label="") #{content.login}

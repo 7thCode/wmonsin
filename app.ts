@@ -33,81 +33,84 @@ var logger = log4js.getLogger('request');
 logger.setLevel(config.loglevel);
 
 config.dbaddress = process.env.DB_PORT_27017_TCP_ADDR || config.dbaddress;
-//config.state = app.get('env');
 if (config.dbaddress) {
     logger.info('config.dbaddress : ' + config.dbaddress);
 } else {
     logger.fatal('config.dbaddress NG.');
 }
 
+alert_log({}, '-----------------------Invoke---------------------');
 
-
-logger.info('-----------------------Invoke---------------------');
-
-
-
-alert_log(log4js,'log4js');
-alert_log(express,'express');
-alert_log(fs,'fs');
-alert_log(config,'config');
+alert_log(log4js, 'log4js');
+alert_log(express, 'express');
+alert_log(fs, 'fs');
+alert_log(config, 'config');
 
 var path = require('path');
-alert_log(path,'path');
+alert_log(path, 'path');
 
 var favicon = require('serve-favicon');
-alert_log(favicon,'favicon');
+alert_log(favicon, 'favicon');
 
 var cookieParser = require('cookie-parser');
-alert_log(cookieParser,'cookie-parser');
+alert_log(cookieParser, 'cookie-parser');
 
 var bodyParser = require('body-parser');
-alert_log(bodyParser,'body-parser');
+alert_log(bodyParser, 'body-parser');
 
 //passport
 var passport = require('passport');
-alert_log(passport,'passport');
+alert_log(passport, 'passport');
 
 var LocalStrategy = require('passport-local').Strategy;
-alert_log(LocalStrategy,'LocalStrategy');
+alert_log(LocalStrategy, 'LocalStrategy');
 //passport
 
 var session = require('express-session');
-alert_log(session,'session');
+alert_log(session, 'session');
 
 var routes = require('./routes/index');
-alert_log(routes,'routes');
+alert_log(routes, 'routes');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-logger.info('Jade Start.');
+
+alert_log({}, 'Jade Start.');
+
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
+
+
 app.use(bodyParser({limit: '50mb'}));
 app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({ limit:'50mb',extended: true }));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 app.use(cookieParser());
 
 var mongoose = require('mongoose');
-alert_log(mongoose,'mongoose');
+alert_log(mongoose, 'mongoose');
 
 var MongoStore = require('connect-mongo')(session);
-alert_log(MongoStore,'MongoStore');
+alert_log(MongoStore, 'MongoStore');
 
-//var options = {server: {socketOptions: {connectTimeoutMS: 1000000}}, user: config.user, pass: config.password};
 var options = {server: {socketOptions: {connectTimeoutMS: 1000000}}};
 
-mongoose.connect(config.connection, options);
+var connection = "mongodb://" + config.dbuser + ":" + config.dbpassword + "@" + config.dbaddress + "/" + config.dbname;
+mongoose.connect(connection, options);
+
+process.on('uncaughtException', (err) => {
+    logger.error('Exception.' + err);
+});
 
 process.on('exit', function (code) {
-    logger.info('Stop.' + code);
+    logger.info("exit " + code);
 });
 
 process.on('SIGINT', function () {
-    logger.info('SIGINT.');
+    logger.info("SIGINT");
 });
 
 app.use(session({
@@ -139,11 +142,13 @@ if (config.state === 'development') {
     app.use(morgan({format: 'original', immediate: true}));
 } else {
     var rotatestream = require('logrotate-stream');
-    app.use(morgan({format: 'combined', stream: rotatestream({ file: __dirname + '/logs/access.log', size: '100k', keep: 3 })}));
+    app.use(morgan({
+        format: 'combined',
+        stream: rotatestream({file: __dirname + '/logs/access.log', size: '100k', keep: 3})
+    }));
 }
 
-logger.info('Access Log OK.');
-
+alert_log({}, 'Access Log');
 //var csrf = require('csurf');
 //app.use(csrf());
 
@@ -162,11 +167,8 @@ passport.deserializeUser((obj, done):void => {
 
 var Account = require('./model/account');
 passport.use(new LocalStrategy(Account.authenticate()));
-if (Account) {
-    logger.info('Account Ok.');
-} else {
-    logger.fatal('Account NG.');
-}
+
+alert_log(Account, 'Account');
 
 //passport.serializeUser(Account.serializeUser());
 //passport.deserializeUser(Account.deserializeUser());
@@ -177,7 +179,7 @@ app.use((req:any, res:any, next:any):void => {
     var err = new Error('Not Found');
     err.status = 404;
     res.render('error', {
-        message: err.message + " " +req.originalUrl,
+        message: err.message + " " + req.originalUrl,
         error: err
     });
 });

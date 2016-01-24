@@ -40,6 +40,5 @@ md-dialog.box-edge(flex)
                 md-radio-button(value="Editor", aria-label="") #{content.editor}
                 md-radio-button(value="Viewer", aria-label="") #{content.viewer}
 
-            md-divider
-            div.md-actions(layout="row" layout-align="space-around center")
+    md-dialog-actions(layout="row")
                 md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") #{content.regist}

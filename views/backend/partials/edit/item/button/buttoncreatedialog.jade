@@ -17,41 +17,42 @@ md-dialog.box-edge(flex)
                     md-tooltip #{content.cancel}
 
     md-dialog-content.layout-padding
-        ng-form(name="validate")
-            div(layout="column")
-                div(layout="row", layout-align="start center")
+        .md-dialog-content
+            ng-form(name="validate")
+                div(layout="column")
+                    div(layout="row", layout-align="start center")
 
-                    md-input-container(flex)
-                        label #{content.name}
-                        input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter Name', md-maxlength="20", required)
-                        div(ng-messages="validate.name.$error")
-                            div(ng-message="required") #{content.required}
-                            div(ng-message="md-maxlength") #{content.toolong}
+                        md-input-container(flex)
+                            label #{content.name}
+                            input(ng-model="items.name", data-ng-required="true", name="name", placeholder='Enter Name', md-maxlength="20", required)
+                            div(ng-messages="validate.name.$error")
+                                div(ng-message="required") #{content.required}
+                                div(ng-message="md-maxlength") #{content.toolong}
 
-                    md-input-container(flex)
-                        label アイテムラベル
-                        input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter Label', md-maxlength="20", required)
-                        div(ng-messages="validate.label.$error")
-                            div(ng-message="required") #{content.required}
-                            div(ng-message="md-maxlength") #{content.toolong}
+                        md-input-container(flex)
+                            label アイテムラベル
+                            input(ng-model="items.label", data-ng-required="true", name="label", placeholder='Enter Label', md-maxlength="20", required)
+                            div(ng-messages="validate.label.$error")
+                                div(ng-message="required") #{content.required}
+                                div(ng-message="md-maxlength") #{content.toolong}
 
-                div(layout="row")
-                    md-switch(ng-model="isPage", aria-label="IsPage") ページ遷移/終了
+                    div(layout="row")
+                        md-switch(ng-model="isPage", aria-label="IsPage") ページ遷移/終了
 
-                    md-input-container(flex, ng-show="isPage")
-                        label ページ
-                        input(ng-model="items.page", name="page", placeholder='Enter Path', md-maxlength="4")
-                        div(ng-messages="validate.page.$error")
-                            div(ng-message="md-maxlength") #{content.toolong}
+                        md-input-container(flex, ng-show="isPage")
+                            label ページ
+                            input(ng-model="items.page", name="page", placeholder='Enter Path', md-maxlength="4")
+                            div(ng-messages="validate.page.$error")
+                                div(ng-message="md-maxlength") #{content.toolong}
 
-                div(layout="row")
-                    md-switch(ng-model="items.validate", aria-label="validate", equired) バリデート
+                    div(layout="row")
+                        md-switch(ng-model="items.validate", aria-label="validate", equired) バリデート
 
-                    md-select(ng-model="items.class", equired)
-                        md-option(value="md-primary") 標準
-                        md-option(value="md-accent") アクセント
-                        md-option(value="md-warn") 注意
+                        md-select(ng-model="items.class", equired)
+                            md-option(value="md-primary") 標準
+                            md-option(value="md-accent") アクセント
+                            md-option(value="md-warn") 注意
 
-                md-divider
+    md-dialog-actions(layout="row")
                 div.md-actions(layout="row", layout-align="space-around center")
                     md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") #{content.regist}

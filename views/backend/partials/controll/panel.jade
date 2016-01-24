@@ -28,14 +28,28 @@ md-content.background
         md-card-content
             div(layout="row")
                 md-input-container(flex="50")
-                    label DB Name
-                    input(ng-model="config.connection",data-ng-required="true", name="db", placeholder='DB name', type="text", md-maxlength="100")
+                    label DB User
+                    input(ng-model="config.dbuser",data-ng-required="true", name="dbuser", placeholder='DB User', type="text", md-maxlength="100")
 
+                md-input-container(flex="50")
+                    label DB Password
+                    input(ng-model="config.dbpassword",data-ng-required="true", name="dbpassword", placeholder='DB Password', type="text", md-maxlength="100")
+
+            div(layout="row")
+                md-input-container(flex="50")
+                    label DB Address
+                    input(ng-model="config.dbaddress",data-ng-required="true", name="dbaddress", placeholder='DB Address', type="text", md-maxlength="100")
+
+                md-input-container(flex="50")
+                    label DB Name
+                    input(ng-model="config.dbname",data-ng-required="true", name="dbname", placeholder='DB Name', type="text", md-maxlength="100")
+
+
+            div(layout="row")
                 md-input-container(flex="50")
                     label Session Key
                     input(ng-model="config.sessionkey",data-ng-required="true", name="sessionkey", placeholder='Session Key', type="text", md-maxlength="50")
 
-            div(layout="row")
                 md-input-container(flex="50")
                     label Password Key
                     input(ng-model="config.key1",data-ng-required="true", name="key1", placeholder='Key', type="text", md-maxlength="50")

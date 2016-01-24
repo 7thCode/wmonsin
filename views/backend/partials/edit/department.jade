@@ -19,7 +19,7 @@ md-content.background
                 ng-md-icon.department-button1-icon(icon="note_add", aria-label="", size="42")
                 md-tooltip #{content.add}
 
-    md-list(hide-gt-sm)
+    md-list(hide-gt-xs)
         md-list-item(ng-repeat="Page in Pages", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="column", layout-align="end center", flex)
@@ -48,7 +48,7 @@ md-content.background
                                 ng-md-icon.department-button1-icon(icon="remove", size="22")
                                 md-tooltip #{content.delete}
 
-    md-list(hide-sm)
+    md-list(hide-xs)
         md-list-item(ng-repeat="Page in Pages", ng-show="account.type != 'Admin'")
             md-card(layout="row", flex)
                 md-card-content(layout="row", layout-align="end center", flex)

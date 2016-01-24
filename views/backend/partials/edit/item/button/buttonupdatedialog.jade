@@ -50,6 +50,5 @@ md-dialog.box-edge(flex)
                         md-option(value="md-accent") アクセント
                         md-option(value="md-warn") 注意
 
-                md-divider
-                div.md-actions(layout="row", layout-align="space-around center")
-                    md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") #{content.update}
+    md-dialog-actions(layout="row")
+        md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") #{content.update}

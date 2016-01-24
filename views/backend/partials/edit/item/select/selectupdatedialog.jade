@@ -38,6 +38,5 @@ md-dialog.box-edge(flex)
                         md-chip-template
                             strong(ng-bind="$chip")
 
-                md-divider
-                div.md-actions(layout="row", layout-align="space-around center")
+    md-dialog-actions(layout="row")
                     md-button.md-raised.md-primary(ng-click='answer()', ng-disabled="validate.$invalid", aria-label="") 更新
