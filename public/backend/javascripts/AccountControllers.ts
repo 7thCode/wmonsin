@@ -69,7 +69,7 @@ interface IAccount extends angular.resource.IResource<any> {
 
 interface IPatient extends angular.resource.IResource<any> {
     Input:any;
-    Information:{name:string;time:string;kana:string;insurance:string;patientid:string;};
+    Information:{name:string;time:string;kana:string;insurance:string;patientid:string;birthday:string;gender:string};
     Category:string;
     Sequential:number;
     Status:string;
@@ -453,7 +453,8 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
 
                                 var patient:IPatient = new PatientAccept();
                                 patient.Input = {};
-                                patient.Information = {name:"",time:"",kana:"",insurance:"", patientid:""};
+                                patient.Information = {name:"",time:"",kana:"",insurance:"", patientid:"", birthday:"", gender:""};
+
                                 patient.Information.name = answer.items.name;
 
                                 var now:Date = new Date();
@@ -461,6 +462,9 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                                 var min:string = ("0" + now.getMinutes()).slice(-2); // 分
                                 var sec:string = ("0" + now.getSeconds()).slice(-2); // 秒
                                 patient.Information.time = hour + ':' + min + ':' + sec;
+
+                                patient.Information.birthday = "1990/1/01";
+                                patient.Information.gender = "";
 
                                 answer.items.kana = answer.items.kana.replace(/[ぁ-ん]/g, (s:any):string => {
                                     return String.fromCharCode(s.charCodeAt(0) + 0x60);
@@ -594,8 +598,12 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                                         });
                                     }
                                     $scope.Input.push(value);
-                                    $scope.Information = data.value.Information;
                                 });
+
+                                var d = new Date();
+                                d.setTime(Date.parse(data.value.Information.birthday));
+                                $scope.birthday = d;
+                                $scope.Information = data.value.Information;
                             } else {
                                 $mdToast.show($mdToast.simple().content(data.message));
                             }
@@ -640,10 +648,11 @@ controllers.controller('DescriptionController', ['$scope', '$mdBottomSheet', '$m
                 patientinformation.kana = $scope.Information.kana;
                 patientinformation.insurance = $scope.Information.insurance;
                 patientinformation.patientid = $scope.Information.patientid;
+                patientinformation.birthday = $scope.birthday.toDateString(); //  $scope.Information.birthday;
+                patientinformation.gender = $scope.Information.gender;
+
                 patientinformation.$update({id: CurrentPatient.id}, (result:any):void => {
-
                         $mdToast.show($mdToast.simple().content("OK."));
-
                 });
 
             };

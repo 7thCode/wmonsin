@@ -97,11 +97,24 @@ md-content.background
                     md-card
                         md-card-content(layout-align="start start", flex)
                             ng-form(name="validate")
-                                md-input-container(flex)
-                                    label レセコンの患者ID
-                                    input(ng-model="Information.patientid", name="patientid", placeholder='レセコンの患者ID', md-maxlength="30")
-                                    div(ng-messages="validate.patientid.$error")
-                                        div(ng-message="md-maxlength") too long
+
+                                div(layout="column", layout-align="start start")
+                                    md-input-container(flex)
+                                        label レセコンの患者ID
+                                        input(ng-model="Information.patientid", name="patientid", placeholder='レセコンの患者ID', md-maxlength="30")
+                                        div(ng-messages="validate.patientid.$error")
+                                            div(ng-message="md-maxlength") too long
+
+                                    div
+                                        h5 誕生日
+                                        md-datepicker(ng-model="birthday")
+
+                                    div
+                                        h5 性別
+                                        md-radio-group(ng-model="Information.gender")
+                                            md-radio-button(value="男性") 男性
+                                            md-radio-button(value="女性") 女性
+
                                 md-button.md-raised.md-primary(ng-click='setPatientID()', ng-disabled="validate.patientid.$invalid", aria-label="Save") Save
 
 

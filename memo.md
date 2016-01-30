@@ -31,3 +31,7 @@ user,pwdはconfig.connectionと合わせる。
     >mongo
     >use dbname
     >db.createUser({user: "oda",pwd: "password",roles: [ "readWrite", "dbAdmin" ]})
+
+
+
+mongo  localhost/patient --quiet  init.js

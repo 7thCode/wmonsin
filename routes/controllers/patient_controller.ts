@@ -191,6 +191,19 @@ class PatientController {
     }
 
 
+
+    public get_api_key_patient_query_query(req:any, res:any):void {
+        logger.trace("begin /api/:key/patient/query/:query");
+        var number:number = 5000;
+        wrapper.If(res, number, (config.key3 == req.params.key), (res:any):void  => {
+            var query = JSON.parse(decodeURIComponent(req.params.query));
+            wrapper.Find(res, number, PatientModel, query, {}, {sort: {Date: -1}}, (res:any, docs:any):void => {
+                wrapper.SendResult(res, 0, "OK", docs);
+                logger.trace("end /api/:key/patient/query/:query");
+            });
+        });
+    }
+
 }
 
 module.exports = PatientController;
