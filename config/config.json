@@ -1,6 +1,6 @@
 {
-  "dbuser":"oda",
-  "dbpassword":"zz0101",
+  "dbuser":"wmmaster",
+  "dbpassword":"wmmaster123",
   "dbaddress":"localhost",
   "dbname":"patient",
   "user":"root",

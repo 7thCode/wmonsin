@@ -28,6 +28,7 @@ gulp.task('copy', [], () => {
             'logs/*',
             'bower.json',
             '.bowerrc',
+            'memo.md',
             'public/favicons/*',
             'public/**/*.css',
             'public/**/*.svg',

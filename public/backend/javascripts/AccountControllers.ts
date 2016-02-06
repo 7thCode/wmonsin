@@ -463,8 +463,8 @@ controllers.controller('PatientsController', ['$scope', '$state', '$stateParams'
                                 var sec:string = ("0" + now.getSeconds()).slice(-2); // 秒
                                 patient.Information.time = hour + ':' + min + ':' + sec;
 
-                                patient.Information.birthday = "1990/1/01";
-                                patient.Information.gender = "";
+                                patient.Information.birthday = answer.items.birthday.toDateString();
+                                patient.Information.gender = answer.items.gender;
 
                                 answer.items.kana = answer.items.kana.replace(/[ぁ-ん]/g, (s:any):string => {
                                     return String.fromCharCode(s.charCodeAt(0) + 0x60);

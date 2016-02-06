@@ -36,6 +36,21 @@ md-dialog.box-edge(flex)
                         div(ng-message="md-maxlength") もうすこし短くしてください.
                         div(ng-message="pattern") カナで入力してください.
 
+            div(layout="row", layout-align="start center")
+                div(layout="column", layout-align="start center")
+                    h5 誕生日
+                    md-datepicker(ng-model="items.birthday", name="birthday", required)
+                    div(ng-messages="validate.birthday.$error")
+                        div(ng-message="required") 必ず入力してください.
+
+                div(layout="column", layout-align="start center")
+                    h5 性別
+                    md-radio-group(ng-model="items.gender", name="gender", required)
+                        md-radio-button(value="男性") 男性
+                        md-radio-button(value="女性") 女性
+                    div(ng-messages="validate.gender.$error")
+                        div(ng-message="required") 必ず入力してください.
+
             md-card-content(layout="row", layout-align="start center", flex)
                 md-select(placeholder="診療科", ng-model="items.category", required)
                     md-option(ng-repeat="category in categories", value="{{category}}", ng-bind="category")
